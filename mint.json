@@ -4,7 +4,7 @@
     "dark": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Logo%20dark%20mode.png",
     "light": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Logo%20Light%20mode.png"
   },
-  "favicon": "symbol_01.png",
+  "favicon": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/symbol_01.png",
   "defaultPage": "introduction", 
   "colors": {
     "primary": "#FF4500",
