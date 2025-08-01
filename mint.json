@@ -1,0 +1,58 @@
+{
+  "name": "Fabriq",
+  "logo": {
+    "dark": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Logo%20dark%20mode.png",
+    "light": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Logo%20Light%20mode.png"
+  },
+  "favicon": "symbol_01.png",
+  "defaultPage": "introduction", 
+  "colors": {
+    "primary": "#FF4500",
+    "light": "#FF6B35",
+    "dark": "#E03E00",
+    "anchors": {
+      "from": "#FF4500",
+      "to": "#FF6B35"
+    }
+  },
+  "topbarLinks": [],
+  "topbarCtaButton": {
+    "name": "App",
+    "url": "https://solmeteor.ai"
+  },
+  "navigation": [
+    {
+      "group": "Welcome to Fabriq",
+      "pages": [
+        "introduction",
+        "core-features", 
+        "how-it-works"
+      ]
+    },
+    {
+      "group": "Features",
+      "pages": [
+        "prompts",
+        "filters-meteor-score",
+        "positions-tab",
+        "trending-pools-tab",
+        "referral-system",
+        "security-badges",
+        "zap-out"
+      ]
+    },
+    {
+      "group": "About",
+      "pages": [
+        "our-vision",
+        "road-map",
+        "official-links"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "x": "https://x.com/FabriqTrade",
+    "discord": "https://discord.com/invite/FabriqTrade",
+    "telegram": "https://t.me/FabriqTrade"
+  }
+}
