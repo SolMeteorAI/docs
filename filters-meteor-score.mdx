@@ -1,0 +1,178 @@
+---
+title: Filters & Meteor Score
+description: "Master Fabriq's powerful filtering system and understand the Meteor Score algorithm"
+---
+
+![Fabriq Filters & Meteor Score System](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Fabriq%20Filters%20Docs.png)
+
+Fabriq lets you zero in on the most profitable and active liquidity pools using powerful custom filters. Whether you're hunting high APRs, new trends, or safe volume – Fabriq gives you full control.
+
+## 🔍 Available Filters
+
+Use natural language to apply sophisticated filters to your pool searches:
+
+<CardGroup cols={2}>
+  <Card title="💰 Liquidity (min/max)" icon="droplet">
+    ```
+    "What are the best pools with minimum 100k liquidity?"
+    "What are the best pools with maximum 100k liquidity?"
+    ```
+  </Card>
+  
+  <Card title="🎯 Include Specific Tokens" icon="plus">
+    ```
+    "What are the best pools for TRUMP and BONK?"
+    ```
+  </Card>
+  
+  <Card title="🚫 Exclude Specific Tokens" icon="minus">
+    ```
+    "What are the best pools without TRUMP?"
+    ```
+  </Card>
+  
+  <Card title="🏷️ Pool Name" icon="tag">
+    ```
+    "What are the best SOL-USDC pools?"
+    ```
+  </Card>
+  
+  <Card title="⭐ Meteor Score (min/max)" icon="star">
+    ```
+    "What are the best pools with a Meteor Score above 1000?"
+    ```
+  </Card>
+  
+  <Card title="⏰ Age (min/max)" icon="clock">
+    ```
+    "What are the best pools older than 1 day?"
+    ```
+  </Card>
+  
+  <Card title="💎 FDV (min/max)" icon="gem">
+    ```
+    "What are the best pools with over 10M FDV?"
+    ```
+  </Card>
+  
+  <Card title="💸 Fee Rate (min/max)" icon="percent">
+    ```
+    "What are the best pools with a fee rate over 1% daily?"
+    ```
+  </Card>
+  
+  <Card title="📈 Price Change (min/max)" icon="trending-up">
+    ```
+    "What are the best pools with positive price change?"
+    ```
+  </Card>
+  
+  <Card title="📊 Volume (min/max)" icon="chart-bar">
+    ```
+    "What are the best pools with more than 100k volume in the last 5 minutes?"
+    ```
+  </Card>
+  
+  <Card title="🔄 Transactions (min/max)" icon="arrows-rotate">
+    ```
+    "What are the best pools with at least 100 transactions in the last 5 minutes?"
+    ```
+  </Card>
+  
+  <Card title="⏳ Timeframe" icon="calendar">
+    Default timeframe is 24h, but you can modify it:
+    ```
+    "What are the best pools in the last hour?"
+    ```
+  </Card>
+</CardGroup>
+
+## 📊 Sorting Options
+
+<Note>
+Pools are sorted by **Meteor Score** by default, but you can sort by any of the following criteria:
+</Note>
+
+<Tabs>
+  <Tab title="Primary Metrics">
+    - **Meteor Score** - Proprietary ranking algorithm
+    - **Liquidity** - Total pool depth
+    - **Price** - Current token price
+    - **Age** - Pool creation time
+    - **FDV** - Fully Diluted Valuation
+  </Tab>
+  
+  <Tab title="Fee Rates">
+    Available timeframes:
+    - 5m, 30m, 1h, 2h, 4h, 6h, 12h, 24h
+  </Tab>
+  
+  <Tab title="Price Change">
+    Available timeframes:
+    - 5m, 1h, 6h, 24h
+  </Tab>
+  
+  <Tab title="Volume">
+    Available timeframes:
+    - 5m, 30m, 1h, 2h, 4h, 6h, 12h, 24h
+  </Tab>
+  
+  <Tab title="Makers">
+    Available timeframes:
+    - 5m, 1h, 6h, 24h
+  </Tab>
+</Tabs>
+
+## ⭐ Understanding the Meteor Score
+
+<Info>
+**Fabriq's Meteor Score** is a proprietary algorithm that ranks liquidity pools to help you identify the strongest opportunities at a glance.
+</Info>
+
+### How It's Calculated
+
+The Meteor Score evaluates pools based on three key factors:
+
+<CardGroup cols={3}>
+  <Card title="📈 Trade Activity" icon="chart-line">
+    Average trades per minute across 5m, 1h, 6h, and 24h windows
+  </Card>
+  
+  <Card title="💸 Fee Generation" icon="coins">
+    Average fees earned per minute during the same timeframes
+  </Card>
+  
+  <Card title="🌊 Total Liquidity" icon="waves">
+    Depth and stability of the pool
+  </Card>
+</CardGroup>
+
+### Why Meteor Score Matters
+
+<Tip>
+**The higher the score, the stronger the opportunity.**
+
+Use Meteor Score to instantly surface pools with:
+- ✅ **Real volume** (not wash trading)
+- ✅ **Sustainable APRs** (actual fee generation)  
+- ✅ **Trading potential** (active market participation)
+</Tip>
+
+<Warning>
+A high Meteor Score indicates strong fundamentals, but always do your own research before investing in any pool.
+</Warning>
+
+## Filter Combination Examples
+
+You can combine multiple filters for precise pool discovery:
+
+```bash
+# High-liquidity, established pools
+"What are the best pools with minimum 500k liquidity, older than 7 days, and Meteor Score above 800?"
+
+# New trending opportunities
+"What are the best pools younger than 6 hours with positive price change and volume over 50k?"
+
+# Safe, stable options
+"What are the best SOL-USDC pools with minimum 1M liquidity and fee rate above 0.5% daily?"
+```
