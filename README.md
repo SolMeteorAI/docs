@@ -1,44 +1,40 @@
-# Mintlify Starter Kit
+# Fabriq Documentation
 
-Use the starter kit to get your docs deployed and ready to customize.
+Smart tools for traders and LPs — built for Solana.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## About Fabriq
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+Fabriq is a unified trading and liquidity platform designed to simplify and supercharge your experience as a Liquidity Provider or active trader on Solana.
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+## Documentation
 
-## Development
+Visit our documentation at: **[docs.fabriq.trade](https://docs.fabriq.trade/)**
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+## Features
 
-```
-npm i -g mint
-```
+- 🔄 **DLMM-Native Management** - Advanced position management for LPs
+- 📊 **Real-Time PnL Display** - Always know where you stand
+- ⏰ **Live APR + Fee Tracking** - Minute-by-minute pool monitoring
+- ⚡ **Instant Operations** - Claims, compounding, and zap-outs
+- 📱 **Telegram + Web Integration** - Access anywhere
+- 🧹 **SOL Reclaim** - Recover gas from empty token accounts
+- 🎨 **PnL Card Generator** - Download and share your results
+- 🚀 **100% Solana Native** - Built for speed and low costs
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+## Official Links
 
-```
-mint dev
-```
+- **Website**: [solmeteor.ai](https://solmeteor.ai)
+- **Documentation**: [docs.fabriq.trade](https://docs.fabriq.trade/)
+- **X (Twitter)**: [@FabriqTrade](https://x.com/FabriqTrade)
+- **Discord**: [Join our community](https://discord.com/invite/FabriqTrade)
+- **Telegram**: [Chat with us](https://t.me/FabriqTrade)
 
-View your local preview at `http://localhost:3000`.
+## Built With
 
-## Publishing changes
+- [Mintlify](https://mintlify.com) - Documentation framework
+- [Solana](https://solana.com) - Blockchain platform
+- [Meteora](https://meteora.ag) - DeFi infrastructure
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+---
 
-## Need help?
-
-### Troubleshooting
-
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
-- [Mintlify community](https://mintlify.com/community)
+**Fabriq is the layer between liquidity and execution.**
