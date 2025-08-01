@@ -1,0 +1,117 @@
+---
+title: Prompts
+description: 'Learn what you can ask Fabriq and how to get the most from the platform'
+---
+
+# 💡 What You Can Ask Fabriq
+
+Fabriq is more than just a bot — it's your all-in-one command center for trading, LP analysis, and on-chain insights.
+
+## 🔍 Get the Best Current Meteora Pools
+
+Find the most profitable pools with natural language queries:
+
+<CardGroup cols={2}>
+  <Card title="General Pool Search" icon="magnifying-glass">
+    **Examples:**
+    - "What are the best pools?"
+    - "What are the top 20 pools?" (default is top 5 if not specified)
+  </Card>
+  
+  <Card title="Token-Specific Pools" icon="coins">
+    **Examples:**
+    - "What are the best TRUMP pools?"
+    - "What are the best pools for 6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN?"
+  </Card>
+  
+  <Card title="Liquidity Filtering" icon="filter">
+    **Examples:**
+    - "What are the best pools with at least $1M in liquidity?"
+  </Card>
+  
+  <Card title="Customizable Results" icon="list">
+    **Search by:**
+    - Token name
+    - Token address  
+    - Minimum liquidity threshold
+    - Number of results
+  </Card>
+</CardGroup>
+
+## 💰 Get the Price of Any Token
+
+<Tabs>
+  <Tab title="CoinGecko Prices">
+    For major tokens with comprehensive market data:
+    
+    ```
+    "What's the price of Bitcoin?"
+    "What's the price of XRP?"
+    ```
+  </Tab>
+  
+  <Tab title="Dexscreener Prices">
+    For any Solana token using contract address:
+    
+    ```
+    "What's the price of 6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN?"
+    ```
+  </Tab>
+</Tabs>
+
+## 📚 Ask About Meteora Concepts
+
+Get educational content straight from official documentation:
+
+<Note>
+**Example:** "Explain to me what bins are."
+
+Fabriq pulls from official Meteora documentation to give clear, concise answers about complex DeFi concepts.
+</Note>
+
+## 📊 View Your Current Meteora Positions
+
+<Warning>
+**Wallet Required**: You need to connect your wallet to view and manage positions.
+</Warning>
+
+### Quick Commands
+
+```bash
+"Show my positions."
+"Show my pos." # (shortcut)
+```
+
+### Position Card Features
+
+Each position displays comprehensive information and management options:
+
+<CardGroup cols={2}>
+  <Card title="✅ Actions Available" icon="hand-pointer">
+    - **Claim** - Collect earned fees
+    - **Claim & Close** - Exit position entirely  
+    - **Compound** - Reinvest earnings
+    - **Swap** - Trade within position
+  </Card>
+  
+  <Card title="📊 Analytics & Data" icon="chart-bar">
+    - **Live chart** of your LP range
+    - **Full history** - deposits, claims, withdrawals, compounds
+    - **Position stats** + current PnL
+    - **Flex Card** for sharing
+  </Card>
+</CardGroup>
+
+<Tip>
+**Pro Tip**: Use the shortcut "Show my pos." for quick position overviews when you're actively managing multiple pools.
+</Tip>
+
+## Command Examples Summary
+
+| Command Type | Example | Result |
+|-------------|---------|--------|
+| **Pool Discovery** | "What are the best SOL pools?" | Top performing SOL liquidity pools |
+| **Price Check** | "What's the price of BONK?" | Current token price from CoinGecko |
+| **Education** | "Explain liquidity bins" | Educational content from Meteora docs |
+| **Position Management** | "Show my positions" | Your active LP positions with controls |
+| **Filtered Search** | "Best pools with $5M+ liquidity" | High-liquidity pool recommendations |
