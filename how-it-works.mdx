@@ -1,157 +1,168 @@
 ---
 title: How it Works
-description: 'A complete guide to mastering DeFi liquidity management with Fabriq'
+description: 'A complete guide to understanding and managing liquidity on Solana with Fabriq'
 ---
 
-Fabriq simplifies DeFi liquidity management with smart tools, real-time insights, and seamless execution — all in one place. Whether you're farming, compounding, or rotating, here's how to make the most of it:
+A complete guide to understanding and managing liquidity on Solana with Fabriq.
 
-## ✅ Step 1: Access Fabriq
+Fabriq simplifies liquidity discovery and LP management with smart tools, real-time insights, and an intuitive interface. Whether you are exploring new pools, monitoring activity, or managing active positions, here is how Fabriq works from start to finish.
 
-Use Fabriq through our Web UI or Mobile.
+## Step 1: Access Fabriq
+
+Use Fabriq through our Web UI or Mobile browser.
 
 <CardGroup cols={2}>
   <Card title="Web UI" icon="globe">
-    **Full terminal experience** with live data and tools.
+    **Full terminal experience** with live pool data, portfolio insights, and position controls.
   </Card>
   
-  <Card title="Mobile" icon="Mobile">
-    **Full-featured mobile access** — track tokens and pools, manage LPs, execute trades, and use every Fabriq tool right from your phone.
+  <Card title="Mobile" icon="smartphone">
+    **Full-featured mobile access** — view pool activity, monitor your positions, and use all Fabriq tools directly from your phone.
   </Card>
 </CardGroup>
 
 <Info>
-**Connect your wallet** to unlock full functionality including LP tracking, claiming rewards, and swapping.
+**Connecting your wallet unlocks the complete experience, including viewing active LP positions, claiming rewards, and accessing your portfolio history.**
 </Info>
 
-## 🔍 Step 2: Analyze Tokens
+## Step 2: Explore and Analyze Pools
 
-<Steps>
-  <Step title="Enter Token Information">
-    Enter a token name or address
-  </Step>
-  <Step title="Get Comprehensive Data">
-    Fabriq returns real-time data, including:
-    - **Price**
-    - **Volume** 
-    - **Fees**
-    - **LP availability**
-    - **FabriqScore** (pool quality metric)
-  </Step>
-</Steps>
-
-<Tip>
-**Know what you're trading — before you move.**
-</Tip>
-
-## 🌊 Step 3: Explore Liquidity Pools
+Fabriq provides real-time visibility into liquidity pools across Meteora's DLMM and DAMM architecture.
 
 <Steps>
   <Step title="Search or Browse">
-    Search or browse active pools
+    Discover active pools using the Trending Pools page.
   </Step>
   <Step title="Review Pool Data">
-    Review pool-level data like:
-    - **APR**
+    Each pool displays live metrics such as:
     - **Trading volume**
-    - **Fee generation**
+    - **Liquidity**
+    - **Fees per minute**
+    - **Trades per minute**
+    - **APR (when available)**
     - **Pool age**
-    - **LP participation**
-  </Step>
-  <Step title="View Your Positions">
-    If your wallet is connected, you'll also see your active positions and rewards.
+    - **MeteorScore** (Fabriq's activity rating)
   </Step>
 </Steps>
 
-## ⚙️ Step 4: Manage Your LP Positions
+<Info>
+**These insights help traders and LPs understand market conditions before entering a position.**
+</Info>
 
-<Warning>
-**Wallet Required**: This step requires a connected wallet to manage your positions.
-</Warning>
+## Step 3: View Your Portfolio
 
-With Fabriq, you can manage LPs in one place:
+When your wallet is connected, Fabriq automatically organizes your LP-related activity.
 
 <CardGroup cols={2}>
-  <Card title="Available Actions" icon="gear">
-    **✅ Claim**: Harvest your earned fees  
-    **♻️ Compound**: Reinvest your rewards instantly  
-    **🚪 Close & Zap Out**: Exit your position and convert to **SOL, USDC, or the farming token** in one click  
-    **📈 PnL Card**: Generate and download a visual PnL summary
+  <Card title="Active Positions" icon="chart-bar">
+    Displays:
+    - **Current position value**
+    - **Initial deposit**
+    - **Unclaimed fees**
+    - **Claimed fees**
+    - **LP-based PnL**
+    - **Available actions** (Claim, Compound where supported, Close, Zap-Out)
   </Card>
   
-  <Card title="Fee Structure" icon="coins">
-    **Fees apply:**
-    - 2% on earned fees
-    - 1% on swaps
+  <Card title="History" icon="clock">
+    A timeline of past LP actions including:
+    - **Opens**
+    - **Closes**
+    - **Claims**
+    - **Compounds**
   </Card>
 </CardGroup>
 
-## 🔁 Step 5: Trade Directly
-
-<Steps>
-  <Step title="Initiate Trade">
-    Type your trade in Telegram or use the Web UI  
-    **Example**: Swap SOL to USDC
-  </Step>
-  <Step title="Execute Instantly">
-    Fabriq previews, confirms, and executes the trade instantly
-  </Step>
-</Steps>
-
-<Note>
-**Swap Fee**: 1%
-
-No switching tabs. No copy-pasting into DEXs. Just type, trade, done.
-</Note>
-
-## 🧹 Step 7: Reclaim SOL from Empty Token Accounts
-
-Over time, empty token accounts from closed LP positions or swaps can trap SOL. Fabriq helps you clean them up — fast.
-
-<CardGroup cols={3}>
-  <Card title="🧼 One-Click Scan" icon="magnifying-glass">
-    One-click scan of empty token accounts
+<CardGroup cols={2}>
+  <Card title="Transactions" icon="list">
+    A filtered view of wallet transactions relevant to Fabriq and Meteora interactions.
   </Card>
   
-  <Card title="💸 Instant Reclaim" icon="bolt">
-    Reclaim trapped SOL instantly
+  <Card title="Balances" icon="wallet">
+    View your current wallet token balances and total value.
+  </Card>
+</CardGroup>
+
+## Step 4: Manage Your LP Positions
+
+<Warning>
+**A connected wallet is required for position management.**
+</Warning>
+
+Fabriq centralizes all LP actions in one interface:
+
+### Available Actions
+
+<CardGroup cols={2}>
+  <Card title="Position Controls" icon="gear">
+    **→ Claim**: Harvest your accumulated fees  
+    **→ Compound**: Reinvest rewards back into your position (when supported)  
+    **→ Close and Zap-Out**: Exit your position and convert liquidity back into a single asset
   </Card>
   
-  <Card title="⚠️ Small Fee" icon="percent">
-    A small 10% fee applies to cover transaction and platform costs
+  <Card title="Analytics & Sharing" icon="image">
+    **→ Generate PnL Card**: Download a share-ready LP performance summary
   </Card>
 </CardGroup>
 
 <Info>
-**Keep your wallet clean. Keep your SOL working.**
+**Fabriq streamlines LP management, eliminating the need to jump between multiple platforms.**
 </Info>
 
-## 💸 Fee Structure Summary
+## Step 5: Reclaim SOL from Empty Token Accounts
+
+Over time, interacting with pools creates empty token accounts that hold reclaimable SOL. Fabriq helps you recover it instantly.
+
+<CardGroup cols={3}>
+  <Card title="One-Click Scan" icon="magnifying-glass">
+    Identify all empty token accounts associated with your wallet.
+  </Card>
+  
+  <Card title="Instant Reclaim" icon="bolt">
+    Recover trapped SOL in one action.
+  </Card>
+  
+  <Card title="Fee" icon="percent">
+    A 10% fee applies to cover transaction and platform costs.
+  </Card>
+</CardGroup>
+
+<Info>
+**Keeping your wallet clean ensures your SOL is always working.**
+</Info>
+
+## Fee Structure Summary
+
+These fees apply only to actions supported within Fabriq:
 
 | Action | Fee |
 |--------|-----|
 | **Claiming Rewards** | 2% |
-| **Swaps** | 1% |
+| **Zap-Out** | 1% |
 | **SOL Reclaim** | 10% |
-| **Token Swaps** | 1% Tax |
 
-## 🎯 The Fabriq Advantage
+<Note>
+**Only the fees for currently supported actions are included.**
+</Note>
+
+## The Fabriq Advantage
+
+Fabriq brings the liquidity workflow under one unified interface.
 
 <CardGroup cols={3}>
-  <Card title="🏠 One Roof" icon="house">
-    **Entire LP lifecycle** under one roof
+  <Card title="One Platform" icon="house">
+    **View active pools**, analyze market activity, and manage positions without switching tabs.
   </Card>
   
-  <Card title="⚡ Smart Tools" icon="brain">
-    **Track, manage, and act** with intelligent features
+  <Card title="Smart Tools" icon="brain">
+    **Real-time data**, MeteorScore, portfolio insights, and position controls.
   </Card>
   
-  <Card title="🎯 Full Control" icon="bullseye">
-    **Fast execution** and complete control over your capital
+  <Card title="Full Visibility" icon="bullseye">
+    **Understand your liquidity**, your fees, and your position performance in one place.
   </Card>
 </CardGroup>
 
 <Info>
-**Welcome to a better way to LP on Solana.**
-
-Fabriq brings your entire LP lifecycle under one roof. Track, manage, and act — with smart tools, fast execution, and full control over your capital.
+**Fabriq offers a clearer, more efficient way to participate in Solana's liquidity ecosystem.**
 </Info>
