@@ -1,178 +1,253 @@
 ---
 title: Filters & Meteor Score
-description: "Master Fabriq's powerful filtering system and understand the Meteor Score algorithm"
+description: "Master Fabriq's filtering tools and learn how the MeteorScore ranking system helps identify active and efficient pools"
 ---
 
-![Fabriq Filters & Meteor Score System](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Fabriq%20Filters%20Docs.png)
+Master Fabriq's filtering tools and learn how the MeteorScore ranking system helps identify active and efficient pools.
 
-Fabriq lets you zero in on the most profitable and active liquidity pools using powerful custom filters. Whether you're hunting high APRs, new trends, or safe volume – Fabriq gives you full control.
+Fabriq provides a detailed set of filters and customizable columns that allow users to refine the Trending Pools table based on liquidity, activity, volatility, and performance metrics. These tools give traders and LPs a clear view of pools that match their strategy.
 
-## 🔍 Available Filters
+## Filters
 
-Use natural language to apply sophisticated filters to your pool searches:
+All filtering options are available in the Table Settings panel under the "Filters" tab. Each filter supports a minimum, maximum, or both inputs.
+
+### LP Type
 
 <CardGroup cols={2}>
-  <Card title="💰 Liquidity (min/max)" icon="droplet">
-    ```
-    "What are the best pools with minimum 100k liquidity?"
-    "What are the best pools with maximum 100k liquidity?"
-    ```
+  <Card title="DLMM" icon="droplet">
+    Filter pools by Dynamic Liquidity Market Maker architecture.
   </Card>
   
-  <Card title="🎯 Include Specific Tokens" icon="plus">
-    ```
-    "What are the best pools for TRUMP and BONK?"
-    ```
-  </Card>
-  
-  <Card title="🚫 Exclude Specific Tokens" icon="minus">
-    ```
-    "What are the best pools without TRUMP?"
-    ```
-  </Card>
-  
-  <Card title="🏷️ Pool Name" icon="tag">
-    ```
-    "What are the best SOL-USDC pools?"
-    ```
-  </Card>
-  
-  <Card title="⭐ Meteor Score (min/max)" icon="star">
-    ```
-    "What are the best pools with a Meteor Score above 1000?"
-    ```
-  </Card>
-  
-  <Card title="⏰ Age (min/max)" icon="clock">
-    ```
-    "What are the best pools older than 1 day?"
-    ```
-  </Card>
-  
-  <Card title="💎 FDV (min/max)" icon="gem">
-    ```
-    "What are the best pools with over 10M FDV?"
-    ```
-  </Card>
-  
-  <Card title="💸 Fee Rate (min/max)" icon="percent">
-    ```
-    "What are the best pools with a fee rate over 1% daily?"
-    ```
-  </Card>
-  
-  <Card title="📈 Price Change (min/max)" icon="trending-up">
-    ```
-    "What are the best pools with positive price change?"
-    ```
-  </Card>
-  
-  <Card title="📊 Volume (min/max)" icon="chart-bar">
-    ```
-    "What are the best pools with more than 100k volume in the last 5 minutes?"
-    ```
-  </Card>
-  
-  <Card title="🔄 Transactions (min/max)" icon="arrows-rotate">
-    ```
-    "What are the best pools with at least 100 transactions in the last 5 minutes?"
-    ```
-  </Card>
-  
-  <Card title="⏳ Timeframe" icon="calendar">
-    Default timeframe is 24h, but you can modify it:
-    ```
-    "What are the best pools in the last hour?"
-    ```
+  <Card title="DAMM V2" icon="droplet">
+    Filter pools by Dynamic AMM V2 architecture.
   </Card>
 </CardGroup>
 
-## 📊 Sorting Options
+### Token and Pool Filters
 
-<Note>
-Pools are sorted by **Meteor Score** by default, but you can sort by any of the following criteria:
-</Note>
+<CardGroup cols={2}>
+  <Card title="Include Tokens" icon="plus">
+    Filter by token symbol or address to include specific tokens in results.
+  </Card>
+  
+  <Card title="Exclude Tokens" icon="minus">
+    Filter by token symbol or address to exclude specific tokens from results.
+  </Card>
+  
+  <Card title="Pool Name" icon="tag">
+    Search by pair name (e.g., SOL-USDC).
+  </Card>
+</CardGroup>
 
-<Tabs>
-  <Tab title="Primary Metrics">
-    - **Meteor Score** - Proprietary ranking algorithm
-    - **Liquidity** - Total pool depth
-    - **Price** - Current token price
-    - **Age** - Pool creation time
-    - **FDV** - Fully Diluted Valuation
-  </Tab>
-  
-  <Tab title="Fee Rates">
-    Available timeframes:
-    - 5m, 30m, 1h, 2h, 4h, 6h, 12h, 24h
-  </Tab>
-  
-  <Tab title="Price Change">
-    Available timeframes:
-    - 5m, 1h, 6h, 24h
-  </Tab>
-  
-  <Tab title="Volume">
-    Available timeframes:
-    - 5m, 30m, 1h, 2h, 4h, 6h, 12h, 24h
-  </Tab>
-  
-  <Tab title="Makers">
-    Available timeframes:
-    - 5m, 1h, 6h, 24h
-  </Tab>
-</Tabs>
+### Core Metrics
 
-## ⭐ Understanding the Meteor Score
+<CardGroup cols={2}>
+  <Card title="Activity Metrics" icon="chart-line">
+    **→ MeteorScore**  
+    **→ Trend**  
+    **→ Pool Age (minutes)**  
+    **→ Token Age (minutes)**
+  </Card>
+  
+  <Card title="Pool Configuration" icon="gear">
+    **→ Bin Step**  
+    **→ Base Fee %**  
+    **→ Dynamic Fee %**
+  </Card>
+</CardGroup>
+
+### Liquidity and Supply Metrics
+
+<CardGroup cols={2}>
+  <Card title="Valuation" icon="chart-bar">
+    **→ FDV**  
+    **→ Pool Liquidity**  
+    **→ Token Total Liquidity**
+  </Card>
+  
+  <Card title="Distribution" icon="users">
+    **→ Holders**
+  </Card>
+</CardGroup>
+
+### Fee Metrics
+
+<CardGroup cols={2}>
+  <Card title="Short-term Fees" icon="coins">
+    **→ LP Fees 5m**  
+    **→ LP Fees 1h**
+  </Card>
+  
+  <Card title="Long-term Fees" icon="coins">
+    **→ LP Fees 6h**  
+    **→ LP Fees 24h**
+  </Card>
+</CardGroup>
+
+### Price Change
+
+<CardGroup cols={2}>
+  <Card title="Short-term Price" icon="trending-up">
+    **→ Price Change 5m**  
+    **→ Price Change 1h**
+  </Card>
+  
+  <Card title="Long-term Price" icon="trending-up">
+    **→ Price Change 6h**  
+    **→ Price Change 24h**
+  </Card>
+</CardGroup>
+
+### Volume
+
+<CardGroup cols={2}>
+  <Card title="Short-term Volume" icon="chart-bar">
+    **→ Volume 5m**  
+    **→ Volume 1h**
+  </Card>
+  
+  <Card title="Long-term Volume" icon="chart-bar">
+    **→ Volume 6h**  
+    **→ Volume 24h**
+  </Card>
+</CardGroup>
+
+### Transactions
+
+<CardGroup cols={2}>
+  <Card title="Short-term Transactions" icon="arrows-rotate">
+    **→ Number of Transactions 5m**  
+    **→ Number of Transactions 1h**
+  </Card>
+  
+  <Card title="Long-term Transactions" icon="arrows-rotate">
+    **→ Number of Transactions 6h**  
+    **→ Number of Transactions 24h**
+  </Card>
+</CardGroup>
+
+### APR (when available)
+
+<CardGroup cols={2}>
+  <Card title="Short-term APR" icon="percent">
+    **→ APR 5m**  
+    **→ APR 1h**
+  </Card>
+  
+  <Card title="Long-term APR" icon="percent">
+    **→ APR 6h**  
+    **→ APR 24h**
+  </Card>
+</CardGroup>
+
+### Real-Time Activity Metrics
+
+<CardGroup cols={2}>
+  <Card title="Activity Rates" icon="signal">
+    **→ Average Swaps/min**  
+    **→ Average Volume/min**  
+    **→ Average Fees/min**
+  </Card>
+</CardGroup>
+
+## Column Customization
+
+Under the "Columns" tab in Table Settings, users can enable or disable any displayed metric in the Trending Pools table.
+
+### Available columns include:
+
+<CardGroup cols={2}>
+  <Card title="Core Metrics" icon="chart-line">
+    **→ MeteorScore**  
+    **→ Trend**  
+    **→ Age**  
+    **→ FDV**  
+    **→ Liquidity**  
+    **→ Holders**
+  </Card>
+  
+  <Card title="Timeframe Metrics" icon="clock">
+    **→ LP Fees (all timeframes)**  
+    **→ Price Change (all timeframes)**  
+    **→ Volume (all timeframes)**  
+    **→ Transactions (all timeframes)**  
+    **→ APR metrics (all timeframes)**  
+    **→ Makers (all timeframes, when available)**
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Real-Time Activity" icon="bolt">
+    **→ Average Swaps/min**  
+    **→ Average Volume/min**  
+    **→ Average Fees/min**
+  </Card>
+</CardGroup>
 
 <Info>
-**Fabriq's Meteor Score** is a proprietary algorithm that ranks liquidity pools to help you identify the strongest opportunities at a glance.
+**A "Reset" option restores the default column layout.**
 </Info>
 
-### How It's Calculated
+## MeteorScore
 
-The Meteor Score evaluates pools based on three key factors:
+The MeteorScore highlights a pool's efficiency and momentum relative to its liquidity.
 
-<CardGroup cols={3}>
-  <Card title="📈 Trade Activity" icon="chart-line">
-    Average trades per minute across 5m, 1h, 6h, and 24h windows
+It reflects how active, efficient, and fee-generating a pool is across recent timeframes.
+
+### MeteorScore considers four primary factors:
+
+<CardGroup cols={2}>
+  <Card title="Trading Activity" icon="chart-candlestick">
+    **Recent trading activity**  
+    Measures swaps and trading frequency across multiple short-term windows.
   </Card>
   
-  <Card title="💸 Fee Generation" icon="coins">
-    Average fees earned per minute during the same timeframes
+  <Card title="LP Activity" icon="droplet">
+    **Recent LP activity**  
+    Captures liquidity movements, migrations, and position adjustments by LPs.
   </Card>
   
-  <Card title="🌊 Total Liquidity" icon="waves">
-    Depth and stability of the pool
+  <Card title="Fee Generation" icon="coins">
+    **Fees paid to liquidity providers**  
+    Evaluates fee generation relative to time and activity.
+  </Card>
+  
+  <Card title="Liquidity Depth" icon="waves">
+    **Liquidity**  
+    Considers the depth and distribution of available liquidity in the pool.
   </Card>
 </CardGroup>
 
-### Why Meteor Score Matters
+<Info>
+**Higher scores suggest stronger, more balanced short-term activity with better potential opportunity for liquidity providers.**
+</Info>
 
-<Tip>
-**The higher the score, the stronger the opportunity.**
+## Example Use Cases
 
-Use Meteor Score to instantly surface pools with:
-- ✅ **Real volume** (not wash trading)
-- ✅ **Sustainable APRs** (actual fee generation)  
-- ✅ **Trading potential** (active market participation)
-</Tip>
-
-<Warning>
-A high Meteor Score indicates strong fundamentals, but always do your own research before investing in any pool.
-</Warning>
-
-## Filter Combination Examples
-
-You can combine multiple filters for precise pool discovery:
-
-```bash
-# High-liquidity, established pools
-"What are the best pools with minimum 500k liquidity, older than 7 days, and Meteor Score above 800?"
-
-# New trending opportunities
-"What are the best pools younger than 6 hours with positive price change and volume over 50k?"
-
-# Safe, stable options
-"What are the best SOL-USDC pools with minimum 1M liquidity and fee rate above 0.5% daily?"
-```
+<CardGroup cols={2}>
+  <Card title="High-liquidity pools" icon="droplet">
+    **Filters:**
+    - Liquidity minimum
+    - Higher pool age
+    - MeteorScore minimum
+  </Card>
+  
+  <Card title="New, active pools" icon="rocket">
+    **Filters:**
+    - Pool age in minutes
+    - Volume 5m
+    - Swaps or transactions 5m
+  </Card>
+  
+  <Card title="High fee-generating pools" icon="coins">
+    **Filters:**
+    - LP Fees 5m or 1h
+    - Average Fees/min
+  </Card>
+  
+  <Card title="Strong recent volume" icon="chart-bar">
+    **Filters:**
+    - Volume 5m or 1h
+    - Average Volume/min
+  </Card>
+</CardGroup>
