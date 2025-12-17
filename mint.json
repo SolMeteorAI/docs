@@ -18,7 +18,7 @@
   "topbarLinks": [],
   "topbarCtaButton": {
     "name": "App",
-    "url": "https://solmeteor.ai"
+    "url": "https://beta.fabriq.trade/trending"
   },
   "navigation": [
     {
@@ -47,7 +47,7 @@
   ],
   "footerSocials": {
     "x": "https://x.com/FabriqTrade",
-    "discord": "https://discord.com/invite/FabriqTrade",
+    "discord": "https://discord.com/invite/7UuZFaHaVt",
     "telegram": "https://t.me/FabriqTrade"
   }
 }
