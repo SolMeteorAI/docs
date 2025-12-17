@@ -1,24 +1,32 @@
 ---
 title: Core Features
-description: 'Powerful tools for traders and LPs — built for Solana.'
+description: 'Market discovery and portfolio management for Solana'
 ---
 
-Fabriq delivers a focused suite of features designed to simplify your workflow as a trader or Liquidity Provider on Solana.
+Fabriq provides two core capabilities designed to help traders and Liquidity Providers navigate Solana's DeFi ecosystem with clarity and confidence:
 
-From discovering active pools to managing LP positions, tracking fees, and reclaiming SOL, Fabriq brings everything together in one streamlined terminal.
+**Trending Pools** — discover where activity is happening
 
-## Trending Pools and Market Activity
+**Portfolio Tab** — manage and monitor LP positions in real time
 
-Fabriq continuously monitors real-time pool data to help you identify the most active and high-momentum pools across Meteora's DLMM and DAMM architecture.
+Together, these features allow users to identify opportunities, evaluate momentum, and manage liquidity without relying on fragmented tools or external dashboards.
 
-### Filter and sort by
+## Discover Opportunity — Trending Pools
+
+The Trending Pools tab is the foundation of Fabriq.
+
+It continuously monitors live pool data across Meteora's DLMM and DAMM pools to surface where real market activity is occurring.
+
+Rather than relying on price alone, Trending Pools focuses on usage, demand, and efficiency—helping users spot momentum early.
+
+### Key Signals
 
 <CardGroup cols={2}>
   <Card title="Core Metrics" icon="chart-line">
-    **→ APR (where available)**  
     **→ Trading volume**  
     **→ Liquidity**  
-    **→ Pool age**
+    **→ Pool age**  
+    **→ APR (where available)**
   </Card>
   
   <Card title="Activity Metrics" icon="signal">
@@ -28,65 +36,28 @@ Fabriq continuously monitors real-time pool data to help you identify the most a
   </Card>
 </CardGroup>
 
-<Info>
-**Stay focused on the pools that matter most, whether you are entering a trade or rotating liquidity.**
-</Info>
+These metrics help users quickly determine which pools are actively being used and generating fees, making it easier to prioritize where to deploy capital.
 
-## Position Management
+→ Learn more in the [Trending Pools Tab](/trending-pools-tab)
 
-**Your LP control center, designed for fast and efficient liquidity management.**
+## Focus the Signal — Filters & MeteorScore
 
-### Available actions
+Fabriq layers intelligent filtering and scoring on top of raw pool data to reduce noise and surface meaningful opportunities.
 
-<CardGroup cols={2}>
-  <Card title="Position Controls" icon="gear">
-    **→ Claim rewards**  
-    **→ Compound (where supported)**  
-    **→ Close positions**  
-    **→ Zap-Out directly from the dashboard**
-  </Card>
-  
-  <Card title="Analytics & Sharing" icon="chart-bar">
-    **→ Track LP-based PnL in real time**  
-    **→ View fee breakdowns and current position value**  
-    **→ Generate shareable PnL cards**
-  </Card>
-</CardGroup>
+### Filters
 
-<Info>
-**Everything you need to manage your positions is available in a clean, single-page interface.**
-</Info>
+Users can refine pools based on:
 
-## Customizable Filtering
+**→ Liquidity thresholds**  
+**→ Volume levels**  
+**→ Pool age**  
+**→ APR and activity metrics**
 
-**Fabriq adapts to your strategy with flexible filtering tools.**
+### MeteorScore
 
-### Filter options
+MeteorScore is Fabriq's proprietary activity-based score designed to highlight pools gaining traction.
 
-<CardGroup cols={2}>
-  <Card title="Core Filters" icon="sliders">
-    **→ Minimum APR thresholds**  
-    **→ Liquidity caps**  
-    **→ Pool age**  
-    **→ Volume levels**
-  </Card>
-  
-  <Card title="Advanced Filters" icon="filter">
-    **→ Fees per minute**  
-    **→ Trades per minute**  
-    **→ Custom sorting**
-  </Card>
-</CardGroup>
-
-<Info>
-**Find the exact pools that match your trading or LP style.**
-</Info>
-
-## MeteorScore
-
-**Fabriq's activity-based scoring model makes it easy to identify pools gaining traction.**
-
-MeteorScore evaluates pools using:
+It evaluates:
 
 <CardGroup cols={2}>
   <Card title="Activity Metrics" icon="chart-candlestick">
@@ -95,37 +66,66 @@ MeteorScore evaluates pools using:
   </Card>
   
   <Card title="Performance Analysis" icon="target">
-    **→ Liquidity distribution and efficiency**  
-    **→ Multi-timeframe performance**
+    **→ Liquidity efficiency**  
+    **→ Performance across multiple timeframes**
   </Card>
 </CardGroup>
 
-<Info>
-**Pools with higher scores reflect stronger, more active market conditions.**
-</Info>
+Higher MeteorScores indicate stronger, more consistent participation rather than short-lived spikes.
 
-## SOL Reclaim
+→ Learn more in [Filters & MeteorScore](/filters-meteor-score)
 
-**Fabriq automatically identifies empty token accounts and allows you to reclaim the SOL in one click.**
+## Manage Positions — Portfolio Tab
 
-<Warning>
-**Fee Structure**: A small 10% fee applies to cover transaction costs and platform upkeep.
-</Warning>
+The Portfolio Tab is where users manage their active Liquidity Provider positions.
 
-## Web and Mobile Integration
-
-**Fabriq works seamlessly across both web and mobile browsers, giving you the flexibility to view pools, manage positions, and access your portfolio from anywhere.**
+It provides a consolidated view of all LP positions with real-time insights and direct actions.
 
 <CardGroup cols={2}>
-  <Card title="Access Anywhere" icon="globe">
-    **View pools, manage positions, and access your portfolio from any device.**
+  <Card title="Position Controls" icon="gear">
+    **→ Claim rewards**  
+    **→ Compound (where supported)**  
+    **→ Close positions**  
+    **→ Zap-out directly from the interface**
   </Card>
   
-  <Card title="Always Connected" icon="smartphone">
-    **Full functionality available on web and mobile browsers.**
+  <Card title="Portfolio Insights" icon="chart-bar">
+    **→ Live LP-based PnL tracking**  
+    **→ Fee breakdowns per position**  
+    **→ Current position value and exposure**
   </Card>
 </CardGroup>
 
-## Built for Solana. Designed for Traders and LPs.
+All actions and analytics are available in a clean, single-page experience designed for speed and usability.
 
-Fabriq focuses on clarity, speed, and control, giving traders and Liquidity Providers the insight needed to operate confidently in Solana's fast-moving ecosystem.
+→ Learn more in the [Portfolio Tab](/portfolio-tab)
+
+## Improve Capital Efficiency — Zap-Out & SOL Reclaim
+
+Fabriq includes tools that help users reduce friction and recover value.
+
+### Zap-Out
+
+Exit LP positions efficiently without manual unwinding, reducing steps and execution complexity.
+
+### SOL Reclaim
+
+Fabriq automatically detects empty token accounts and allows users to reclaim stranded SOL with one click.
+
+<Warning>
+**Fee Structure**: A 10% fee applies to reclaimed SOL. Fee covers transaction costs and platform maintenance.
+</Warning>
+
+These features help users keep capital deployed efficiently rather than locked in forgotten accounts.
+
+→ Learn more in [Zap-Out](/zap-out)
+
+## Built for Solana's DeFi Ecosystem
+
+Fabriq is designed specifically for Solana's fast-moving liquidity environment, with a focus on:
+
+**→ Real-time data**  
+**→ Activity-driven insights**  
+**→ Clean, actionable interfaces**
+
+By concentrating on discovery and portfolio management, Fabriq gives traders and Liquidity Providers the tools they need today—without unnecessary complexity.
