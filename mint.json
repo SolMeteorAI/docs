@@ -32,11 +32,8 @@
     {
       "group": "Features",
       "pages": [
-        "filters-meteor-score",
         "trending-pools-tab",
-        "portfolio-tab",
-        "security-badges",
-        "zap-out"
+        "portfolio-tab"
       ]
     },
     {
