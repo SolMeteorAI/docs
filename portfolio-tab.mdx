@@ -1,193 +1,168 @@
 ---
 title: Portfolio Tab
-description: 'Your complete view of liquidity positions, wallet activity, and performance on Solana'
+description: 'Your complete view of liquidity positions and performance on Solana'
 ---
 
-Your complete view of liquidity positions, wallet activity, and performance on Solana.
+Your complete view of liquidity positions and performance on Solana
 
-The Portfolio Tab organizes all of your LP-related data into a single, clean dashboard. It provides visibility into your active positions, historical activity, wallet balances, and transaction records, helping both traders and liquidity providers understand their performance at a glance.
+The Portfolio tab consolidates all liquidity-related activity for your connected wallet into a single, real-time dashboard.
 
-## The Portfolio Tab is divided into four sections:
+It brings together active LP positions, performance analytics, historical actions, on-chain transactions, and wallet balances—giving traders and liquidity providers full visibility into their portfolio at a glance.
 
-<CardGroup cols={2}>
-  <Card title="Active Positions" icon="chart-bar">
-    View and manage your current LP positions with real-time PnL and available actions.
-  </Card>
-  
-  <Card title="History" icon="clock">
-    A complete timeline of past LP operations and actions.
-  </Card>
-  
-  <Card title="Transactions" icon="list">
-    Filtered view of on-chain activity related to Fabriq and liquidity interactions.
-  </Card>
-  
-  <Card title="Balances" icon="wallet">
-    Complete snapshot of your wallet's token holdings and values.
-  </Card>
-</CardGroup>
+## Overview
 
-<Info>
-**Each section updates automatically as you interact with pools and your connected wallet.**
-</Info>
+The Portfolio tab is designed to centralize everything that happens after entering a pool.
+
+From monitoring performance to managing positions and reviewing historical activity, all portfolio-related information updates automatically as you interact with liquidity pools and your wallet.
+
+<!-- Screenshot: Portfolio – Full Dashboard View -->
+<!-- Caption: The Portfolio tab provides a complete, real-time view of liquidity positions, performance, and wallet activity in one place. -->
+
+## Performance & PnL Tracking
+
+The Portfolio tab includes built-in performance analytics that help users understand how their liquidity activity evolves over time.
+
+Users can:
+
+**→ View realized PnL as a chart or calendar**  
+**→ Adjust analysis across multiple timeframes (daily, weekly, monthly)**  
+**→ Switch performance ranges (7D, 1M, 6M, 1Y, YTD, All)**
+
+This allows both short-term monitoring and long-term performance review without leaving the dashboard.
+
+<!-- Screenshot: Realized PnL Chart & Performance Panel -->
+<!-- Caption: Performance analytics allow users to track realized PnL and review results across multiple timeframes. -->
+
+## Active Positions Summary
+
+At the top of the Portfolio tab, an overview panel provides a high-level snapshot of current portfolio exposure and results.
+
+It summarizes key portfolio totals such as:
+
+**→ Active positions and pools**  
+**→ Deposits and withdrawals**  
+**→ Claimed and unclaimed fees**  
+**→ LP-based PnL and current value**
+
+This view is designed for quick orientation before drilling into individual positions.
+
+<!-- Screenshot: Active Positions Summary -->
+<!-- Caption: The Active Positions Summary provides a high-level snapshot of portfolio exposure, fees, and LP-based performance. -->
 
 ## Active Positions
 
-The Active Positions page provides a full overview of the LP positions currently held by your connected wallet.
+Active Positions displays all liquidity positions currently held by the connected wallet.
 
-### Summary Panel
+Each position row provides immediate insight into:
 
-At the top of the page, Fabriq displays:
+**→ Position performance**  
+**→ Liquidity distribution**  
+**→ Pool type (DLMM or DAMM)**  
+**→ Position age and activity**
 
-<CardGroup cols={2}>
-  <Card title="Portfolio Overview" icon="chart-pie">
-    **→ Number of positions**  
-    **→ Number of pools**  
-    **→ Initial deposit value**  
-    **→ Current deposit value**
-  </Card>
-  
-  <Card title="Performance Metrics" icon="chart-line">
-    **→ Claimed fees**  
-    **→ Unclaimed fees**  
-    **→ Total PnL based on LP performance**  
-    **→ Current deposit + unclaimed fees**
-  </Card>
-</CardGroup>
+Positions can be expanded to reveal additional details and management controls.
 
-<Info>
-**This summary gives a fast, high-level view of your portfolio's standing and trajectory.**
-</Info>
+<!-- Screenshot: Active Positions Table -->
+<!-- Caption: Active Positions show live performance and distribution details for each liquidity position. -->
 
-### Position-Level Details
+## Managing Positions
 
-Each active position includes:
+Liquidity positions can be managed directly from the Portfolio tab without switching tools.
 
-<CardGroup cols={2}>
-  <Card title="Position Metrics" icon="chart-bar">
-    **→ Current position value**  
-    **→ Initial deposit**  
-    **→ Unclaimed fees**  
-    **→ LP-based PnL**
-  </Card>
-  
-  <Card title="Activity Data" icon="signal">
-    **→ Fee breakdown**  
-    **→ Time-based activity metrics**
-  </Card>
-</CardGroup>
-
-### Available Actions
-
-Fabriq provides integrated controls for managing your liquidity:
+Available actions include:
 
 <CardGroup cols={2}>
   <Card title="Position Controls" icon="gear">
-    **→ Claim rewards**  
-    **→ Compound (if supported by the pool)**  
-    **→ Close position**  
-    **→ Zap-Out into a single asset**
-  </Card>
-  
-  <Card title="Analytics & Sharing" icon="image">
-    **→ Generate a PnL Card** for sharing or recordkeeping
+    **→ Claim accumulated fees**  
+    **→ Compound rewards back into the position (when supported)**  
+    **→ Close a position**  
+    **→ Zap-Out, converting a position into a single asset in one action**
   </Card>
 </CardGroup>
 
-<Info>
-**These actions allow you to adjust your positions directly from the dashboard without switching platforms.**
-</Info>
+These controls allow users to adjust, rebalance, or exit liquidity efficiently as market conditions change.
+
+<!-- Screenshot: Position Actions -->
+<!-- Caption: Positions include integrated controls for claiming rewards, compounding, closing, or zapping out liquidity. -->
 
 ## History
 
-The History tab tracks all past LP operations performed by your wallet within supported pools.
+The History view records completed liquidity activity associated with the wallet.
 
-### Recorded actions include:
+It provides a chronological record of:
 
-<CardGroup cols={2}>
-  <Card title="Position Actions" icon="arrows-rotate">
-    **→ Position opens**  
-    **→ Position closes**  
-    **→ Deposits**  
-    **→ Withdrawals (where applicable)**
-  </Card>
-  
-  <Card title="Reward Actions" icon="coins">
-    **→ Claims**  
-    **→ Compounds**
-  </Card>
-</CardGroup>
+**→ Position initialization and closure**  
+**→ Liquidity additions and removals**  
+**→ Claims and compounds**
 
-<Info>
-**Each entry includes timestamped details, enabling full transparency and review of your liquidity activity.**
-</Info>
+This section offers transparency and a clear audit trail of past portfolio activity.
+
+<!-- Screenshot: History View -->
+<!-- Caption: The History view tracks completed liquidity actions with timestamped records. -->
 
 ## Transactions
 
-The Transactions tab provides a filtered view of on-chain activity related to Fabriq and liquidity interactions.
+The Transactions view surfaces relevant on-chain activity tied specifically to liquidity operations.
 
-### Transaction details include:
+It allows users to:
 
-<CardGroup cols={2}>
-  <Card title="LP Operations" icon="droplet">
-    **→ Claims**  
-    **→ Compounds**  
-    **→ Zap-Outs**  
-    **→ Position modifications**
-  </Card>
-  
-  <Card title="Token Activity" icon="exchange">
-    **→ Relevant token transfers**
-  </Card>
-</CardGroup>
+**→ Verify execution of LP actions**  
+**→ Review transaction types and pool structure**  
+**→ Trace liquidity-related token movements**
 
-<Info>
-**This section helps you trace wallet activity and verify execution outcomes.**
-</Info>
+This focused view reduces the need to rely on external explorers for portfolio verification.
+
+<!-- Screenshot: Transactions View -->
+<!-- Caption: Transactions provide a filtered view of on-chain activity related to liquidity operations. -->
 
 ## Balances
 
-The Balances tab displays all tokens currently held in your wallet along with:
+The Balances view displays all tokens currently held in the connected wallet.
+
+It includes:
 
 <CardGroup cols={2}>
   <Card title="Token Information" icon="coins">
-    **→ Token name**  
-    **→ Current price**  
-    **→ FDV (when available)**
+    **→ Token balances and values**  
+    **→ Price and valuation data (when available)**
   </Card>
   
   <Card title="Holdings" icon="wallet">
-    **→ Amount**  
-    **→ Total value**
+    **→ Both idle assets and liquidity-related holdings**
   </Card>
 </CardGroup>
 
-<Info>
-**This offers a complete snapshot of your wallet's token holdings, including LP-related assets and idle balances.**
-</Info>
+This provides a complete snapshot of wallet distribution alongside LP activity.
 
-## Why the Portfolio Tab Matters
+<!-- Screenshot: Balances View -->
+<!-- Caption: Balances show current wallet holdings and token values in one place. -->
 
-The Portfolio Tab consolidates your liquidity activity in one place, giving you:
+## Wallet & Token Management
 
-<CardGroup cols={2}>
-  <Card title="Performance Insights" icon="chart-line">
-    **→ Clear insight into your LP performance**  
-    **→ Accurate PnL tracking based solely on liquidity activity**
+Across both Trending Pools and Portfolio, Fabriq allows users to:
+
+**→ Search for wallets and tokens**  
+**→ Save and label wallets**  
+**→ Quickly switch views for monitoring and analysis**
+
+This makes tracking multiple wallets or assets seamless across the platform.
+
+## Why the Portfolio Tab
+
+The Portfolio tab brings liquidity management together by offering:
+
+<CardGroup cols={3}>
+  <Card title="Performance Insight" icon="chart-line">
+    **Clear performance insight** into LP-based results
   </Card>
   
-  <Card title="Control & Transparency" icon="eye">
-    **→ A transparent record of all actions**  
-    **→ Full control over active positions**
+  <Card title="Direct Control" icon="gear">
+    **Direct control** over active positions
+  </Card>
+  
+  <Card title="Full Visibility" icon="eye">
+    **Full visibility** into historical actions and wallet state
   </Card>
 </CardGroup>
 
-<CardGroup cols={1}>
-  <Card title="Complete Overview" icon="globe">
-    **→ A complete view of your Solana wallet's token distribution**
-  </Card>
-</CardGroup>
-
-<Info>
-**It is a central command center for managing your liquidity and understanding your position performance on Solana.**
-</Info>
+By centralizing monitoring and management, the Portfolio tab helps users stay informed, efficient, and in control of their liquidity on Solana.
