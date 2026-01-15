@@ -1,118 +1,128 @@
 ---
 title: Trending Pools Tab
-description: 'Your real-time radar for active liquidity on Solana'
+description: 'Real-time visibility into active liquidity on Solana'
 ---
 
-The Trending Pools tab surfaces liquidity pools with real on-chain activity across Meteora's DLMM and DAMM architecture.
+The Trending Pools tab displays liquidity pools with live on-chain activity across Meteora DLMM and DAMM pools.
 
-Rather than focusing on price alone, it highlights usage, fee generation, and efficiency, helping traders and liquidity providers quickly identify where capital is actively flowing.
+All data is indexed directly from the blockchain and updates continuously. Trending Pools provides a real-time view of liquidity usage, fee generation, and pool activity.
 
 ## Overview
 
-Trending Pools provides a live, continuously updating view of active pools, accessible directly from the sidebar.
+Trending Pools presents a continuously updating table of active liquidity pools.
 
-The layout is designed for speed and clarity—allowing users to compare pools, assess momentum, and filter opportunities without switching between tools or screens.
+The table is accessible from the sidebar and is designed for fast inspection and comparison of pools using live market data. No manual refresh is required.
 
-## 🔍 Discovering Opportunities
+## Pool Data
 
-Trending Pools allows users to browse and search pools using real-time market data such as liquidity, volume, fees, and activity levels.
-
-Pools can be sorted by any visible metric, making it easy to surface:
-
-**→ High-activity pools**  
-**→ Established liquidity with consistent fees**  
-**→ Newer pools showing early momentum**
-
-![Trending Pools surfaces active liquidity pools with key market signals visible at a glance.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Trending%20Pools%20Full%20Table%20View.png)
-
-## Filtering & Custom Views
-
-To reduce noise, Fabriq provides flexible filtering and column customization tools directly within the Trending Pools table.
-
-Users can refine results based on factors such as:
-
-**→ Pool structure (DLMM or DAMM)**  
-**→ Liquidity and valuation**  
-**→ Activity and volume**  
-**→ Fees, APR, and price movement (when available)**
-
-Columns can be shown or hidden to create a focused view tailored to individual strategies. Default layouts can be restored at any time.
-
-![Filters and custom columns allow users to narrow the market and focus only on the metrics that matter to their strategy.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Trending%20Pools%20Filters%20View.png)
-
-## MeteorScore
-
-Each pool is ranked using MeteorScore, Fabriq's proprietary activity-based scoring model.
-
-MeteorScore emphasizes real usage over static yield, helping highlight pools with meaningful participation rather than temporary spikes.
-
-It considers factors such as:
+Each pool displays real-time metrics, including:
 
 <CardGroup cols={2}>
-  <Card title="Activity Metrics" icon="chart-candlestick">
-    **→ Recent trading activity**  
-    **→ Fee generation**
+  <Card title="Core Metrics" icon="chart-line">
+    **→ Trading volume**  
+    **→ Liquidity**  
+    **→ Pool age**  
+    **→ APR (when available)**
   </Card>
   
-  <Card title="Performance Analysis" icon="target">
-    **→ Liquidity depth and efficiency**  
-    **→ Short-term consistency across timeframes**
+  <Card title="Activity Metrics" icon="signal">
+    **→ Fees generated**  
+    **→ Trades per minute**  
+    **→ Liquidity participation**
   </Card>
 </CardGroup>
 
-Higher scores generally indicate healthier, more active pools relative to their liquidity.
+All metrics reflect current on-chain activity.
 
-![MeteorScore highlights pools showing strong activity and efficient liquidity usage.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/MeteorScore%20Visible%20Pool%20Rows.png)
+## Fabriq Score
+
+Each pool is evaluated using the Fabriq Score, an activity-based scoring system used to interpret pool behavior across different time horizons.
+
+Fabriq Score is available in three variants.
+
+### Fabriq Degen Score
+
+The Fabriq Degen Score highlights short-term, high-frequency activity.
+
+It evaluates:
+
+**→ Recent trading activity**  
+**→ Recent LP activity**  
+**→ Fees paid to liquidity providers**  
+**→ Liquidity balance**
+
+Higher scores indicate stronger short-term activity and higher relative engagement.
+
+### Fabriq Multiday Score
+
+The Fabriq Multiday Score highlights sustained performance across multiple days.
+
+It evaluates:
+
+**→ Multi-day yield**  
+**→ Price performance**
+
+Higher scores indicate consistent activity and performance over time.
+
+### Fabriq Bluechip Score
+
+The Fabriq Bluechip Score identifies established pools with stable participation.
+
+It evaluates:
+
+**→ Multi-day yield**  
+**→ Price performance**
+
+Higher scores indicate longer-running pools with more consistent liquidity behavior.
+
+Users can switch between Fabriq Score variants to view the same pools through different activity and stability lenses.
+
+## Sorting, Filtering, and Views
+
+Trending Pools supports table-level controls for refining results.
+
+Users can:
+
+**→ Sort pools by any visible metric**  
+**→ Filter by pool structure (DLMM or DAMM)**  
+**→ Filter by liquidity, volume, activity, fees, APR, and valuation**  
+**→ Show or hide columns**  
+**→ Restore default layouts**
+
+All filters and sorting apply instantly to live data.
+
+## Interaction Tools
+
+Trending Pools includes interaction tools for fast-moving data:
+
+**→ Pause on hover to inspect pool metrics without stopping table updates**  
+**→ Pin pools to keep selected pools fixed at the top of the table**
+
+These tools allow users to monitor specific pools while continuing to track overall activity.
 
 ## Security Badges
 
-Trending Pools displays security badges directly in the table to surface important token characteristics at a glance.
+Pools display security badges to surface token characteristics:
 
-Common badges include:
+**→ Freezable Token** — token transfers can be frozen  
+**→ Mintable Token** — token supply can be expanded  
+**→ Jupiter Exchange Verified** — token verified by Jupiter
 
-**→ Freezable Token** — the token contract can freeze transfers  
-**→ Mintable Token** — the token supply can be expanded  
-**→ Jupiter Verified** — the token has been verified by Jupiter Exchange
+Badges are informational and should be considered alongside other metrics.
 
-Badges are intended as signals, not guarantees, and should be considered alongside other market indicators.
-
-![Security badges provide immediate visibility into key token properties directly within the pool table.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Pool%20Row%20Security%20Badges.png)
-
-## Using Trending Pools Effectively
-
-Most users follow a simple workflow:
+## Typical Workflow
 
 <Steps>
-  <Step title="Start with sorting or MeteorScore">
-    Surface pools with the highest activity and momentum.
+  <Step title="Select a Fabriq Score variant or sort by a key metric">
+    View pools using the scoring perspective that matches your strategy.
   </Step>
-  <Step title="Apply filters">
-    Narrow pools that match your strategy and risk profile.
+  <Step title="Apply filters to narrow results">
+    Filter by pool structure, liquidity, volume, or activity metrics.
   </Step>
-  <Step title="Compare metrics">
-    Evaluate liquidity, fees, and momentum across different pools.
+  <Step title="Inspect pools using hover and pinned views">
+    Use pause on hover and pinning to examine specific pools.
   </Step>
-  <Step title="Move to portfolio management">
-    When positions are identified, move directly into portfolio management tools.
+  <Step title="Track selected pools in the Portfolio">
+    Monitor positions and performance in the Portfolio tab.
   </Step>
 </Steps>
-
-Trending Pools is designed to streamline discovery, reduce noise, and provide clarity in fast-moving market conditions.
-
-## Why Trending Pools
-
-<CardGroup cols={3}>
-  <Card title="See Real Activity" icon="chart-line">
-    **See real activity** instead of relying on static APYs
-  </Card>
-  
-  <Card title="Move Faster" icon="rocket">
-    **Move faster** with live data and flexible filtering
-  </Card>
-  
-  <Card title="Evaluate Clearly" icon="eye">
-    **Evaluate pools clearly** using usage, fees, and efficiency signals
-  </Card>
-</CardGroup>
-
-Trending Pools gives traders and liquidity providers a clearer view of where the market is actually active—right now.
