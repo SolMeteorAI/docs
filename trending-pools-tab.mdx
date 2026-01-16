@@ -21,16 +21,16 @@ Each pool displays real-time metrics, including:
 
 <CardGroup cols={2}>
   <Card title="Core Metrics" icon="chart-line">
-    **→ Trading volume**  
-    **→ Liquidity**  
-    **→ Pool age**  
-    **→ APR (when available)**
+    Trading volume  
+    Liquidity  
+    Pool age  
+    APR (when available)
   </Card>
   
   <Card title="Activity Metrics" icon="signal">
-    **→ Fees generated**  
-    **→ Trades per minute**  
-    **→ Liquidity participation**
+    Fees generated  
+    Trades per minute  
+    Liquidity participation
   </Card>
 </CardGroup>
 
@@ -38,46 +38,45 @@ All metrics reflect current on-chain activity.
 
 ## Fabriq Score
 
-Each pool is evaluated using the Fabriq Score, an activity-based scoring system used to interpret pool behavior across different time horizons.
+Each pool is evaluated using an activity-based scoring system that interprets pool behavior across different time horizons.
 
-Fabriq Score is available in three variants.
+Available in three variants.
 
 ![Fabriq Score — Activity-based scoring system](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%287%29.png)
 
-### Fabriq Degen Score
-
-The Fabriq Degen Score highlights short-term, high-frequency activity.
-
-It evaluates:
-
-**→ Recent trading activity**  
-**→ Recent LP activity**  
-**→ Fees paid to liquidity providers**  
-**→ Liquidity balance**
-
-Higher scores indicate stronger short-term activity and higher relative engagement.
-
-### Fabriq Multiday Score
-
-The Fabriq Multiday Score highlights sustained performance across multiple days.
-
-It evaluates:
-
-**→ Multi-day yield**  
-**→ Price performance**
-
-Higher scores indicate consistent activity and performance over time.
-
-### Fabriq Bluechip Score
-
-The Fabriq Bluechip Score identifies established pools with stable participation.
-
-It evaluates:
-
-**→ Multi-day yield**  
-**→ Price performance**
-
-Higher scores indicate longer-running pools with more consistent liquidity behavior.
+<CardGroup cols={3}>
+  <Card title="Fabriq Degen Score" icon="bolt">
+    Highlights short-term, high-frequency activity.
+    
+    **Evaluates:**
+    - Recent trading activity
+    - Recent LP activity
+    - Fees paid to liquidity providers
+    - Liquidity balance
+    
+    Higher scores indicate stronger short-term activity and higher relative engagement.
+  </Card>
+  
+  <Card title="Fabriq Multiday Score" icon="chart-line">
+    Highlights sustained performance across multiple days.
+    
+    **Evaluates:**
+    - Multi-day yield
+    - Price performance
+    
+    Higher scores indicate consistent activity and performance over time.
+  </Card>
+  
+  <Card title="Fabriq Bluechip Score" icon="shield">
+    Identifies established pools with stable participation.
+    
+    **Evaluates:**
+    - Multi-day yield
+    - Price performance
+    
+    Higher scores indicate longer-running pools with more consistent liquidity behavior.
+  </Card>
+</CardGroup>
 
 Users can switch between Fabriq Score variants to view the same pools through different activity and stability lenses.
 
@@ -87,11 +86,11 @@ Trending Pools supports table-level controls for refining results.
 
 Users can:
 
-**→ Sort pools by any visible metric**  
-**→ Filter by pool structure (DLMM or DAMM)**  
-**→ Filter by liquidity, volume, activity, fees, APR, and valuation**  
-**→ Show or hide columns**  
-**→ Restore default layouts**
+- Sort pools by any visible metric
+- Filter by pool structure (DLMM or DAMM)
+- Filter by liquidity, volume, activity, fees, APR, and valuation
+- Show or hide columns
+- Restore default layouts
 
 All filters and sorting apply instantly to live data.
 
@@ -99,8 +98,8 @@ All filters and sorting apply instantly to live data.
 
 Trending Pools includes interaction tools for fast-moving data:
 
-**→ Pause on hover to inspect pool metrics without stopping table updates**  
-**→ Pin pools to keep selected pools fixed at the top of the table**
+- Pause on hover to inspect pool metrics without stopping table updates
+- Pin pools to keep selected pools fixed at the top of the table
 
 These tools allow users to monitor specific pools while continuing to track overall activity.
 
@@ -108,9 +107,9 @@ These tools allow users to monitor specific pools while continuing to track over
 
 Pools display security badges to surface token characteristics:
 
-**→ Freezable Token** — token transfers can be frozen  
-**→ Mintable Token** — token supply can be expanded  
-**→ Jupiter Exchange Verified** — token verified by Jupiter
+- **Freezable Token** — token transfers can be frozen
+- **Mintable Token** — token supply can be expanded
+- **Jupiter Exchange Verified** — token verified by Jupiter
 
 Badges are informational and should be considered alongside other metrics.
 
