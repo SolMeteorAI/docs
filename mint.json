@@ -31,7 +31,8 @@
     {
       "group": "Features",
       "pages": [
-        "trending-pools-tab"
+        "trending-pools-tab",
+        "trending-pools-tab/filters-metrics"
       ]
     },
     {
