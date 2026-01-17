@@ -34,7 +34,7 @@
         {
           "page": "trending-pools-tab",
           "pages": [
-            "filters-metrics"
+            "trending-pools-tab/filters-metrics"
           ]
         }
       ]
