@@ -3,57 +3,42 @@ title: Core Features
 description: 'Market discovery and liquidity management for Solana'
 ---
 
-Core capabilities for Liquidity Providers and traders to discover active liquidity pools, track liquidity activity, evaluate pool behavior, and manage positions from a single interface.
+## In-House Indexer
+
+Powered by an in-house indexer that processes on-chain liquidity data in real time on Solana.
+
+The indexer tracks pool state and activity directly from the blockchain, including liquidity changes, trading volume, swaps, and fees. All data shown is derived from the indexed on-chain data and updates as activity occurs in real-time.
+
+This indexer is what allows Fabriq to reflect current liquidity conditions rather than delayed snapshots.
 
 ## Trending Pools
 
-The Trending Pools tab indexes live pool data across supported liquidity programs, including Meteora DLMM and DAMM pools.
+Trending Pools brings together the data users typically need when evaluating a liquidity pool.
 
-It surfaces pools based on current on-chain activity, allowing users to see where liquidity is actively being used.
+Pools are displayed using real-time metrics such as liquidity, volume, fees, and activity, allowing users to compare how pools are behaving under current market conditions. Multiple scoring views are available to help interpret different activity patterns across pools.
 
-### Key Signals
-
-<CardGroup cols={2}>
-  <Card title="Core Metrics" icon="chart-line">
-    Trading volume  
-    Liquidity  
-    Pool age  
-    APR (where available)
-  </Card>
-  
-  <Card title="Activity Metrics" icon="signal">
-    Fees per minute  
-    Trades per minute  
-    Activity-based scores
-  </Card>
-</CardGroup>
-
-These metrics update in real-time and reflect current pool usage and fee generation.
+Trending Pools is designed to give users enough information to evaluate pools directly, without relying on separate analytics tools.
 
 ### Scoring Views
 
-Trending Pools support multiple scoring perspectives to reflect different liquidity environments:
+Pools can be viewed through different scoring perspectives, each highlighting a different type of activity:
 
-- **Degen** — short-term, high-frequency activity
-- **Multiday** — sustained activity across longer timeframes
-- **Bluechips** — established pools with consistent participation
+- **Degen** — focuses on short-term, high-frequency activity
+- **Multiday** — highlights sustained activity across longer timeframes
+- **Bluechip** — surfaces established pools with consistent participation
 
-Users can switch between scoring views based on their strategy.
+Scores update based on live on-chain activity and can be switched at any time.
 
-### Interaction Tools
+## Pool and Token Information
 
-Trending Pools include tools designed for fast-moving data:
+Alongside market data, Fabriq surfaces supporting information related to each pool and its underlying token.
 
-- Pause on hover to inspect pool metrics
-- Pin pools to keep selected pools fixed at the top of the table
-- Filtering by liquidity, volume, pool age, APR, and activity metrics
+This includes token identifiers, project links and socials (when available), and indicators related to token properties. This information is shown in context so users can review both liquidity behavior and project details in one place.
 
-## Platform Scope
+## Wallet Utilities
 
-Built specifically for Solana-based liquidity workflows, with a focus on:
+When a wallet is connected, Fabriq includes utilities that help users manage on-chain state while reviewing pools.
 
-- On-chain indexed data
-- Real-time updates
-- Activity-driven pool discovery
+For example, empty token accounts can be closed directly from the interface, allowing users to reclaim SOL.
 
-Everything you need to discover pools and manage liquidity positions efficiently.
+Everything you need to discover pools efficiently.
