@@ -3,7 +3,13 @@ title: Trending Pools Tab
 description: 'Real-time visibility into active liquidity on Solana'
 ---
 
-![Trending Pools — Real-time visibility into active liquidity on Solana](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%286%29.png)
+<video
+  controls
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+  src="https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%286%29.mp4"
+>
+  Your browser does not support the video tag.
+</video>
 
 The Trending Pools tab displays liquidity pools with live on-chain activity across Meteora DLMM and DAMM pools.
 
@@ -40,11 +46,11 @@ All metrics reflect current on-chain activity.
 
 Each pool is evaluated using an activity-based scoring system that interprets pool behavior across different time horizons.
 
-![Fabriq Score — Activity-based scoring system](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%287%29.png)
+![Fabriq Score — Activity-based scoring system](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%2815%29.png)
 
-Fabriq scores are available in three variants.
+Fabriq scores are available in four variants.
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Fabriq Degen Score" icon="bolt">
     Highlights short-term, high-frequency activity.
     
@@ -76,6 +82,16 @@ Fabriq scores are available in three variants.
     
     Higher scores indicate longer-running pools with more consistent liquidity behavior.
   </Card>
+  
+  <Card title="Fabriq Stocks Score" icon="chart-bar">
+    Highlights pools backed by real-world assets and tokenized stocks.
+    
+    **Evaluates:**
+    - Multi-day yield
+    - Price performance
+    
+    Higher scores suggest strong multi-day performance with potential for sustained returns.
+  </Card>
 </CardGroup>
 
 Users can switch between Fabriq Score variants to view pools through different activity and stability lenses.
@@ -89,6 +105,14 @@ Users can:
 - Search pools by name, token symbol, or token address
 - Filter pools based on liquidity, activity, valuation, and pool structure
 - Sort pools by any visible metric
+
+<video
+  controls
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+  src="https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%287%29.mp4"
+>
+  Your browser does not support the video tag.
+</video>
 
 Filters and sorting apply instantly to live data.
 
@@ -113,6 +137,8 @@ These tools allow users to monitor specific pools while continuing to track over
 ## Pool, Token, and Project Information
 
 Alongside pool metrics, Trending Pools surfaces additional pool-level and token-level information to help users make more informed decisions before entering a position.
+
+![Pool, Token, and Project Information](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%2816%29.png)
 
 This information may include:
 
