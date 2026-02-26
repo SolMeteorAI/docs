@@ -3,136 +3,181 @@ title: Portfolio Tab
 description: 'Your complete view of liquidity positions and performance on Solana'
 ---
 
-The Portfolio tab consolidates all liquidity-related activity for your connected wallet into a single, real-time dashboard.
+The Portfolio tab is Fabriq's command center for position tracking, performance analytics, wallet monitoring, and execution.
 
-It brings together active LP positions, performance analytics, historical actions, on-chain transactions, and wallet balances—giving traders and liquidity providers full visibility into their portfolio at a glance.
+It is designed to give users a complete view of liquidity positions and portfolio performance from one interface.
 
 ## Overview
 
-The Portfolio tab is designed to centralize everything that happens after entering a pool.
+The Portfolio experience is built for high-signal monitoring and faster portfolio analysis.
 
-From monitoring performance to managing positions and reviewing historical activity, all portfolio-related information updates automatically as you interact with liquidity pools and your wallet.
+Users can search and analyze wallet data without connecting a wallet.
 
-![The Portfolio tab provides a complete, real-time view of liquidity positions, performance, and wallet activity in one place.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Portfolio%20Full%20Dashboard%20View.png)
+<CardGroup cols={2}>
+  <Card title="View Portfolio Data" icon="eye">
+    Connect a wallet, search a wallet, or select a saved wallet to view Portfolio data and analytics
+  </Card>
 
-## Performance & PnL Tracking
+  <Card title="On-Chain Actions" icon="bolt">
+    A connected wallet is required only for on-chain actions such as claim, withdraw, and close
+  </Card>
+</CardGroup>
 
-The Portfolio tab includes built-in performance analytics that help users understand how their liquidity activity evolves over time.
+![Fabriq Portfolio overview with analytics cards, realized PnL calendar, and tabbed position data.](/images/portfolio-overview-hq.png)
+
+## Performance & PnL Analytics
+
+The Portfolio surfaces more performance context across both summary and chart views.
 
 Users can:
 
-→ View realized PnL as a chart or calendar  
-→ Adjust analysis across multiple timeframes (daily, weekly, monthly)  
-→ Switch performance ranges (7D, 1M, 6M, 1Y, YTD, All)
+→ View cumulative PnL and daily PnL side by side  
+→ Review realized PnL in calendar format  
+→ Compare wins/losses, win rate, profit factor, and average win/loss position  
+→ Track total deposits, withdrawals, net worth, average invested, and total fees  
+→ Switch chart time views (daily, weekly, monthly)  
+→ Apply range presets or custom date ranges
 
-This allows both short-term monitoring and long-term performance review without leaving the dashboard.
+This makes it easier to evaluate both short-term execution quality and long-term portfolio growth.
 
-![Performance analytics allow users to track realized PnL and review results across multiple timeframes.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Realized%20PnL%20Chart%20Performance%20Panel.png)
+![Cumulative and daily PnL analytics in the Portfolio overview.](/images/portfolio-overview-graphs-hq.png)
+
+![Realized PnL calendar view with day-level and week-level performance context.](/images/portfolio-realized-pnl-calendar-hq.png)
+
+![Custom date range selector for performance analysis windows.](/images/portfolio-calendar-custom-range-hq.png)
 
 ## Active Positions Summary
 
-At the top of the Portfolio tab, an overview panel provides a high-level snapshot of current portfolio exposure and results.
+The Active Positions Summary card provides a high-level snapshot of your currently open liquidity exposure.
 
 It summarizes key portfolio totals such as:
 
 → Active positions and pools  
 → Deposits and withdrawals  
-→ Claimed and unclaimed fees  
-→ LP-based PnL and current value
+→ Claimed fees and pending fees  
+→ Current position value and current value including pending fees  
+→ PnL in both percentage and token terms
 
 This view is designed for quick orientation before drilling into individual positions.
 
-![The Active Positions Summary provides a high-level snapshot of portfolio exposure, fees, and LP-based performance.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Active%20Positions%20Summary.png)
+![Active Positions Summary card with portfolio totals and PnL.](/images/portfolio-active-positions-summary-hq.png)
 
 ## Active Positions
 
-Active Positions displays all liquidity positions currently held by the connected wallet.
+Active Positions displays all liquidity positions currently held by the connected or selected wallet.
 
 Each position row provides immediate insight into:
 
 → Position performance  
 → Liquidity distribution  
 → Pool type (DLMM or DAMM)  
-→ Position age and activity
+→ Position age and activity  
+→ Deposits, withdrawals, and fees  
+→ Per-position status (for example, in range/out of range)
 
-Positions can be expanded to reveal additional details and management controls.
+Rows can be expanded to inspect per-position event history and execution details.
 
-![Active Positions show live performance and distribution details for each liquidity position.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Active%20Positions%20Table.png)
+Users can also filter and sort Active Positions by:
 
-## Managing Positions
+→ Pool name search  
+→ Pool type  
+→ Position status (in range / out of range)  
+→ Minimum and maximum ranges across supported metrics  
+→ PnL, age, deposits, withdrawals, and fees  
+→ Ascending or descending sort order
+
+![Active Positions table with detailed metrics, expanded rows, and position status visibility.](/images/portfolio-active-positions-hq.png)
+
+## Position Actions
 
 Liquidity positions can be managed directly from the Portfolio tab without switching tools.
 
 Available actions include:
 
 <CardGroup cols={2}>
-  <Card title="Position Controls" icon="gear">
-    → Claim accumulated fees  
-    → Compound rewards back into the position (when supported)  
-    → Close a position  
-    → Zap-Out, converting a position into a single asset in one action
+  <Card title="Individual Position Actions" icon="gear">
+    → Claim fees for a specific position  
+    → Close an individual position  
+    → Withdraw position liquidity from a specific row
+  </Card>
+
+  <Card title="Bulk Actions" icon="bolt">
+    → Claim all eligible fees across positions  
+    → Withdraw all positions from the active positions view
+  </Card>
+
+  <Card title="Portfolio Outputs" icon="chart-line">
+    → Generate PnL cards for sharing and reporting
   </Card>
 </CardGroup>
 
-These controls allow users to adjust, rebalance, or exit liquidity efficiently as market conditions change.
+These controls reduce execution friction when managing many active positions at once.
 
-![Positions include integrated controls for claiming rewards, compounding, closing, or zapping out liquidity.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Position%20Actions.png)
+## Closed Positions
 
-## History
+Closed Positions tracks completed positions with lifecycle data and final outcomes.
 
-The History view records completed liquidity activity associated with the wallet.
+It helps users review:
 
-It provides a chronological record of:
+→ Position-level close timing and duration  
+→ Final realized PnL outcomes  
+→ Total deposits, withdrawals, and fees per closed position
 
-→ Position initialization and closure  
-→ Liquidity additions and removals  
-→ Claims and compounds
+Closed Positions can be sorted in ascending or descending order by:
 
-This section offers transparency and a clear audit trail of past portfolio activity.
+→ Positions  
+→ PnL  
+→ Last close  
+→ Total deposits  
+→ Total withdrawals  
+→ Fees
 
-![The History view tracks completed liquidity actions with timestamped records.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/History%20View.png)
+Users can also generate flex cards from previously closed positions at any time.
+
+![Closed Positions table with lifecycle and realized outcome metrics.](/images/portfolio-closed-positions-hq.png)
 
 ## Transactions
 
-The Transactions view surfaces relevant on-chain activity tied specifically to liquidity operations.
+The Transactions tab provides a dedicated feed of wallet-level LP events.
 
-It allows users to:
+It includes records such as:
 
-→ Verify execution of LP actions  
-→ Review transaction types and pool structure  
-→ Trace liquidity-related token movements
+→ Position initialization and closure  
+→ Added and removed liquidity  
+→ Claimed fee events
 
-This focused view reduces the need to rely on external explorers for portfolio verification.
+This gives users an auditable timeline without relying on external explorers.
 
-![Transactions provide a filtered view of on-chain activity related to liquidity operations.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Transactions%20View.png)
+![Transactions tab with categorized LP events and token amount breakdowns.](/images/portfolio-transactions-current.png)
 
 ## Balances
 
-The Balances view displays all tokens currently held in the connected wallet.
+The Balances tab displays token holdings tied to the connected or selected wallet.
 
 It includes:
 
 <CardGroup cols={2}>
   <Card title="Token Information" icon="coins">
-    → Token balances and values  
-    → Price and valuation data (when available)
+    → Token amounts and value  
+    → Price and FDV context
   </Card>
   
-  <Card title="Holdings" icon="wallet">
-    → Both idle assets and liquidity-related holdings
+  <Card title="Portfolio Value" icon="wallet">
+    → Aggregate wallet value with sortable asset rows
   </Card>
 </CardGroup>
 
 This provides a complete snapshot of wallet distribution alongside LP activity.
 
-![Balances show current wallet holdings and token values in one place.](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Balances%20View.png)
+![Balances tab with token-level holdings, value columns, and total wallet value.](/images/portfolio-balances-current.png)
 
 ## Wallet & Token Management
 
-Across both Trending Pools and Portfolio, Fabriq allows users to:
+The Portfolio tab allows users to:
 
-→ Search for wallets and tokens  
-→ Save and label wallets  
+→ Search for wallets  
+→ Save wallets for faster repeat tracking  
+→ Monitor another wallet without disconnecting  
 → Quickly switch views for monitoring and analysis
 
 This makes tracking multiple wallets or assets seamless across the platform.
@@ -142,16 +187,16 @@ This makes tracking multiple wallets or assets seamless across the platform.
 The Portfolio tab brings liquidity management together by offering:
 
 <CardGroup cols={3}>
-  <Card title="Performance Insight" icon="chart-line">
-    Clear performance insight into LP-based results
+  <Card title="Richer Analytics" icon="chart-line">
+    Multi-layer PnL analysis across summary cards, charts, and calendar views
   </Card>
   
-  <Card title="Direct Control" icon="gear">
-    Direct control over active positions
+  <Card title="Execution Control" icon="gear">
+    Individual and bulk controls for claiming, closing, and withdrawing positions when connected
   </Card>
   
-  <Card title="Full Visibility" icon="eye">
-    Full visibility into historical actions and wallet state
+  <Card title="Wallet Intelligence" icon="eye">
+    Unified visibility across active positions, closed positions, transactions, and balances
   </Card>
 </CardGroup>
 
