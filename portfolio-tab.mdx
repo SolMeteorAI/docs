@@ -23,6 +23,30 @@ Users can search and analyze wallet data without connecting a wallet.
   </Card>
 </CardGroup>
 
+At the top of Overview, the summary cards provide a fast snapshot of portfolio health:
+
+<CardGroup cols={3}>
+  <Card title="Net P&L" icon="chart-line">
+    Current net portfolio profit or loss
+  </Card>
+
+  <Card title="Position Win %" icon="percent">
+    Percentage of positions currently in profit versus loss
+  </Card>
+
+  <Card title="Profit Factor" icon="chart-line">
+    Ratio of gross gains versus gross losses across tracked outcomes
+  </Card>
+
+  <Card title="Day Win %" icon="calendar">
+    Percentage of profitable days versus losing days
+  </Card>
+
+  <Card title="Avg Win/Loss Position" icon="chart-bar">
+    Average winning position size compared with average losing position size
+  </Card>
+</CardGroup>
+
 ![Fabriq Portfolio overview with analytics cards, realized PnL calendar, and tabbed position data.](/images/portfolio-overview-hq.png)
 
 ## Performance & PnL Analytics
@@ -77,6 +101,8 @@ Each position row provides immediate insight into:
 
 Rows can be expanded to inspect per-position event history and execution details.
 
+In the **Positions** column, the paired percentages (for example, `-0% / +2%`) indicate how the current position sits relative to its range bounds (lower side / upper side).
+
 Users can also filter and sort Active Positions by:
 
 → Pool name search  
@@ -85,6 +111,8 @@ Users can also filter and sort Active Positions by:
 → Minimum and maximum ranges across supported metrics  
 → PnL, age, deposits, withdrawals, and fees  
 → Ascending or descending sort order
+
+Claim-related actions in Active Positions apply an 8% fee on claimed fees.
 
 ![Active Positions table with detailed metrics, expanded rows, and position status visibility.](/images/portfolio-active-positions-hq.png)
 
@@ -113,6 +141,20 @@ Available actions include:
 
 These controls reduce execution friction when managing many active positions at once.
 
+<Note>
+Claiming fees from Active Positions (including claim-all flows) is subject to an 8% fee on the claimed fees.
+</Note>
+
+## PnL Cards
+
+PnL Cards let users generate shareable performance snapshots from historical position outcomes.
+
+Users can:
+
+→ Generate flex cards from previously closed positions  
+→ Export position-level outcome context for reporting or sharing  
+→ Create cards at any time from closed-position history
+
 ## Closed Positions
 
 Closed Positions tracks completed positions with lifecycle data and final outcomes.
@@ -131,8 +173,6 @@ Closed Positions can be sorted in ascending or descending order by:
 → Total deposits  
 → Total withdrawals  
 → Fees
-
-Users can also generate flex cards from previously closed positions at any time.
 
 ![Closed Positions table with lifecycle and realized outcome metrics.](/images/portfolio-closed-positions-hq.png)
 
@@ -169,18 +209,22 @@ It includes:
 
 This provides a complete snapshot of wallet distribution alongside LP activity.
 
-![Balances tab with token-level holdings, value columns, and total wallet value.](/images/portfolio-balances-current.png)
+![Balances tab with token-level holdings, value columns, and total wallet value.](/images/portfolio-balances-hq.png)
 
-## Wallet & Token Management
+## Wallet Management
 
 The Portfolio tab allows users to:
 
 → Search for wallets  
 → Save wallets for faster repeat tracking  
+→ Modify saved wallet labels  
+→ Delete saved wallets you no longer track  
 → Monitor another wallet without disconnecting  
 → Quickly switch views for monitoring and analysis
 
-This makes tracking multiple wallets or assets seamless across the platform.
+This makes tracking multiple wallets seamless across the platform.
+
+![Wallet management controls with arrows for searching, saving, modifying, and deleting saved wallets.](/images/portfolio-wallet-management-annotated.png)
 
 ## Why the Portfolio Tab
 
