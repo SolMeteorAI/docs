@@ -32,7 +32,8 @@
       "group": "Features",
       "pages": [
         "trending-pools-tab",
-        "portfolio-tab"
+        "portfolio-tab",
+        "sol-reclaim"
       ]
     },
     {
@@ -49,5 +50,6 @@
     "x": "https://x.com/FabriqTrade",
     "discord": "https://discord.com/invite/7UuZFaHaVt",
     "telegram": "https://t.me/FabriqTrade"
-  }
+  },
+  "isWhiteLabeled": true
 }
