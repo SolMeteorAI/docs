@@ -33,6 +33,7 @@
       "pages": [
         "trending-pools-tab",
         "portfolio-tab",
+        "balances-cleanup",
         "sol-reclaim"
       ]
     },

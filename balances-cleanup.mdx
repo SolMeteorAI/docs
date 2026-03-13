@@ -1,0 +1,106 @@
+---
+title: Portfolio Balances Cleanup
+description: 'Clean wallet balances, swap tokens into SOL or USDC, and reclaim empty token accounts'
+---
+
+This feature is available from the Portfolio `Balances` tab.
+
+## Requirements
+
+- Wallet must be connected
+- Cleanup only applies to tokens and empty token accounts owned by the connected wallet
+- Empty token accounts are always reclaimed in `SOL`
+
+## What It Does
+
+Balances Cleanup helps users clean up wallet balances in one flow.
+
+Users can:
+
+-> Sell dust tokens, scam tokens, and regular tokens  
+-> Filter which tokens should be included in cleanup  
+-> Swap selected balances into `SOL` or `USDC`  
+-> Reclaim empty token accounts for `SOL` after balances are cleared  
+-> Exit wallet balances in full when moving out of many tokens at once
+
+Scams, dust, and empty token accounts can all be cleared through the same workflow, with empty account rent always returned in `SOL`.
+
+![Balances cleanup view with token selection, threshold input, output toggle, and bulk sell action.](/images/portfolio-balances-cleanup-current.jpeg)
+
+## Token Filter
+
+Users control exactly which balances are included before confirming a cleanup.
+
+The token filter lets users include or exclude:
+
+- Verified
+- Potential scam
+- Other
+
+This makes it possible to clean only dust, only suspected scams, or a broader mix of wallet balances in one run.
+
+## Custom Threshold
+
+The custom threshold defines which balances should be included based on token value.
+
+Users can:
+
+-> Enter a USD threshold  
+-> Decide which balances under that threshold should be selected  
+-> Choose whether selected balances should be swapped into `SOL` or `USDC`
+
+After selling, users are also given the option to close the empty token accounts created by those sales and reclaim the rent in `SOL`.
+
+## How It Works
+
+1. Connect your wallet.
+2. Open the Portfolio `Balances` tab.
+3. Filter the token types you want to clean.
+4. Set the USD threshold for which balances should be sold.
+5. Choose the output asset: `SOL` or `USDC`.
+6. Review the swap summary before confirming.
+7. Confirm the cleanup transaction.
+8. After swaps finish, close the empty token accounts to reclaim the rent in `SOL`.
+
+## Swap and Reclaim Logic
+
+Cleanup is optimized around token value and execution cost.
+
+- If the value of a selected token is high enough to swap efficiently, Fabriq swaps it into the chosen output asset
+- If swapping costs more than the token is worth, Fabriq can burn the token instead of routing an inefficient swap
+- Once balances are emptied, the user can close the resulting empty token accounts and reclaim rent in `SOL`
+
+This keeps the cleanup flow efficient while avoiding wasteful swap execution on worthless balances.
+
+## Batch Execution
+
+When more than `10` tokens with value need to be swapped first, cleanup executes in batches of `10`.
+
+This means:
+
+- Swaps are processed in groups of `10`
+- Once swap batches complete, the user can move on to closing the empty token accounts
+- The reclaim step happens after the token balances have been cleared
+
+## Swap Summary
+
+Before the transaction is signed, users can review a swap summary showing:
+
+- Selected token count
+- Tokens queued for cleanup
+- Tokens being swapped
+- Current progress and status across the selection
+- The selected output asset
+
+This provides a final check before execution begins.
+
+## Full Wallet Exits
+
+Balances Cleanup is not limited to dust or scam balances.
+
+Users can also use this page to exit wallet balances more completely by swapping many tokens, or even a single token, into:
+
+- `SOL`
+- `USDC`
+
+That makes the feature useful both for wallet cleanup and for simplifying broader wallet exits.
