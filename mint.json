@@ -33,6 +33,7 @@
       "pages": [
         "trending-pools-tab",
         "portfolio-tab",
+        "hawkfi-support",
         "balances-cleanup",
         "sol-reclaim"
       ]
