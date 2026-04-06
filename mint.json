@@ -25,15 +25,14 @@
       "group": "Welcome to Fabriq",
       "pages": [
         "introduction",
-        "core-features"
+        "in-house-indexer"
       ]
     },
     {
       "group": "Features",
       "pages": [
-        "trending-pools-tab",
-        "portfolio-tab",
-        "hawkfi-support",
+        "trending-pools",
+        "portfolio",
         "balances-cleanup",
         "sol-reclaim"
       ]
