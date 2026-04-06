@@ -7,6 +7,8 @@ Fabriq is powered by an in-house indexer built to source liquidity data directly
 
 We do not rely on third-party APIs for core liquidity data. Instead, we index activity ourselves so the product is built on a direct on-chain source of truth.
 
+![Fabriq unifying liquidity provision across Solana DEXs into one interface.](/images/fabriq-dex-indexed.png)
+
 ## What Makes Fabriq Different
 
 Fabriq is built around direct blockchain indexing rather than external data vendors.
@@ -21,16 +23,9 @@ This allows Fabriq to unify fragmented liquidity into a single product experienc
 
 The indexer processes liquidity data across the 6 main DEXes on Solana.
 
-This includes core liquidity and activity data such as:
+It covers the underlying liquidity, activity, and position data needed to standardize fragmented DEX environments into one usable product layer.
 
-- Pool state
-- Liquidity changes
-- Swaps
-- Trading volume
-- Fees
-- Position activity and related historical records
-
-Because this data is indexed in-house, Fabriq can standardize it across DEXs and expose it through one interface instead of forcing you to compare fragmented tools and inconsistent datasets.
+Because this data is indexed in-house, Fabriq can normalize it across DEXs and expose it through one interface instead of forcing you to compare fragmented tools and inconsistent datasets.
 
 ## Why It Matters
 
