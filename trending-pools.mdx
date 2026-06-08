@@ -30,13 +30,16 @@ Each pool displays real-time metrics, including:
     Trading volume  
     Liquidity  
     Pool age  
-    APR (when available)
+    APR (when available)  
+    Open positions  
+    Unique wallets
   </Card>
   
   <Card title="Activity Metrics" icon="signal">
     Fees generated  
     Trades per minute  
-    Liquidity participation
+    Liquidity participation  
+    Quote token fee type for supported Meteora DLMM pools
   </Card>
 </CardGroup>
 
@@ -103,7 +106,9 @@ Trending Pools includes flexible controls to help users narrow results and focus
 Users can:
 
 - Search pools by name, token symbol, or token address
+- Use Quick Search to view all pools for a token in one place
 - Filter pools based on liquidity, activity, valuation, and pool structure
+- Filter supported Meteora DLMM quote-only pools that pay quote token fees in `SOL`, `USDC`, or `USD1`
 - Sort pools by any visible metric
 
 <video
@@ -125,12 +130,15 @@ Users can customize which columns are visible in the table.
 - Columns can be added or removed based on strategy and preference, allowing users to focus only on the metrics that matter to them
 - Layouts can be reset to default at any time
 
+Available columns include open positions and unique wallets so activity can be reviewed alongside participation concentration.
+
 ## Interaction Tools
 
 Trending Pools includes tools designed for fast-moving data:
 
 - Pause on hover to inspect pool metrics without stopping updates
 - Pin pools to keep selected pools fixed at the top of the table
+- Hide pools from the current view to focus on the pools that matter most
 
 These tools allow users to monitor specific pools while continuing to track overall market activity.
 
@@ -145,7 +153,7 @@ This information may include:
 - Token identifiers and metadata
 - Project links, socials, and launch origin (when available)
 - Fee structure details, including base fees, dynamic fees, and total effective fees
-- Liquidity composition, such as total pool liquidity, permanently locked liquidity, and open positions
+- Liquidity composition, such as total pool liquidity, permanently locked liquidity, open positions, and unique wallets
 - Activity and participation signals, including volume, fees, transactions, makers, and activity quality indicators
 - Token configuration and risk signals, such as mint authority, freeze authority, holder concentration, and audit-related indicators
 
