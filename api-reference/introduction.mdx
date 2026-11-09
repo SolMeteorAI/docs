@@ -1,0 +1,65 @@
+---
+title: API reference
+description: Every endpoint of the Fabriq API v1.
+---
+
+<Note>
+  The API and MCP server are pending deployment. See the [developer overview](/developers/overview) for availability.
+</Note>
+
+The planned base URL is `https://public-api.fabriq.trade/v1`. See [Authentication](/developers/authentication) and [response conventions](/developers/conventions), or [download the OpenAPI specification](https://raw.githubusercontent.com/SolMeteorAI/docs/main/openapi.yaml).
+
+## General
+
+| Endpoint | Returns |
+| --- | --- |
+| [`GET /status`](/api-reference/general/get-api-status) | Newest indexed slot, lag behind the chain, dataset freshness |
+| [`GET /dexes`](/api-reference/general/list-supported-dexes) | The 11 DEXes and their ids |
+
+## Tokens
+
+| Endpoint | Returns |
+| --- | --- |
+| [`GET /tokens/search`](/api-reference/tokens/search-tokens) | Find tokens by symbol or name. |
+| [`GET /tokens/{mint}`](/api-reference/tokens/get-a-token) | Identity, price, supply, FDV, total liquidity, holders, audit flags, transfer fee |
+| [`GET /tokens?mints=`](/api-reference/tokens/get-several-tokens) | Up to 100 tokens in one request |
+| [`GET /tokens/{mint}/ohlcv`](/api-reference/tokens/get-token-candles) | USD candles from 1 second to 1 month |
+
+## Pools
+
+| Endpoint | Returns |
+| --- | --- |
+| [`GET /pools`](/api-reference/pools/list-pools) | Recently active pools, filtered by DEX, token or liquidity |
+| [`GET /pools/{address}`](/api-reference/pools/get-a-pool) | Tokens, fees, liquidity, 5-minute to 24-hour stats, scores, open positions |
+| [`GET /pools/{address}/swaps`](/api-reference/pools/list-pool-swaps) | Swaps of the last 7 days |
+| [`GET /pools/{address}/liquidity-events`](/api-reference/pools/list-pool-liquidity-events) | Opens, deposits, withdrawals, claims and closes |
+
+## Trending
+
+| Endpoint | Returns |
+| --- | --- |
+| [`GET /trending/pools`](/api-reference/trending/list-trending-pools) | Pools ranked by Fabriq's score or any stat, with the trending page's filters |
+| [`GET /trending/categories`](/api-reference/trending/list-trending-categories) | Category tabs with their pool and token counts |
+
+## Portfolio
+
+Everything about one wallet.
+
+| Endpoint | Returns |
+| --- | --- |
+| [`GET /portfolio/{wallet}`](/api-reference/portfolio/get-a-portfolio-overview) | Net worth, token balances, open LP value and unclaimed fees, realized and total PnL |
+| [`GET /portfolio/{wallet}/balances`](/api-reference/portfolio/get-token-balances) | Every SOL and token balance, valued in USD |
+| [`GET /portfolio/{wallet}/positions`](/api-reference/portfolio/list-positions) | Open positions valued on chain, or closed positions with PnL |
+| [`GET /positions/{id}`](/api-reference/portfolio/get-a-position) | One position |
+| [`GET /portfolio/{wallet}/activity`](/api-reference/portfolio/list-activity) | Every liquidity event of the wallet |
+| [`GET /portfolio/{wallet}/pnl`](/api-reference/portfolio/get-pnl-summary) | Net PnL, fees, win rates, profit factor, return on capital |
+| [`GET /portfolio/{wallet}/pnl/daily`](/api-reference/portfolio/get-daily-pnl) | Realized PnL per day |
+| [`GET /portfolio/{wallet}/pnl/by-pool`](/api-reference/portfolio/get-pnl-by-pool) | Realized PnL per pool |
+| [`GET /portfolio/{wallet}/lp-score`](/api-reference/portfolio/get-lp-score) | LP score, its five dimensions, evidence and 30-day rank |
+
+## Not in v1 yet
+
+- **Live streams.** Fabriq's gateway already pushes trending rankings and portfolio updates over WebSocket; a public stream is planned.
+- **Pool history.** Liquidity, volume and fees over time per pool.
+- **Top LPs of a pool.** Open positions in a pool, ranked by value.
+- **Limit orders** on Meteora DLMM, DLMM Pro and Raydium CLMM.

@@ -1,0 +1,35 @@
+---
+title: Supported DEXes
+description: The 11 Solana DEXes Fabriq indexes, and the ids the API uses for them.
+---
+
+Pass these ids in the `dex` parameter, comma-separated: `dex=meteora_dlmm,meteora_damm_v2`. `GET /dexes` returns the same list.
+
+| `id` | DEX | Program | Pool type | LP positions |
+| --- | --- | --- | --- | --- |
+| `meteora_dlmm` | Meteora DLMM | `LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo` | Bins | Position account |
+| `meteora_dlmm_pro` | Meteora DLMM Pro | `sProCG1v6dYTPA6ioynpzmuVeYRYxpn8HgPLBmvSojk` | Bins | Position account |
+| `meteora_damm_v2` | Meteora DAMM v2 | `cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG` | Constant product | NFT |
+| `orca_whirlpool` | Orca Whirlpool | `whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc` | Concentrated | NFT |
+| `raydium_clmm` | Raydium CLMM | `CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK` | Concentrated | NFT |
+| `raydium_cpmm` | Raydium CPMM | `CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C` | Constant product | LP tokens |
+| `raydium_amm_v4` | Raydium AMM v4 | `675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8` | Constant product | LP tokens |
+| `pumpswap` | PumpSwap | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | Constant product | LP tokens |
+| `pancakeswap_clmm` | PancakeSwap | `HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq` | Concentrated | NFT |
+| `byreal_clmm` | Byreal | `REALQqNEomY6cQGZJUGwywTBD2UmDT32rZcNnfxQ5N2` | Concentrated | NFT |
+| `heaven` | Heaven | `HEAVENoP2qxoeuF8Dj2oT1GHEnu49U5mJYkdeC8BAX2o` | Constant product | LP tokens |
+
+## Pool types
+
+- **Concentrated**: liquidity sits in a price range of ticks. `fees.bin_step` is the pool's tick spacing.
+- **Bins**: liquidity sits in discrete price bins. `fees.bin_step` is the bin step in basis points.
+- **Constant product**: x·y = k. Meteora DAMM v2 pools can limit this curve to a price range.
+
+## LP positions
+
+- **NFT** and **position account** positions have their own address: one wallet can hold many positions in the same pool.
+- **LP token** positions are a wallet's LP tokens in a pool. The API treats them as one position per wallet and pool, with the id `{owner}-{pool}`.
+
+## Limit orders
+
+Meteora DLMM, DLMM Pro and Raydium CLMM limit orders are indexed but not part of v1.

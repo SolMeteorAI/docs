@@ -1,0 +1,54 @@
+---
+title: Fabriq API and MCP
+description: Solana liquidity data for pools, tokens, trending pools, portfolios and LP performance.
+---
+
+The Fabriq API gives you programmatic access to pool, swap, token, and LP position data across 11 Solana programs. Fabriq indexes finalized blocks and values positions in USD and SOL.
+
+<Note>
+  The API and MCP server are pending deployment. These preview docs use the planned production URL. Endpoints and fields may change before launch. See the [changelog](/developers/changelog).
+</Note>
+
+## What you can build
+
+<CardGroup cols={2}>
+  <Card title="Pools" icon="droplet" href="/api-reference/introduction#pools">
+    Liquidity, fees, rolling 5-minute to 24-hour stats, swaps and liquidity events for any pool.
+  </Card>
+  <Card title="Tokens" icon="coins" href="/api-reference/introduction#tokens">
+    Price, FDV, total liquidity, holders, audit flags and USD candles from 1 second to 1 month.
+  </Card>
+  <Card title="Trending" icon="fire" href="/api-reference/introduction#trending">
+    Pools ranked every second by Fabriq's score, with the filters of the trending page.
+  </Card>
+  <Card title="Portfolio" icon="wallet" href="/api-reference/introduction#portfolio">
+    Any wallet's net worth, token balances, open and closed LP positions, activity, PnL and LP score.
+  </Card>
+  <Card title="Pay per request" icon="dollar-sign" href="/developers/pay-per-request">
+    No account needed: pay for each request in USDC on Solana or Base with x402.
+  </Card>
+  <Card title="MCP server" icon="robot" href="/developers/mcp">
+    Let Claude, Cursor and other AI agents query Fabriq data with twelve ready-made tools.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/developers/quickstart">
+    Make your first request in under a minute.
+  </Card>
+  <Card title="How the data works" icon="book-open" href="/developers/concepts/data-coverage">
+    Sources, freshness, prices and how every score is computed.
+  </Card>
+</CardGroup>
+
+## Why Fabriq data
+
+- **Our own index.** Fabriq indexes every finalized slot itself rather than reselling another provider's feed. Swaps, deposits, withdrawals and claims are decoded from each DEX's own programs.
+- **LP-first.** Positions are tracked from open to close, so PnL includes fees and rewards and works across Meteora, Orca, Raydium, PumpSwap, PancakeSwap, Byreal and Heaven.
+- **Live.** Trending scores and 5-minute stats move every second. Indexed data trails the chain by a few seconds.
+- **Honest about gaps.** A value Fabriq doesn't know is `null`, never a made-up `0`. Positions opened before the indexed history are flagged instead of showing a wrong PnL.
+
+## Base URL
+
+```text
+https://public-api.fabriq.trade/v1
+```
+
+Send an API key in the `X-API-Key` header, or [pay for each request with x402](/developers/pay-per-request). See [Authentication](/developers/authentication).

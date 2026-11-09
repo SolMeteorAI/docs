@@ -1,0 +1,39 @@
+---
+title: Authentication
+description: Use an API key, or pay for each request with x402.
+---
+
+There are two ways to call the API:
+
+| | API key | Pay per request |
+| --- | --- | --- |
+| How | `X-API-Key` header | x402 payment in the `PAYMENT-SIGNATURE` header |
+| Account | Issued by the Fabriq team | None: pay from any Solana or Base wallet |
+| Cost | Per plan | $0.005 or $0.01 per request, in USDC |
+| Limits | Per key ([Rate limits](/developers/rate-limits)) | Per paying wallet |
+| See | Below | [Pay per request (x402)](/developers/pay-per-request) |
+
+`GET /status` and `GET /dexes` need neither. The [MCP server](/developers/mcp) takes the same key, as `Authorization: Bearer <key>` or `X-API-Key`.
+
+## API key
+
+Send your key in the `X-API-Key` header:
+
+```bash
+curl "https://public-api.fabriq.trade/v1/tokens/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN" \
+  -H "X-API-Key: $FABRIQ_API_KEY"
+```
+
+- An invalid key gets `401 unauthorized`.
+- A request with no key and no payment gets `402 payment_required`, with the x402 challenge that says how to pay for it.
+- When a request carries both a key and a payment, the key is used and the payment is ignored.
+
+## Keep your key secret
+
+- Call the API from your server, not from a browser or mobile app, where anyone can read the key.
+- Store the key in an environment variable or a secret manager, not in source control.
+- If a key leaks, ask the Fabriq team to revoke it and issue a new one.
+
+## Getting a key
+
+During the beta, keys are issued by the Fabriq team. Self-serve keys from the Fabriq dashboard are planned.

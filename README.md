@@ -7,10 +7,12 @@ Fabriq is a Solana liquidity platform for pool discovery, market analytics, and 
 
 ## Preview docs changes
 
-Run the following from this repository with the Mintlify CLI installed.
+Run the following from this repository with Bun installed.
 
 ```sh
-mint dev
+bunx mint@4.2.1125 dev
 ```
 
-The docs navigation is defined in `mint.json`. Run `mint broken-links` to check internal links before opening a change.
+The docs navigation is defined in `docs.json`. Run `bunx mint@4.2.1125 validate` and `bunx mint@4.2.1125 broken-links` before publishing changes.
+
+The developer guides and OpenAPI specification come from `apps/docs` in the Fabriq monorepo. This import uses revision `1881f28`. Keep developer guide links under `/developers` when syncing updates.

@@ -1,0 +1,2699 @@
+openapi: 3.1.0
+info:
+  title: Fabriq API
+  version: 1.0.0-draft
+  description: >-
+    Solana liquidity data from Fabriq's own indexer: pools, tokens, trending pools, wallet
+    portfolios and LP performance across 11 DEXes. Every response is built from finalized blocks.
+servers:
+  - url: https://public-api.fabriq.trade/v1
+    description: Production
+security:
+  - ApiKeyAuth: []
+  - X402: []
+tags:
+  - name: General
+    description: API status and the DEXes Fabriq indexes.
+  - name: Tokens
+    description: Token identity, market data, audit flags and USD candles.
+  - name: Pools
+    description: Pool state, rolling stats, swaps and liquidity events.
+  - name: Trending
+    description: Ranked pools, refreshed every second.
+  - name: Portfolio
+    description: >-
+      Everything about one wallet: token balances, open and closed LP positions, liquidity
+      activity, PnL and LP score.
+
+paths:
+  /status:
+    get:
+      tags: [General]
+      operationId: getStatus
+      summary: Get API status
+      description: >-
+        The newest indexed slot, how far it trails the chain, and when each dataset last refreshed.
+        No API key needed.
+      security: []
+      responses:
+        "200":
+          description: Status.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Status"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /dexes:
+    get:
+      tags: [General]
+      operationId: listDexes
+      summary: List supported DEXes
+      description: >-
+        Every DEX Fabriq indexes, with the `id` other endpoints accept in their `dex` parameter.
+        No API key needed.
+      security: []
+      responses:
+        "200":
+          description: The supported DEXes.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Dex"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /tokens/{mint}:
+    get:
+      tags: [Tokens]
+      operationId: getToken
+      summary: Get a token
+      description: >-
+        A token's identity, market data (price, supply, FDV, total liquidity, holders), audit flags,
+        Token-2022 transfer fee and links. Identity and audit fields come from Jupiter, with
+        Dexscreener's name and symbol when Jupiter has none. Prices come from Fabriq's own valuation
+        of on-chain swaps.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/Mint"
+      responses:
+        "200":
+          description: The token.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Token"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /tokens:
+    get:
+      tags: [Tokens]
+      operationId: getTokens
+      summary: Get several tokens
+      description: >-
+        Up to 100 tokens in one request, in the order asked. A mint Fabriq does not know is left out
+        of `data` and listed in `meta.not_found`. Counts as one request for rate limits.
+        Costs $0.005 per request with x402.
+      parameters:
+        - name: mints
+          in: query
+          required: true
+          description: Comma-separated mint addresses, at most 100.
+          style: form
+          explode: false
+          schema:
+            type: array
+            maxItems: 100
+            items:
+              type: string
+          example: [So11111111111111111111111111111111111111112, EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v]
+      responses:
+        "200":
+          description: The tokens found.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Token"
+                  meta:
+                    allOf:
+                      - $ref: "#/components/schemas/Meta"
+                      - type: object
+                        properties:
+                          not_found:
+                            type: array
+                            description: Mints asked for that Fabriq does not know.
+                            items:
+                              type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /tokens/search:
+    get:
+      tags: [Tokens]
+      operationId: searchTokens
+      summary: Search tokens
+      description: >-
+        Tokens by symbol, name or mint, best match first: exact symbol matches, then symbols that start
+        with the query, then other symbol matches, then name matches. Within each group,
+        Jupiter-verified tokens come first, then deeper liquidity. Only tokens that traded recently are
+        searched. Many tokens copy famous symbols: check `is_verified` and liquidity before trusting a
+        match. A mint address as `q` returns that token.
+        Costs $0.005 per request with x402.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: A symbol, name or mint address, at most 64 characters. Case-insensitive.
+          schema:
+            type: string
+            maxLength: 64
+          example: jup
+        - name: limit
+          in: query
+          description: Number of results.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 25
+            default: 10
+      responses:
+        "200":
+          description: The matching tokens, best match first.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Token"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /tokens/{mint}/ohlcv:
+    get:
+      tags: [Tokens]
+      operationId: getTokenOhlcv
+      summary: Get token candles
+      description: >-
+        USD candles for a token, built from every swap of the token on every indexed DEX. Volume is
+        the USD value of the swaps the token took part in, so summing two tokens' volumes counts a
+        swap between them twice. At most 1,000 candles per request; 1-second candles are kept for
+        7 days, the others for the whole indexed history.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/Mint"
+        - name: interval
+          in: query
+          required: true
+          description: Candle width.
+          schema:
+            type: string
+            enum: [1s, 15s, 30s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 8h, 12h, 1d, 1w, 1mo]
+          example: 1h
+        - name: from
+          in: query
+          description: Start, inclusive, as a Unix timestamp in seconds. Defaults to `limit` candles before `to`.
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          in: query
+          description: End, exclusive, as a Unix timestamp in seconds. Defaults to now.
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          description: Number of candles when `from` is not given.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 300
+      responses:
+        "200":
+          description: Candles, oldest first. Intervals without a trade are left out.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Candle"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /pools:
+    get:
+      tags: [Pools]
+      operationId: listPools
+      summary: List pools
+      description: >-
+        The top recently active pools by the sort you choose, up to 100. To find a token's pools, pass
+        `token`. Any pool, active or not, can be read by address with `GET /pools/{address}`.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/Dex"
+        - name: token
+          in: query
+          description: Only pools holding this mint, on either side.
+          schema:
+            type: string
+        - name: quote
+          in: query
+          description: Only pools whose quote token is this mint.
+          schema:
+            type: string
+        - name: min_liquidity_usd
+          in: query
+          description: Minimum current liquidity in USD.
+          schema:
+            type: number
+        - name: eligible_only
+          in: query
+          description: >-
+            Only pools that pass the trending quality filter (see
+            [Pool scores](/concepts/pool-scores)). Recommended when ranking by liquidity: a pool whose
+            token price is unreliable can show an inflated `liquidity_usd`.
+          schema:
+            type: boolean
+            default: false
+        - name: sort
+          in: query
+          description: Sort column.
+          schema:
+            type: string
+            enum: [liquidity_usd, volume_24h_usd, lp_fees_24h_usd, apr_24h_pct, pool_created_at]
+            default: liquidity_usd
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: The pools, best first.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Pool"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /pools/{address}:
+    get:
+      tags: [Pools]
+      operationId: getPool
+      summary: Get a pool
+      description: >-
+        A pool's tokens (as base and quote), fees, liquidity, rolling 5-minute to 24-hour stats,
+        scores and open positions. 5-minute and 1-hour figures, prices and the score move every
+        second; 6-hour and 24-hour figures every 10 seconds.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PoolAddress"
+      responses:
+        "200":
+          description: The pool.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Pool"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /pools/{address}/swaps:
+    get:
+      tags: [Pools]
+      operationId: listPoolSwaps
+      summary: List pool swaps
+      description: Swaps in the pool over the last 7 days, newest first, valued in USD. Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PoolAddress"
+        - name: side
+          in: query
+          description: Only buys or only sells of the base token.
+          schema:
+            type: string
+            enum: [buy, sell]
+        - name: trader
+          in: query
+          description: Only swaps paid for by this wallet.
+          schema:
+            type: string
+        - name: min_value_usd
+          in: query
+          description: Minimum swap value in USD.
+          schema:
+            type: number
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: A page of swaps.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Swap"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /pools/{address}/liquidity-events:
+    get:
+      tags: [Pools]
+      operationId: listPoolLiquidityEvents
+      summary: List pool liquidity events
+      description: >-
+        Position opens, deposits, withdrawals, fee and reward claims and closes in the pool, newest
+        first, over the whole indexed history.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PoolAddress"
+        - $ref: "#/components/parameters/EventType"
+        - name: owner
+          in: query
+          description: Only events of positions owned by this wallet.
+          schema:
+            type: string
+        - $ref: "#/components/parameters/FromTime"
+        - $ref: "#/components/parameters/ToTime"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: A page of liquidity events.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LiquidityEvent"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /trending/pools:
+    get:
+      tags: [Trending]
+      operationId: listTrendingPools
+      summary: List trending pools
+      description: >-
+        Pools ranked by Fabriq's score (or any other sort), with the filters of Fabriq's trending
+        page. Scores, 5-minute and 1-hour figures move every second; 6-hour and 24-hour figures,
+        makers and price changes every 10 seconds. By default only pools that pass the quality
+        filter are listed (see Pool scores).
+        Costs $0.005 per request with x402.
+      parameters:
+        - name: category
+          in: query
+          description: >-
+            Only pools whose base token is in this category and whose quote is SOL, USDC, USDT, USD1
+            or USDG. Sorts by `multiday_score` unless `sort` is given.
+          schema:
+            $ref: "#/components/schemas/CategoryId"
+        - name: sort
+          in: query
+          description: Sort column. Defaults to `fab_score`, or `multiday_score` with a `category`.
+          schema:
+            type: string
+            enum:
+              - fab_score
+              - multiday_score
+              - volume_5m_usd
+              - volume_1h_usd
+              - volume_6h_usd
+              - volume_24h_usd
+              - lp_fees_1h_usd
+              - lp_fees_24h_usd
+              - apr_24h_pct
+              - price_change_5m_pct
+              - price_change_1h_pct
+              - price_change_24h_pct
+              - makers_24h
+              - liquidity_usd
+              - fdv_usd
+              - pool_created_at
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/Dex"
+        - name: launchpad
+          in: query
+          description: Only pools whose base token came from one of these launchpads, comma-separated.
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+          example: [pump.fun, met-dbc]
+        - name: search
+          in: query
+          description: Either token's symbol contains this text, case-insensitive.
+          schema:
+            type: string
+        - name: include_tokens
+          in: query
+          description: Only pools holding one of these mints, comma-separated.
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: exclude_tokens
+          in: query
+          description: Leave out pools holding any of these mints, comma-separated.
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: min_liquidity_usd
+          in: query
+          description: Minimum pool liquidity in USD.
+          schema:
+            type: number
+        - name: min_fdv_usd
+          in: query
+          description: Minimum base token FDV in USD.
+          schema:
+            type: number
+        - name: max_fdv_usd
+          in: query
+          description: Maximum base token FDV in USD.
+          schema:
+            type: number
+        - name: min_holders
+          in: query
+          description: Minimum base token holder count.
+          schema:
+            type: integer
+        - name: min_organic_score
+          in: query
+          description: Minimum base token organic score (0 to 100).
+          schema:
+            type: number
+        - name: max_token_age_hours
+          in: query
+          description: Only base tokens created at most this many hours ago.
+          schema:
+            type: number
+        - name: max_pool_age_hours
+          in: query
+          description: Only pools created at most this many hours ago.
+          schema:
+            type: number
+        - name: min_volume_1h_usd
+          in: query
+          description: Minimum 1-hour volume in USD.
+          schema:
+            type: number
+        - name: min_volume_24h_usd
+          in: query
+          description: Minimum 24-hour volume in USD.
+          schema:
+            type: number
+        - name: min_base_fee_pct
+          in: query
+          description: Minimum base fee, in percent (0.25 means 0.25%).
+          schema:
+            type: number
+        - name: max_base_fee_pct
+          in: query
+          description: Maximum base fee, in percent.
+          schema:
+            type: number
+        - name: min_bin_step
+          in: query
+          description: Minimum DLMM bin step or concentrated-pool tick spacing. Pools without one never match.
+          schema:
+            type: integer
+        - name: max_bin_step
+          in: query
+          description: Maximum DLMM bin step or concentrated-pool tick spacing. Pools without one never match.
+          schema:
+            type: integer
+        - name: fees_in_quote_token
+          in: query
+          description: Only DLMM pools that pay their fees in the quote token.
+          schema:
+            type: boolean
+        - name: eligible_only
+          in: query
+          description: Only pools that pass the quality filter.
+          schema:
+            type: boolean
+            default: true
+        - name: sparkline
+          in: query
+          description: >-
+            Add the base token's recent USD prices to each row: 30 one-minute closes (`30m`) or 24
+            one-hour closes (`24h`).
+          schema:
+            type: string
+            enum: [none, 30m, 24h]
+            default: none
+        - name: limit
+          in: query
+          description: Number of pools.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+      responses:
+        "200":
+          description: The ranked pools, best first.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TrendingPool"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /trending/categories:
+    get:
+      tags: [Trending]
+      operationId: listTrendingCategories
+      summary: List trending categories
+      description: >-
+        The category tabs that have pools right now, in display order, with how many pools and base
+        tokens each would show. Categories come from a curated token catalog.
+        Costs $0.005 per request with x402.
+      responses:
+        "200":
+          description: The categories.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}:
+    get:
+      tags: [Portfolio]
+      operationId: getPortfolio
+      summary: Get a portfolio overview
+      description: >-
+        One call for a wallet's whole portfolio: its token balances, what its open LP positions are
+        worth now (unclaimed fees and rewards included), its net worth, its realized PnL on closed
+        positions, and its total return. Balances and open positions are read on chain at request
+        time.
+        Costs $0.01 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - $ref: "#/components/parameters/Sources"
+      responses:
+        "200":
+          description: The overview.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PortfolioOverview"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}/activity:
+    get:
+      tags: [Portfolio]
+      operationId: listPortfolioActivity
+      summary: List activity
+      description: >-
+        The wallet's liquidity events on every indexed DEX, newest first: opens, deposits,
+        withdrawals, fee and reward claims and closes, valued in USD and SOL at the time. Events
+        here carry no `slot` (`null`); `GET /pools/{address}/liquidity-events` has it.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - $ref: "#/components/parameters/Dex"
+        - name: position
+          in: query
+          description: Only events of this position id (every event of the position, whoever owned it).
+          schema:
+            type: string
+        - $ref: "#/components/parameters/Sources"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: A page of liquidity events.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LiquidityEvent"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}/positions:
+    get:
+      tags: [Portfolio]
+      operationId: listPortfolioPositions
+      summary: List positions
+      description: >-
+        The wallet's open or closed LP positions. Open positions are valued from their on-chain
+        accounts at request time (holdings, unclaimed fees and rewards, range) at current prices.
+        Closed positions come newest close first, with their full PnL; only positions whose whole
+        history is indexed are listed.
+        With x402, costs $0.01 for open positions and $0.005 for closed ones.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - name: status
+          in: query
+          description: Open or closed positions.
+          schema:
+            type: string
+            enum: [open, closed]
+            default: open
+        - $ref: "#/components/parameters/Dex"
+        - name: pool
+          in: query
+          description: Only positions in this pool.
+          schema:
+            type: string
+        - $ref: "#/components/parameters/Sources"
+        - name: sort
+          in: query
+          description: >-
+            Open positions only: sort column. Closed positions are always newest close first
+            (`closed_at`).
+          schema:
+            type: string
+            enum: [value_usd, pnl_usd, opened_at, closed_at]
+            default: value_usd
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: A page of positions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Position"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /positions/{id}:
+    get:
+      tags: [Portfolio]
+      operationId: getPosition
+      summary: Get a position
+      description: >-
+        One position, open or closed, by the `id` other endpoints return. For its events, call
+        `GET /portfolio/{wallet}/activity?position={id}`.
+        Costs $0.005 per request with x402.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: >-
+            Position id, as returned by the API. Usually the position's address; see Conventions for
+            reused addresses.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The position.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Position"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}/pnl:
+    get:
+      tags: [Portfolio]
+      operationId: getPortfolioPnl
+      summary: Get PnL summary
+      description: >-
+        Realized results of the positions the wallet closed in the period: net PnL, fees, deposits,
+        win rates, profit factor and return on capital. Without `from` and `to`, the whole indexed
+        history.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - $ref: "#/components/parameters/FromDate"
+        - $ref: "#/components/parameters/ToDate"
+        - $ref: "#/components/parameters/Timezone"
+        - $ref: "#/components/parameters/Sources"
+        - $ref: "#/components/parameters/Dex"
+      responses:
+        "200":
+          description: The PnL summary.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PnlSummary"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}/pnl/daily:
+    get:
+      tags: [Portfolio]
+      operationId: getPortfolioDailyPnl
+      summary: Get daily PnL
+      description: >-
+        Realized PnL per day, by the day each position closed, in the requested timezone. Days
+        without a close are included with zeros. At most 366 days per request.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - $ref: "#/components/parameters/FromDate"
+        - $ref: "#/components/parameters/ToDate"
+        - $ref: "#/components/parameters/Timezone"
+        - $ref: "#/components/parameters/Sources"
+        - $ref: "#/components/parameters/Dex"
+      responses:
+        "200":
+          description: One entry per day, oldest first.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DailyPnl"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}/pnl/by-pool:
+    get:
+      tags: [Portfolio]
+      operationId: getPortfolioPnlByPool
+      summary: Get PnL by pool
+      description: >-
+        Realized results of the wallet's closed positions, grouped by pool. With `from` or `to`,
+        only the positions that closed in the period count.
+        Costs $0.005 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - $ref: "#/components/parameters/FromDate"
+        - $ref: "#/components/parameters/ToDate"
+        - $ref: "#/components/parameters/Timezone"
+        - $ref: "#/components/parameters/Sources"
+        - $ref: "#/components/parameters/Dex"
+        - name: sort
+          in: query
+          description: Sort column.
+          schema:
+            type: string
+            enum: [pnl_usd, fees_usd, deposits_usd, positions, last_closed_at]
+            default: pnl_usd
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: A page of pools.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PoolPnl"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}/balances:
+    get:
+      tags: [Portfolio]
+      operationId: getPortfolioBalances
+      summary: Get token balances
+      description: >-
+        The wallet's SOL and token balances, read on chain at request time and valued in USD,
+        largest first. LP positions are not included; see List positions.
+        Costs $0.01 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - name: min_value_usd
+          in: query
+          description: Leave out balances worth less than this in USD. Unpriced tokens are kept.
+          schema:
+            type: number
+            default: 0
+      responses:
+        "200":
+          description: The balances.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Balance"
+                  meta:
+                    allOf:
+                      - $ref: "#/components/schemas/Meta"
+                      - type: object
+                        properties:
+                          total_value_usd:
+                            type: number
+                            description: Sum of the priced balances.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /portfolio/{wallet}/lp-score:
+    get:
+      tags: [Portfolio]
+      operationId: getPortfolioLpScore
+      summary: Get LP score
+      description: >-
+        The wallet's LP score (0 to 100) over the positions it closed in the period: five weighted
+        dimensions, the evidence behind them, and its 30-day rank. Without `from` and `to`, the
+        whole indexed history.
+        Costs $0.01 per request with x402.
+      parameters:
+        - $ref: "#/components/parameters/PortfolioWallet"
+        - $ref: "#/components/parameters/FromDate"
+        - $ref: "#/components/parameters/ToDate"
+        - $ref: "#/components/parameters/Timezone"
+        - $ref: "#/components/parameters/Currency"
+        - $ref: "#/components/parameters/Sources"
+        - $ref: "#/components/parameters/Dex"
+      responses:
+        "200":
+          description: The LP score report.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/LpScore"
+                  meta:
+                    $ref: "#/components/schemas/Meta"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Your Fabriq API key.
+    X402:
+      type: apiKey
+      in: header
+      name: PAYMENT-SIGNATURE
+      description: >-
+        An x402 v2 payment for this one request, in USDC on Solana or Base: base64 JSON of the
+        payment payload your x402 client builds from the 402 challenge (see Pay per request).
+
+  parameters:
+    Mint:
+      name: mint
+      in: path
+      required: true
+      description: Token mint address.
+      schema:
+        type: string
+      example: JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN
+    PoolAddress:
+      name: address
+      in: path
+      required: true
+      description: Pool address.
+      schema:
+        type: string
+      example: 5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6
+    PortfolioWallet:
+      name: wallet
+      in: path
+      required: true
+      description: Wallet address.
+      schema:
+        type: string
+      example: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
+    Dex:
+      name: dex
+      in: query
+      description: Only these DEXes, comma-separated `id`s from `GET /dexes`.
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          $ref: "#/components/schemas/DexId"
+      example: [meteora_dlmm, meteora_damm_v2]
+    Sources:
+      name: sources
+      in: query
+      description: >-
+        Which positions count: held by the wallet itself (`wallet`), through its HawkFi account
+        (`hawkfi`), or both.
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum: [wallet, hawkfi]
+        default: [wallet, hawkfi]
+    Currency:
+      name: currency
+      in: query
+      description: Currency the score is computed in. PnL in SOL and in USD can rank wallets differently.
+      schema:
+        type: string
+        enum: [usd, sol]
+        default: usd
+    EventType:
+      name: type
+      in: query
+      description: Only these event types, comma-separated.
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          $ref: "#/components/schemas/LiquidityEventType"
+    FromDate:
+      name: from
+      in: query
+      description: First day, inclusive, in `timezone`.
+      schema:
+        type: string
+        format: date
+      example: "2026-10-01"
+    ToDate:
+      name: to
+      in: query
+      description: Last day, inclusive, in `timezone`.
+      schema:
+        type: string
+        format: date
+      example: "2026-10-31"
+    FromTime:
+      name: from
+      in: query
+      description: Start, inclusive (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    ToTime:
+      name: to
+      in: query
+      description: End, exclusive (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    Timezone:
+      name: timezone
+      in: query
+      description: IANA timezone that days are counted in.
+      schema:
+        type: string
+        default: UTC
+      example: Europe/Paris
+    Order:
+      name: order
+      in: query
+      description: Sort direction. Missing values sort last either way.
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+    Limit:
+      name: limit
+      in: query
+      description: Page size.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    Cursor:
+      name: cursor
+      in: query
+      description: The `meta.next_cursor` of the previous page.
+      schema:
+        type: string
+
+  headers:
+    RateLimitLimit:
+      description: Requests allowed in the current window.
+      schema:
+        type: integer
+    RateLimitRemaining:
+      description: Requests left in the current window.
+      schema:
+        type: integer
+    RateLimitReset:
+      description: Seconds until the window resets.
+      schema:
+        type: integer
+
+  responses:
+    BadRequest:
+      description: A parameter is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              code: invalid_request
+              message: "limit must be between 1 and 100"
+              request_id: req_01JC6Q8V4X2N7R5T3K9M
+    Unauthorized:
+      description: The API key is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              code: unauthorized
+              message: "Invalid API key"
+              request_id: req_01JC6Q8V4X2N7R5T3K9M
+    PaymentRequired:
+      description: >-
+        No API key and no valid payment. The PAYMENT-REQUIRED header (base64 JSON) and the `x402`
+        body field carry the same x402 v2 challenge: what to pay, in which asset, on which network,
+        to whom. Pay with an x402 client and retry with the PAYMENT-SIGNATURE header.
+      headers:
+        PAYMENT-REQUIRED:
+          description: Base64 JSON of the x402 v2 PaymentRequired object.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/Error"
+              - type: object
+                properties:
+                  x402:
+                    $ref: "#/components/schemas/X402PaymentRequired"
+          example:
+            error:
+              code: payment_required
+              message: "Payment required: send an X-API-Key header, or pay for this request with x402"
+              request_id: req_01JC6Q8V4X2N7R5T3K9M
+            x402:
+              x402Version: 2
+              error: "Payment required: send an X-API-Key header, or pay for this request with x402"
+              resource:
+                url: https://public-api.fabriq.trade/v1/trending/pools
+                description: "Fabriq API: GET /v1/trending/pools"
+                mimeType: application/json
+              accepts:
+                - scheme: exact
+                  network: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+                  amount: "5000"
+                  asset: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+                  payTo: 2xdnwco1MnwqVd1GkDkfRj6N2xxN7S6oxVg5ZttPh7E1
+                  maxTimeoutSeconds: 60
+                  extra:
+                    feePayer: <the facilitator's fee payer>
+                - scheme: exact
+                  network: eip155:8453
+                  amount: "5000"
+                  asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+                  payTo: "0xcd336de8daf07a0c764e810e4184dd8c0bfbcb51"
+                  maxTimeoutSeconds: 60
+                  extra:
+                    name: USD Coin
+                    version: "2"
+    NotFound:
+      description: Fabriq does not know this token, pool or position.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              code: not_found
+              message: "Pool not found"
+              request_id: req_01JC6Q8V4X2N7R5T3K9M
+    RateLimited:
+      description: Too many requests. Wait for `Retry-After` seconds.
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: integer
+        X-RateLimit-Limit:
+          $ref: "#/components/headers/RateLimitLimit"
+        X-RateLimit-Remaining:
+          $ref: "#/components/headers/RateLimitRemaining"
+        X-RateLimit-Reset:
+          $ref: "#/components/headers/RateLimitReset"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              code: rate_limited
+              message: "Rate limit exceeded, retry in 12 seconds"
+              request_id: req_01JC6Q8V4X2N7R5T3K9M
+    InternalError:
+      description: Something failed on Fabriq's side. Safe to retry.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              code: internal_error
+              message: "Internal error"
+              request_id: req_01JC6Q8V4X2N7R5T3K9M
+
+  schemas:
+    X402PaymentRequired:
+      type: object
+      description: The x402 v2 challenge.
+      properties:
+        x402Version:
+          type: integer
+          enum: [2]
+        error:
+          type: string
+        resource:
+          type: object
+          properties:
+            url:
+              type: string
+            description:
+              type: string
+            mimeType:
+              type: string
+        accepts:
+          type: array
+          description: One entry per way to pay; pick one and pay exactly that.
+          items:
+            $ref: "#/components/schemas/X402PaymentRequirements"
+
+    X402PaymentRequirements:
+      type: object
+      properties:
+        scheme:
+          type: string
+          enum: [exact]
+        network:
+          type: string
+          description: CAIP-2 network id.
+          enum: ["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", "eip155:8453"]
+        amount:
+          type: string
+          description: USDC base units (6 decimals); "5000" is 0.005 USDC.
+          example: "5000"
+        asset:
+          type: string
+          description: The USDC mint (Solana) or contract (Base).
+        payTo:
+          type: string
+          description: Fabriq's receiving wallet on that network.
+        maxTimeoutSeconds:
+          type: integer
+          example: 60
+        extra:
+          type: object
+          description: >-
+            Solana `feePayer` (the facilitator pays the network fee); Base: the USDC EIP-712 domain
+            `name` and `version`.
+
+    Meta:
+      type: object
+      required: [as_of, indexed_slot]
+      properties:
+        as_of:
+          type: string
+          format: date-time
+          description: Time of the newest data the response reflects.
+          example: "2026-11-08T14:02:11Z"
+        indexed_slot:
+          type: integer
+          format: int64
+          description: Newest finalized slot indexed when the response was built.
+          example: 478213990
+        next_cursor:
+          type: [string, "null"]
+          description: Pass as `cursor` for the next page; `null` on the last page. Only on paginated lists.
+          example: eyJzIjo0NzgyMTM5OTAsImkiOiIzZjFhIn0
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, request_id]
+          properties:
+            code:
+              type: string
+              description: Stable, machine-readable error code.
+              enum: [invalid_request, unauthorized, payment_required, forbidden, not_found, rate_limited, internal_error, unavailable]
+            message:
+              type: string
+              description: Human-readable explanation. May change; do not parse it.
+            request_id:
+              type: string
+              description: Include this when contacting support.
+
+    Money:
+      type: object
+      description: An amount in USD and in SOL, each valued at the time of the event it comes from.
+      properties:
+        usd:
+          type: [number, "null"]
+          example: 1250.42
+        sol:
+          type: [number, "null"]
+          example: 7.81
+
+    DexId:
+      type: string
+      description: DEX identifier.
+      enum:
+        - meteora_damm_v2
+        - meteora_dlmm
+        - meteora_dlmm_pro
+        - heaven
+        - pumpswap
+        - orca_whirlpool
+        - raydium_amm_v4
+        - raydium_clmm
+        - raydium_cpmm
+        - pancakeswap_clmm
+        - byreal_clmm
+
+    CategoryId:
+      type: string
+      description: Token category, from a curated token catalog.
+      enum: [bluechips, stablecoin, equity, commodity, etf, rwa, lst]
+
+    LiquidityEventType:
+      type: string
+      enum: [open, add_liquidity, remove_liquidity, claim_fees, claim_reward, close]
+
+    Status:
+      type: object
+      properties:
+        indexed_slot:
+          type: integer
+          format: int64
+          description: Newest finalized slot fully indexed.
+          example: 478213990
+        indexed_block_time:
+          type: string
+          format: date-time
+          example: "2026-11-08T14:02:10Z"
+        lag_seconds:
+          type: number
+          description: How far the newest indexed block trails the wall clock.
+          example: 2.4
+        commitment:
+          type: string
+          enum: [finalized]
+        datasets:
+          type: array
+          description: When each dataset was last refreshed.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: >-
+                  `trending`: scores and 5-minute/1-hour stats. `pool_stats`: 6-hour/24-hour stats,
+                  makers, price changes and token fields. `lp_ranking`: the 30-day LP ranks.
+                enum: [trending, pool_stats, lp_ranking]
+              as_of:
+                type: [string, "null"]
+                format: date-time
+              refresh_seconds:
+                type: integer
+                description: Expected time between refreshes.
+
+    Dex:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/DexId"
+        name:
+          type: string
+          example: Meteora DLMM
+        program_id:
+          type: string
+          example: LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo
+        pool_type:
+          type: string
+          description: >-
+            `concentrated`: tick-based concentrated liquidity. `bins`: discrete price bins.
+            `constant_product`: x·y=k, optionally within a price range (DAMM v2).
+          enum: [concentrated, bins, constant_product]
+        position_model:
+          type: string
+          description: >-
+            How LPs hold liquidity: a position NFT, a position account owned by the wallet, or
+            fungible LP tokens.
+          enum: [nft, position_account, lp_token]
+
+    TokenRef:
+      type: object
+      description: The fields needed to show a token.
+      properties:
+        mint:
+          type: string
+          example: JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN
+        symbol:
+          type: [string, "null"]
+          example: JUP
+        name:
+          type: [string, "null"]
+          example: Jupiter
+        decimals:
+          type: [integer, "null"]
+          example: 6
+        icon_url:
+          type: [string, "null"]
+          example: https://static.jup.ag/jup/icon.png
+
+    TokenAmount:
+      type: object
+      properties:
+        mint:
+          type: string
+          example: So11111111111111111111111111111111111111112
+        symbol:
+          type: [string, "null"]
+          example: SOL
+        amount:
+          type: [string, "null"]
+          description: Amount in whole tokens, as a decimal string; null when unknown.
+          example: "12.5"
+        value_usd:
+          type: [number, "null"]
+          example: 2001.25
+
+    PoolRef:
+      type: object
+      description: The fields needed to show a pool.
+      properties:
+        address:
+          type: string
+          example: 5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6
+        dex:
+          $ref: "#/components/schemas/DexId"
+        base:
+          $ref: "#/components/schemas/TokenRef"
+        quote:
+          $ref: "#/components/schemas/TokenRef"
+
+    Token:
+      allOf:
+        - $ref: "#/components/schemas/TokenRef"
+        - type: object
+          properties:
+            token_program:
+              type: string
+              enum: [spl_token, token_2022]
+            is_verified:
+              type: boolean
+              description: Whether Jupiter verifies the token. False when Jupiter has not returned it.
+            tags:
+              type: array
+              items:
+                type: string
+              example: [verified, strict]
+            launchpad:
+              type: [string, "null"]
+              description: Launchpad the token came from, in lower case.
+              example: met-dbc
+            category:
+              oneOf:
+                - $ref: "#/components/schemas/CategoryId"
+                - type: "null"
+            created_at:
+              type: [string, "null"]
+              format: date-time
+              description: >-
+                The token's age: the earlier of its creation time and its first pool's creation
+                time.
+            first_pool:
+              type: [object, "null"]
+              properties:
+                address:
+                  type: string
+                created_at:
+                  type: string
+                  format: date-time
+            graduated:
+              type: [object, "null"]
+              description: Where and when the token left its launchpad's bonding curve.
+              properties:
+                pool_address:
+                  type: string
+                at:
+                  type: string
+                  format: date-time
+            links:
+              type: object
+              properties:
+                website:
+                  type: [string, "null"]
+                twitter:
+                  type: [string, "null"]
+                telegram:
+                  type: [string, "null"]
+                discord:
+                  type: [string, "null"]
+            market:
+              $ref: "#/components/schemas/TokenMarket"
+            audit:
+              $ref: "#/components/schemas/TokenAudit"
+            transfer_fee:
+              oneOf:
+                - $ref: "#/components/schemas/TransferFee"
+                - type: "null"
+            stock:
+              type: [object, "null"]
+              description: Tokenized stock details (xStocks, Backpack, PreStocks).
+              properties:
+                provider:
+                  type: string
+                  example: xstocks
+                underlying_symbol:
+                  type: string
+                  example: NVDA
+                underlying_name:
+                  type: string
+                  example: NVIDIA Corporation
+                trading_hours:
+                  type: [string, "null"]
+                  example: 24/7
+            dexscreener:
+              type: [object, "null"]
+              description: What Dexscreener lists for the token.
+              properties:
+                url:
+                  type: string
+                pair_address:
+                  type: [string, "null"]
+                boosts_active:
+                  type: [integer, "null"]
+                  description: Active boosts; null when Dexscreener lists the token only as a quote.
+                paid_at:
+                  type: [string, "null"]
+                  format: date-time
+                  description: When the token's Dexscreener profile was paid for.
+
+    TokenMarket:
+      type: object
+      properties:
+        price_usd:
+          type: [number, "null"]
+          description: Price after the token's latest swap on any indexed DEX, however old.
+          example: 0.4712
+        price_reliable:
+          type: boolean
+          description: >-
+            False when no swap gave a price within 10% error (a thin pool, a brand-new token):
+            `price_usd` and `fdv_usd` are then estimates.
+        price_updated_at:
+          type: [string, "null"]
+          format: date-time
+        supply:
+          type: [number, "null"]
+          description: The mint's current supply, in whole tokens.
+          example: 6999216910.4
+        fdv_usd:
+          type: [number, "null"]
+          description: price_usd × supply.
+          example: 3298031408.7
+        total_liquidity_usd:
+          type: [number, "null"]
+          description: Liquidity of every pool holding the token, both sides (see Prices and valuation).
+          example: 48211933.2
+        holders:
+          type: [integer, "null"]
+          example: 812004
+        traders_24h:
+          type: [integer, "null"]
+          description: Distinct wallets that swapped the token in the last 24 hours, across all its pools.
+          example: 15873
+        organic_score:
+          type: [number, "null"]
+          description: Jupiter's organic score, 0 to 100.
+          example: 92.4
+        organic_score_label:
+          type: [string, "null"]
+          enum: [high, medium, low, null]
+
+    TokenAudit:
+      type: object
+      description: Jupiter's audit of the token. Null fields are unknown.
+      properties:
+        mint_authority_disabled:
+          type: [boolean, "null"]
+        freeze_authority_disabled:
+          type: [boolean, "null"]
+        is_suspicious:
+          type: boolean
+        top_holders_pct:
+          type: [number, "null"]
+          description: Share of supply held by the top 10 holders, in percent.
+        dev_address:
+          type: [string, "null"]
+        dev_balance_pct:
+          type: [number, "null"]
+        dev_mints:
+          type: [integer, "null"]
+          description: Tokens the developer has created.
+        sniper_pct:
+          type: [number, "null"]
+        insider_pct:
+          type: [number, "null"]
+        bundler_holding_pct:
+          type: [number, "null"]
+        bot_holders_pct:
+          type: [number, "null"]
+        high_single_ownership:
+          type: boolean
+        permanent_control_enabled:
+          type: boolean
+        mutable_fees:
+          type: boolean
+
+    TransferFee:
+      type: object
+      description: A Token-2022 transfer fee.
+      properties:
+        bps:
+          type: integer
+          description: Fee in basis points (0 to 10,000).
+          example: 100
+        maximum_fee:
+          type: [string, "null"]
+          description: The most one transfer pays, in whole tokens.
+        authority:
+          type: [string, "null"]
+          description: Who can change the fee; null when nobody can.
+        scheduled:
+          type: [object, "null"]
+          description: A fee change already scheduled on chain.
+          properties:
+            bps:
+              type: integer
+            maximum_fee:
+              type: [string, "null"]
+            epoch:
+              type: integer
+              description: Epoch it applies from.
+
+    Candle:
+      type: object
+      properties:
+        time:
+          type: integer
+          format: int64
+          description: Start of the interval, Unix seconds.
+          example: 1762610400
+        open:
+          type: [number, "null"]
+          description: Null when no swap in the interval had a usable price.
+          example: 0.4688
+        high:
+          type: [number, "null"]
+          example: 0.4731
+        low:
+          type: [number, "null"]
+          example: 0.4652
+        close:
+          type: [number, "null"]
+          example: 0.4712
+        volume_usd:
+          type: [number, "null"]
+          example: 1832210.55
+        trades:
+          type: integer
+          example: 4211
+
+    PoolToken:
+      allOf:
+        - $ref: "#/components/schemas/TokenRef"
+        - type: object
+          properties:
+            side:
+              type: string
+              description: Whether this is the pool's token X or token Y on chain.
+              enum: [x, y]
+            price_usd:
+              type: [number, "null"]
+              description: >-
+                The token's latest reliable price; without one, an estimate (FDV ÷ supply) and
+                `price_reliable` is false.
+            price_reliable:
+              type: boolean
+            reserve_usd:
+              type: [number, "null"]
+              description: The pool's reserve of this token, in USD.
+              example: 669208.16
+            fdv_usd:
+              type: [number, "null"]
+            supply:
+              type: [number, "null"]
+            holders:
+              type: [integer, "null"]
+            organic_score:
+              type: [number, "null"]
+            is_verified:
+              type: boolean
+            launchpad:
+              type: [string, "null"]
+            category:
+              oneOf:
+                - $ref: "#/components/schemas/CategoryId"
+                - type: "null"
+            created_at:
+              type: [string, "null"]
+              format: date-time
+            total_liquidity_usd:
+              type: [number, "null"]
+            dexscreener_boosts:
+              type: [integer, "null"]
+
+    WindowStats:
+      type: object
+      description: Activity over a rolling window ending at `updated.live_as_of` or `updated.window_as_of`.
+      properties:
+        volume_usd:
+          type: number
+          example: 2841120.5
+        buy_volume_usd:
+          type: number
+          description: USD volume of swaps buying the base token.
+        sell_volume_usd:
+          type: number
+        swaps:
+          type: integer
+          example: 9120
+        buys:
+          type: integer
+        sells:
+          type: integer
+        makers:
+          type: integer
+          description: Distinct wallets that swapped (approximate, within 0.1%).
+          example: 1402
+        buyers:
+          type: integer
+        sellers:
+          type: integer
+        lp_fees_usd:
+          type: number
+          description: Fees paid to LPs.
+          example: 1136.45
+        apr_pct:
+          type: [number, "null"]
+          description: LP fees over the window ÷ average liquidity, in percent. A yield over the window, not annualized.
+          example: 0.17
+        price_change_pct:
+          type: [number, "null"]
+          description: Change of the base token's USD price over the window, in percent.
+          example: -1.82
+        avg_liquidity_usd:
+          type: [number, "null"]
+          description: Time-weighted average liquidity over the window.
+
+    MultidayScore:
+      type: object
+      description: >-
+        What 1,000 USD put into the pool as a full-range LP position 3 days ago is worth now, fees
+        included. Null for pools younger than 3 days.
+      properties:
+        value_usd:
+          type: [number, "null"]
+          description: The score. 1,000 means break-even.
+          example: 1043.8
+        return_pct:
+          type: [number, "null"]
+          example: 4.38
+        position_value_usd:
+          type: [number, "null"]
+          description: The position's value now, fees excluded.
+        position_fees_usd:
+          type: [number, "null"]
+          description: The fees the position earned.
+        pool_fees_3d_usd:
+          type: [number, "null"]
+          description: All LP fees the pool paid over the 3 days.
+
+    Pool:
+      type: object
+      properties:
+        address:
+          type: string
+          example: 5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6
+        dex:
+          $ref: "#/components/schemas/DexId"
+        pool_type:
+          type: string
+          enum: [concentrated, bins, constant_product]
+        base:
+          $ref: "#/components/schemas/PoolToken"
+        quote:
+          $ref: "#/components/schemas/PoolToken"
+        created_at:
+          type: [string, "null"]
+          format: date-time
+        liquidity_usd:
+          type: [number, "null"]
+          description: Both reserves in USD, at the pool's latest on-chain change.
+          example: 1338416.3
+        fees:
+          type: object
+          properties:
+            base_fee_pct:
+              type: [number, "null"]
+              description: Base fee, in percent (0.25 means 0.25%).
+              example: 0.04
+            total_fee_pct:
+              type: [number, "null"]
+              description: >-
+                The fee a swap pays now, dynamic part included: the fee of the latest swap worth at
+                least 1 USD in the last hour, else the base fee.
+              example: 0.0412
+            dynamic_fee:
+              type: [boolean, "null"]
+              description: Whether the pool adds a volatility-based part to its base fee.
+            bin_step:
+              type: [integer, "null"]
+              description: DLMM bin step, or the tick spacing of a concentrated pool; null for the others.
+              example: 4
+            collect_fee_mode:
+              type: [string, "null"]
+              description: Meteora DLMM only. Which token fees are paid in.
+              enum: [input_token, token_y, null]
+            fees_in_quote_token:
+              type: boolean
+              description: True when a DLMM pool pays fees only in token Y and token Y is the quote.
+        permanent_lock_pct:
+          type: [number, "null"]
+          description: Meteora DAMM v2 only. Share of liquidity permanently locked, in percent.
+        stats:
+          type: [object, "null"]
+          description: >-
+            Rolling windows. `stats`, the scores, `open_positions`, `quality` and `updated` are null
+            for a pool with no recent trading (read from the pool registry instead of the live table).
+          properties:
+            m5:
+              $ref: "#/components/schemas/WindowStats"
+            h1:
+              $ref: "#/components/schemas/WindowStats"
+            h6:
+              $ref: "#/components/schemas/WindowStats"
+            h24:
+              $ref: "#/components/schemas/WindowStats"
+        apr_yearly_pct:
+          type: [number, "null"]
+          description: The 24-hour APR × 365.
+          example: 62.05
+        fab_score:
+          type: [number, "null"]
+          description: Fabriq's activity score from the last 5 minutes and hour (see Pool scores).
+          example: 18.42
+        multiday:
+          oneOf:
+            - $ref: "#/components/schemas/MultidayScore"
+            - type: "null"
+        open_positions:
+          type: [integer, "null"]
+          description: Open LP positions in the pool, among positions active since indexing began.
+          example: 318
+        open_position_wallets:
+          type: [integer, "null"]
+          description: Distinct owners of those positions.
+          example: 204
+        quality:
+          type: [object, "null"]
+          description: The trending quality filter (see Pool scores).
+          properties:
+            eligible:
+              type: boolean
+              description: Whether the pool passes. True when the base token is exempt or no check failed.
+            exempt:
+              type: boolean
+              description: Whether the base token's launchpad or category exempts it from every check.
+            failed:
+              type: array
+              description: The checks the pool fails.
+              items:
+                type: string
+                enum: [fdv, holders, side_liquidity, liquidity_cap, trading, pumpswap_launchpad, young_pool]
+        updated:
+          type: [object, "null"]
+          properties:
+            live_as_of:
+              type: string
+              format: date-time
+              description: Time of the 5-minute and 1-hour figures, the score and the prices.
+            window_as_of:
+              type: string
+              format: date-time
+              description: Time of the 6-hour and 24-hour figures, makers and price changes.
+
+    TrendingPool:
+      allOf:
+        - type: object
+          properties:
+            rank:
+              type: integer
+              description: Position in this ranking, from 1.
+              example: 1
+        - $ref: "#/components/schemas/Pool"
+        - type: object
+          properties:
+            sparkline:
+              type: [object, "null"]
+              description: Present when `sparkline` was asked for.
+              properties:
+                interval:
+                  type: string
+                  enum: [1m, 1h]
+                prices_usd:
+                  type: array
+                  description: The base token's closing USD price for each interval, oldest first.
+                  items:
+                    type: number
+
+    Category:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/CategoryId"
+        label:
+          type: string
+          example: Equity
+        position:
+          type: integer
+          description: Display order, from 1.
+        pool_count:
+          type: integer
+          example: 412
+        token_count:
+          type: integer
+          description: Distinct base tokens among those pools.
+          example: 167
+
+    Swap:
+      type: object
+      properties:
+        id:
+          type: string
+        signature:
+          type: string
+          example: 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi8pb5dNkXzMVx2iMhLXDCNYzUBMHKpBXjb3m3cRj97Lztn
+        slot:
+          type: integer
+          format: int64
+          example: 478213871
+        block_time:
+          type: string
+          format: date-time
+        trader:
+          type: [string, "null"]
+          description: The wallet that paid for the transaction.
+        side:
+          type: string
+          description: Whether the trader bought or sold the base token.
+          enum: [buy, sell]
+        base:
+          $ref: "#/components/schemas/TokenAmount"
+        quote:
+          $ref: "#/components/schemas/TokenAmount"
+        price_usd:
+          type: [number, "null"]
+          description: The base token's USD price in this swap.
+        value_usd:
+          type: [number, "null"]
+          example: 2001.25
+        lp_fee_usd:
+          type: [number, "null"]
+          example: 0.8
+        fee_pct:
+          type: [number, "null"]
+          description: Total fee this swap paid, in percent.
+
+    LiquidityEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          $ref: "#/components/schemas/LiquidityEventType"
+        signature:
+          type: string
+        slot:
+          type: [integer, "null"]
+          format: int64
+          description: Null in `GET /portfolio/{wallet}/activity`.
+        block_time:
+          type: string
+          format: date-time
+        dex:
+          $ref: "#/components/schemas/DexId"
+        pool:
+          $ref: "#/components/schemas/PoolRef"
+        position_id:
+          type: string
+        owner:
+          type: string
+          description: The position's owner (in wallet activity, the wallet asked for).
+        source:
+          type: [string, "null"]
+          description: Wallet activity only. `wallet` or `hawkfi`.
+        tokens:
+          type: array
+          description: >-
+            Token amounts moved, zero legs left out: deposited for `open` and `add_liquidity`, paid
+            out for `remove_liquidity`, `claim_fees` and `claim_reward`.
+          items:
+            $ref: "#/components/schemas/TokenAmount"
+        value:
+          $ref: "#/components/schemas/Money"
+        range:
+          type: [object, "null"]
+          description: The position's range, for concentrated and bin pools (pool events only).
+          properties:
+            lower:
+              type: integer
+              description: Lower tick or bin id.
+            upper:
+              type: integer
+              description: Upper tick or bin id.
+
+    LpDimension:
+      type: object
+      properties:
+        score:
+          type: [number, "null"]
+          description: 0 to 100.
+          example: 71.2
+        weight:
+          type: number
+          description: Weight in the overall score.
+          example: 0.3
+
+    LpScore:
+      type: object
+      properties:
+        wallet:
+          type: string
+        from:
+          type: [string, "null"]
+          format: date
+        to:
+          type: [string, "null"]
+          format: date
+        currency:
+          type: string
+          enum: [usd, sol]
+        status:
+          type: string
+          description: >-
+            `ready`: enough complete evidence. `provisional`: fewer than 10 pool-day groups or 3
+            closing days, or some data still being checked. `insufficient_data`: nothing to score.
+          enum: [ready, provisional, insufficient_data]
+        score:
+          type: [number, "null"]
+          description: Overall LP score, 0 to 100.
+          example: 78.3
+        dimensions:
+          type: object
+          properties:
+            profit_earned:
+              $ref: "#/components/schemas/LpDimension"
+            capital_efficiency:
+              $ref: "#/components/schemas/LpDimension"
+            fee_efficiency:
+              $ref: "#/components/schemas/LpDimension"
+            consistency:
+              $ref: "#/components/schemas/LpDimension"
+            loss_control:
+              $ref: "#/components/schemas/LpDimension"
+        evidence:
+          type: object
+          properties:
+            effective_groups:
+              type: integer
+              description: Pool-day groups with a meaningful result, at most 3 per day.
+            active_weeks:
+              type: integer
+            required_weeks:
+              type: integer
+            factor:
+              type: number
+              description: 0 to 1. Scales the part of the score above 50.
+            level:
+              type: string
+              enum: [limited, developing, full]
+        profitability:
+          type: object
+          properties:
+            net_pnl:
+              type: number
+            gross_profit:
+              type: number
+            gross_loss:
+              type: number
+            profit_factor:
+              type: [number, "null"]
+              description: gross_profit ÷ gross_loss; null without losses.
+        fee_breakdown:
+          type: object
+          properties:
+            fees:
+              type: number
+            liquidity_pnl:
+              type: number
+              description: Net PnL minus fees and rewards.
+            rewards:
+              type: number
+            retained_fee_pct:
+              type: [number, "null"]
+            profit_source:
+              type: string
+              enum: [fees, liquidity, rewards, mixed, no_profit]
+        coverage:
+          type: object
+          properties:
+            positions_scored:
+              type: integer
+            excluded_incomplete:
+              type: integer
+              description: Positions left out for missing history or prices.
+            excluded_unverifiable_quality:
+              type: integer
+            excluded_ineligible:
+              type: integer
+              description: Positions in pools that fail the LP quality policy.
+            excluded_dust:
+              type: integer
+              description: Positions with less than 10 USD of known deposits.
+            excluded_empty:
+              type: integer
+        ranking:
+          type: [object, "null"]
+          description: >-
+            The wallet's rank among all LPs by 30-day score, recomputed hourly; null when it doesn't
+            qualify (see PnL and LP score).
+          properties:
+            window:
+              type: string
+              enum: [30d]
+            rank:
+              type: integer
+              example: 412
+            cohort_size:
+              type: integer
+              example: 1088
+            top_pct:
+              type: number
+              example: 37.9
+        model_version:
+          type: string
+          example: lp-v9
+
+    PositionRange:
+      type: object
+      description: >-
+        Range of a concentrated or bin position. Prices are token Y per token X, in whole tokens.
+      properties:
+        lower:
+          type: integer
+          description: Lower tick or bin id.
+        upper:
+          type: integer
+          description: Upper tick or bin id.
+        lower_price:
+          type: number
+        upper_price:
+          type: number
+        current_price:
+          type: [number, "null"]
+          description: The pool's price now; open positions only.
+        in_range:
+          type: [boolean, "null"]
+          description: Open positions only.
+
+    Position:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable position id (see Conventions).
+        address:
+          type: string
+        owner:
+          type: string
+        source:
+          type: string
+          enum: [wallet, hawkfi]
+        status:
+          type: string
+          enum: [open, closed]
+        pool:
+          $ref: "#/components/schemas/PoolRef"
+        opened_at:
+          type: [string, "null"]
+          format: date-time
+          description: Null when the position was opened before Fabriq's indexed history.
+        closed_at:
+          type: [string, "null"]
+          format: date-time
+        range:
+          oneOf:
+            - $ref: "#/components/schemas/PositionRange"
+            - type: "null"
+        current:
+          type: [object, "null"]
+          description: Open positions only. Read from the position's on-chain accounts at request time.
+          properties:
+            value:
+              $ref: "#/components/schemas/Money"
+            tokens:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenAmount"
+            unclaimed_fees:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenAmount"
+            unclaimed_fees_value:
+              $ref: "#/components/schemas/Money"
+            unclaimed_rewards:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenAmount"
+            unclaimed_rewards_value:
+              $ref: "#/components/schemas/Money"
+        flows:
+          type: object
+          description: Totals over the position's life.
+          properties:
+            deposits:
+              $ref: "#/components/schemas/Money"
+            withdrawals:
+              $ref: "#/components/schemas/Money"
+            fees_claimed:
+              $ref: "#/components/schemas/Money"
+              description: LP fees and rewards claimed.
+        pnl:
+          $ref: "#/components/schemas/Money"
+        return_on_capital_pct:
+          type: [number, "null"]
+          description: PnL ÷ the most capital the position ever had in it, in percent (see PnL and LP score).
+        history_complete:
+          type: boolean
+          description: >-
+            False when the position was opened before Fabriq's indexed history: its PnL is then null.
+
+    PortfolioOverview:
+      type: object
+      properties:
+        wallet:
+          type: string
+        sources:
+          type: array
+          description: Which LP positions count (balances are always the wallet's own).
+          items:
+            type: string
+            enum: [wallet, hawkfi]
+        net_worth:
+          $ref: "#/components/schemas/Money"
+          description: >-
+            Valued token balances plus open LP positions, unclaimed fees and rewards included.
+            Unvalued balances and unpriced holdings count as 0.
+        balances:
+          type: object
+          description: >-
+            The wallet's SOL and token balances, read on chain. The full list is at Get token
+            balances.
+          properties:
+            tokens:
+              type: integer
+              description: Tokens held, SOL included.
+              example: 14
+            value:
+              $ref: "#/components/schemas/Money"
+              description: Sum of the valued balances.
+            unvalued_tokens:
+              type: integer
+              description: Balances with no `value_usd` (no price, or too little liquidity), left out of `value`.
+              example: 3
+            top:
+              type: array
+              description: The 5 largest balances by USD value.
+              maxItems: 5
+              items:
+                $ref: "#/components/schemas/Balance"
+        open:
+          type: object
+          description: Open LP positions, valued on chain.
+          properties:
+            positions:
+              type: integer
+            value:
+              $ref: "#/components/schemas/Money"
+              description: The positions' holdings, unclaimed fees and rewards not included.
+            unclaimed_fees:
+              $ref: "#/components/schemas/Money"
+            unclaimed_rewards:
+              $ref: "#/components/schemas/Money"
+            pnl:
+              $ref: "#/components/schemas/Money"
+        closed:
+          type: object
+          properties:
+            positions:
+              type: integer
+            pnl:
+              $ref: "#/components/schemas/Money"
+            fees:
+              $ref: "#/components/schemas/Money"
+        pnl:
+          $ref: "#/components/schemas/Money"
+          description: Open plus closed PnL.
+        positions_before_history:
+          type: integer
+          description: Positions opened before Fabriq's indexed history, left out of PnL.
+
+    WinStats:
+      type: object
+      properties:
+        wins:
+          type: integer
+        losses:
+          type: integer
+        neutrals:
+          type: [integer, "null"]
+          description: Results within 0.01% of deposits; they count as half a win. Null when not reported.
+        win_rate_pct:
+          type: [number, "null"]
+          description: Counted on USD results.
+
+    PnlSummary:
+      type: object
+      properties:
+        wallet:
+          type: string
+        from:
+          type: [string, "null"]
+          format: date
+        to:
+          type: [string, "null"]
+          format: date
+        timezone:
+          type: string
+        net_pnl:
+          $ref: "#/components/schemas/Money"
+        fees:
+          $ref: "#/components/schemas/Money"
+          description: LP fees and rewards claimed.
+        deposits:
+          $ref: "#/components/schemas/Money"
+        withdrawals:
+          $ref: "#/components/schemas/Money"
+        positions:
+          allOf:
+            - $ref: "#/components/schemas/WinStats"
+            - type: object
+              properties:
+                total:
+                  type: integer
+        days:
+          $ref: "#/components/schemas/WinStats"
+        gross_profit:
+          $ref: "#/components/schemas/Money"
+          description: Sum of the winning positions' PnL.
+        gross_loss:
+          $ref: "#/components/schemas/Money"
+          description: Sum of the losing positions' PnL, as a positive number.
+        profit_factor:
+          type: [number, "null"]
+          description: Gross profit ÷ gross loss (USD); null without losses.
+        avg_win:
+          $ref: "#/components/schemas/Money"
+        avg_loss:
+          $ref: "#/components/schemas/Money"
+        avg_win_loss_ratio:
+          type: [number, "null"]
+          description: Average win ÷ average loss (USD).
+        avg_deposit:
+          $ref: "#/components/schemas/Money"
+        complete:
+          type: boolean
+          description: >-
+            False when some positions in the period lack prices for part of their history. Only
+            positions with complete PnL are counted.
+        incomplete_movements:
+          type: integer
+          description: Deposits, withdrawals or claims left unvalued in the period.
+
+    DailyPnl:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2026-11-07"
+        pnl:
+          $ref: "#/components/schemas/Money"
+        fees:
+          $ref: "#/components/schemas/Money"
+        positions_closed:
+          type: integer
+        win_rate_pct:
+          type: [number, "null"]
+          description: Share of the day's closed positions that won (USD); null without closes.
+
+    PoolPnl:
+      type: object
+      properties:
+        pool:
+          $ref: "#/components/schemas/PoolRef"
+        positions:
+          type: integer
+        pnl:
+          $ref: "#/components/schemas/Money"
+        fees:
+          $ref: "#/components/schemas/Money"
+        deposits:
+          $ref: "#/components/schemas/Money"
+        withdrawals:
+          $ref: "#/components/schemas/Money"
+        return_on_capital_pct:
+          type: [number, "null"]
+          description: The pool's PnL ÷ the most capital the wallet ever had in it, in percent.
+        first_opened_at:
+          type: [string, "null"]
+          format: date-time
+        last_closed_at:
+          type: [string, "null"]
+          format: date-time
+        complete:
+          type: boolean
+          description: False when some of the pool's positions lack history or prices.
+
+    Balance:
+      allOf:
+        - $ref: "#/components/schemas/TokenRef"
+        - type: object
+          properties:
+            amount:
+              type: string
+              description: Balance in whole tokens, as a decimal string.
+              example: "1520.25"
+            price_usd:
+              type: [number, "null"]
+            value_usd:
+              type: [number, "null"]
+              description: >-
+                amount × price_usd, only when the token has more than 100 USD of total liquidity and
+                at least as much as the balance is worth; else null. Look-alike tokens get prices
+                from tiny pools nobody can exit through, and this keeps them out of totals.
+            liquidity_usd:
+              type: [number, "null"]
+              description: >-
+                The token's total liquidity across all pools; null for tokens that haven't traded
+                recently.
+            low_liquidity:
+              type: boolean
+              description: True when the token's total liquidity is unknown or at most 100 USD.
+            is_native:
+              type: boolean
+              description: True for native SOL (not wrapped).

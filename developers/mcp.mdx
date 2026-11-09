@@ -1,0 +1,143 @@
+---
+title: MCP server
+description: Give AI agents Fabriq data through the Model Context Protocol, with your API key or pay per call.
+---
+
+<Note>
+  The API and MCP server are pending deployment. See the [developer overview](/developers/overview) for availability.
+</Note>
+
+Fabriq runs an [MCP](https://modelcontextprotocol.io) server, so assistants and agents such as Claude Code, Cursor and VS Code can look up tokens, pools, LP opportunities and wallets on their own. It serves the same data as the REST API, as twelve read-only tools designed around the questions agents ask.
+
+```text
+https://public-api.fabriq.trade/mcp
+```
+
+The server uses the Streamable HTTP transport, stateless: each call is a plain request and response.
+
+## Connect
+
+Use an API key, sent as `Authorization: Bearer <key>` (or `X-API-Key: <key>`). Without a key, each tool call can be [paid with x402](#pay-per-call-with-x402).
+
+<Tabs>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http fabriq https://public-api.fabriq.trade/mcp \
+      --header "Authorization: Bearer $FABRIQ_API_KEY"
+    ```
+  </Tab>
+  <Tab title="Cursor">
+    In `~/.cursor/mcp.json`, or `.cursor/mcp.json` in a project:
+
+    ```json
+    {
+      "mcpServers": {
+        "fabriq": {
+          "url": "https://public-api.fabriq.trade/mcp",
+          "headers": { "Authorization": "Bearer YOUR_FABRIQ_API_KEY" }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="VS Code">
+    In `.vscode/mcp.json`. VS Code asks for the key once and stores it securely:
+
+    ```json
+    {
+      "inputs": [
+        { "type": "promptString", "id": "fabriq-key", "description": "Fabriq API key", "password": true }
+      ],
+      "servers": {
+        "fabriq": {
+          "type": "http",
+          "url": "https://public-api.fabriq.trade/mcp",
+          "headers": { "Authorization": "Bearer ${input:fabriq-key}" }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Other clients">
+    Any MCP client that supports Streamable HTTP and custom headers works: point it at `https://public-api.fabriq.trade/mcp` with an `Authorization: Bearer <key>` header.
+  </Tab>
+</Tabs>
+
+<Note>
+  Connectors that can't send custom headers, such as those in claude.ai and ChatGPT, aren't supported yet: they need an OAuth sign-in, which is planned.
+</Note>
+
+Then ask in plain language: "What's the price of JUP?", "Find the best equity pools to LP", "How did this wallet do this month?".
+
+## Tools
+
+Every tool is read-only. Lists default to 10 results and page with `cursor`, using `next_cursor` from the previous answer.
+
+| Tool | Use it for | x402 price |
+| --- | --- | --- |
+| `find_token` | A token's mint from its symbol or name, best match first | $0.005 |
+| `get_token` | Price, FDV, supply, holders, liquidity, links and audit flags | $0.005 |
+| `get_token_price_history` | USD candles, 1 minute to 1 week (at most 200) | $0.005 |
+| `find_pools` | Pools for a token or pair, by DEX and liquidity | $0.005 |
+| `get_pool` | A pool's liquidity, fees, volume, APR, score and quality verdict | $0.005 |
+| `get_pool_activity` | A pool's recent swaps or liquidity events | $0.005 |
+| `get_trending_pools` | Fabriq's ranking of LP opportunities, with category and other filters | $0.005 |
+| `get_wallet_overview` | Net worth, balances, open and closed LP totals | $0.01 |
+| `get_wallet_positions` | Open positions (valued on chain) or closed ones | $0.01 open, $0.005 closed |
+| `get_wallet_pnl` | Realized PnL for a period: total, by day or by pool | $0.005 |
+| `get_wallet_lp_score` | The 30-day LP score and rank | $0.01 |
+| `get_wallet_activity` | Recent opens, deposits, withdrawals, claims and closes | $0.005 |
+
+Pool tools return a summary by default: the fields that matter for choosing a pool, with 1-hour and 24-hour stats. Pass `detail: "full"` for the complete [Pool](/api-reference/introduction#pools) object. Other tools return what the matching REST endpoint returns, without image URLs.
+
+Agents usually know a symbol, not a mint, so start from `find_token`. Many tokens copy famous symbols: the tool lists Jupiter-verified tokens first and returns `is_verified` and liquidity for each candidate.
+
+## Resources and prompts
+
+The server also offers, at no cost:
+
+- **Resources:** the [concept guides](/developers/concepts/data-coverage) as Markdown (`fabriq://docs/pool-scores`, `fabriq://docs/pnl-and-lp-score` and the others), so an agent can explain a number, and the DEX list (`fabriq://dexes`).
+- **Prompts:** `analyze_wallet` (a wallet's LP performance review) and `find_lp_opportunities` (find and compare pools to LP, optionally in a category or for a token).
+
+Listing tools, resources and prompts needs no key or payment.
+
+## Limits
+
+With an API key, each tool call counts as one request against the key's [rate limits](/developers/rate-limits). Listing and reading resources don't count.
+
+## Pay per call with x402
+
+Without an API key, each tool call can be paid in USDC on Solana or Base with [x402](/developers/pay-per-request), following the x402 MCP transport. An x402-aware MCP client handles this for you.
+
+<Steps>
+  <Step title="Call a tool">
+    Without a key or payment, the result is an error whose `structuredContent` is the x402 `PaymentRequired` object, also written as JSON text in `content`. Its `resource.url` is `mcp://tool/<name>` and `accepts` lists the ways to pay, at the tool's price.
+  </Step>
+  <Step title="Pay and call again">
+    The client signs a payment for one offer and repeats the call with the payment in `params._meta["x402/payment"]`.
+  </Step>
+  <Step title="Get the result and the receipt">
+    Fabriq verifies the payment, runs the tool, then settles. The result carries the settlement in `_meta["x402/payment-response"]`.
+  </Step>
+</Steps>
+
+```json Paid call
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "find_token",
+    "arguments": { "query": "jup" },
+    "_meta": {
+      "x402/payment": {
+        "x402Version": 2,
+        "accepted": { "scheme": "exact", "network": "eip155:8453", "amount": "5000", "...": "..." },
+        "payload": { "...": "..." }
+      }
+    }
+  }
+}
+```
+
+As with REST, only successful calls are charged: a call that fails (an invalid argument, an unknown pool) is not settled, and the same payment can be sent again. A settled payment can't be reused. Paying wallets are limited to 300 calls a minute.

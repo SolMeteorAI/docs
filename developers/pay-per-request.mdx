@@ -1,0 +1,109 @@
+---
+title: Pay per request (x402)
+description: Call the API without an account, paying for each request in USDC on Solana or Base.
+---
+
+[x402](https://www.x402.org) is an open protocol for paying for HTTP requests. Instead of an API key, you pay half a cent or a cent in USDC for each request, from your own wallet. No signup, no key: well suited to scripts and AI agents.
+
+Fabriq accepts x402 version 2 payments in **USDC on Solana and on Base**, verified and settled through Coinbase's facilitator.
+
+## How it works
+
+<Steps>
+  <Step title="Call an endpoint without a key">
+    The API answers `402 Payment Required`. Its `PAYMENT-REQUIRED` header (base64 JSON, also in the body under `x402`) lists the ways to pay for this request: the amount, the asset, the network and Fabriq's receiving wallet.
+  </Step>
+  <Step title="Sign a payment">
+    Your x402 client picks one offer and signs a USDC payment for exactly that amount. On Solana it is a transfer whose network fee the facilitator pays; on Base it is a gasless USDC authorization. Nothing moves yet.
+  </Step>
+  <Step title="Retry with the payment">
+    Send the same request again with the signed payment in the `PAYMENT-SIGNATURE` header.
+  </Step>
+  <Step title="Get the data and the receipt">
+    Fabriq verifies the payment, runs the request, then settles the payment on chain. The response carries a `PAYMENT-RESPONSE` header (base64 JSON) with the settlement transaction.
+  </Step>
+</Steps>
+
+AI agents can pay the same way for each [MCP](/developers/mcp#pay-per-call-with-x402) tool call. Any x402 v2 client does all four steps for you: the official x402 libraries for TypeScript, Python and Go, or [x402-rs](https://github.com/x402-rs/x402-rs) for Rust. Point one at a Fabriq URL with your wallet as the signer.
+
+## Prices
+
+| Price | Endpoints |
+| --- | --- |
+| $0.005 | Tokens, token candles, pools, swaps, liquidity events, trending pools and categories, closed positions, a position, activity, PnL summary, daily PnL, PnL by pool |
+| $0.01 | Portfolio overview, open positions, balances, LP score (these read on-chain accounts at request time) |
+| Free | `/status`, `/dexes` |
+
+Each endpoint's page in the [API reference](/api-reference/introduction) states its price, and every 402 states the exact amount for that request.
+
+## Networks
+
+| Network | `network` (CAIP-2) | Asset |
+| --- | --- | --- |
+| Solana | `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` | USDC `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v` |
+| Base | `eip155:8453` | USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+
+## The challenge
+
+```bash
+curl -i "https://public-api.fabriq.trade/v1/trending/pools?limit=5"
+```
+
+```text
+HTTP/1.1 402 Payment Required
+payment-required: eyJ4NDAyVmVyc2lvbiI6Miwi...
+```
+
+The header decodes to:
+
+```json
+{
+  "x402Version": 2,
+  "error": "Payment required: send an X-API-Key header, or pay for this request with x402",
+  "resource": {
+    "url": "https://public-api.fabriq.trade/v1/trending/pools?limit=5",
+    "description": "Fabriq API: GET /v1/trending/pools",
+    "mimeType": "application/json"
+  },
+  "accepts": [
+    {
+      "scheme": "exact",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "amount": "5000",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "payTo": "2xdnwco1MnwqVd1GkDkfRj6N2xxN7S6oxVg5ZttPh7E1",
+      "maxTimeoutSeconds": 60,
+      "extra": { "feePayer": "<the facilitator's fee payer>" }
+    },
+    {
+      "scheme": "exact",
+      "network": "eip155:8453",
+      "amount": "5000",
+      "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "payTo": "0xcd336de8daf07a0c764e810e4184dd8c0bfbcb51",
+      "maxTimeoutSeconds": 60,
+      "extra": { "name": "USD Coin", "version": "2" }
+    }
+  ]
+}
+```
+
+`amount` is in USDC base units: `"5000"` is 0.005 USDC. Pay one offer exactly as written; a payment for another amount, asset or wallet is refused.
+
+## What you are charged for
+
+- **Only successful requests.** A payment is settled only when the request returns 2xx. If the request fails (an invalid parameter, an unknown pool, a temporary error), nothing is charged and you can send the same payment again.
+- **One payment, one request.** A settled payment can't be used again. On paginated lists, each page is a request.
+- **A slow settlement isn't a second charge.** If the chain is slow to confirm, you still get the data, and the receipt says `settlement_pending` with the transaction. Don't pay again for it.
+
+## Errors
+
+| Status | When |
+| --- | --- |
+| 402 | No key and no payment; or the payment was refused: it doesn't match the offer, was already used, failed verification (`Payment rejected: <reason>`, for example `insufficient_funds`) or couldn't be settled. The response always carries a fresh challenge. |
+| 429 | Too many requests from your paying wallet. |
+| 503 | The facilitator is unreachable. You were not charged; retry. |
+
+## Limits
+
+x402 callers are limited per paying wallet: 300 requests per minute and 100,000 per day. Unpaid requests are limited per IP address. Need more, or prefer an invoice? Use an [API key](/developers/authentication).

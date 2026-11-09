@@ -1,0 +1,113 @@
+---
+title: Conventions
+description: Response shape, pagination, numbers, timestamps, identifiers and errors.
+---
+
+## Response shape
+
+Every successful response is a JSON object with two keys:
+
+```json
+{
+  "data": {},
+  "meta": {
+    "as_of": "2026-11-08T14:02:11Z",
+    "indexed_slot": 478213990,
+    "next_cursor": null
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `data` | The result: an object for a single resource, an array for a list. |
+| `meta.as_of` | Time of the newest data the response reflects. |
+| `meta.indexed_slot` | Newest finalized slot Fabriq had indexed when it built the response. |
+| `meta.next_cursor` | On paginated lists only: pass it back as `cursor` for the next page. `null` on the last page. |
+
+## Pagination
+
+Lists that can grow without bound (swaps, liquidity events, positions, activity, PnL by pool) use cursors:
+
+```bash
+curl "https://public-api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100" \
+  -H "X-API-Key: $FABRIQ_API_KEY"
+# then
+curl "https://public-api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100&cursor=eyJzIjo0NzgyMTM5OTAsImkiOiIzZjFhIn0" \
+  -H "X-API-Key: $FABRIQ_API_KEY"
+```
+
+- `limit` is 1 to 100, 50 by default.
+- Cursors are opaque. Don't build or edit them.
+- A cursor keeps its place when new data arrives: newest-first lists never repeat or skip a row.
+- **Keep paging until `next_cursor` is `null`.** Swaps and liquidity events search back through time a bounded slice per request, so a quiet pool can answer a page with fewer rows than `limit`, or none, while `next_cursor` is still set.
+
+`GET /trending/pools` and `GET /pools` are rankings, not lists: they take `limit` (up to 100) and no cursor.
+
+## Numbers
+
+| Kind | Format | Example |
+| --- | --- | --- |
+| USD and SOL values | JSON number | `1250.42` |
+| Token amounts | Decimal string, in whole tokens (not raw units) | `"12.500000000"` |
+| Percentages | Number in percent: `0.25` means 0.25% | `"base_fee_pct": 0.25` |
+| Counts | Integer | `"swaps": 9120` |
+
+Token amounts are strings because on-chain amounts can exceed what a JSON number holds exactly.
+
+Fields ending in `_pct` are percentages. Many values come in both currencies as a `Money` object, each valued at the time of the event it comes from:
+
+```json
+"pnl": { "usd": 1250.42, "sol": 7.81 }
+```
+
+## Missing values
+
+A value Fabriq doesn't know is `null`. It is never replaced by `0`. A `null` never matches a filter: `min_holders=100` leaves out tokens whose holder count is unknown.
+
+## Timestamps
+
+- Times are ISO 8601 strings in UTC: `2026-11-08T14:02:11Z`.
+- Candles use Unix seconds (`time`), as charting libraries expect.
+- Dates (`from` and `to` on PnL endpoints) are `YYYY-MM-DD`, counted in the `timezone` you pass (UTC by default).
+
+## Identifiers
+
+- Tokens, pools and wallets are their base58 addresses.
+- DEXes have string ids such as `meteora_dlmm`. See [Supported DEXes](/developers/concepts/supported-dexes).
+- **Positions** have an `id` that is usually the position's address. Two cases differ:
+  - Some position ids are reused: bots reuse keypairs, and a wallet can leave a constant-product pool and enter it again later. Each open-to-close life of such a position gets its own id, `{address}@{lifecycle}`.
+  - Constant-product pools (PumpSwap, Raydium AMM v4 and CPMM, Heaven) have no position account: a wallet's LP tokens in a pool form one position, with the id `{owner}-{pool}`.
+
+  Treat ids as opaque strings and pass them back as given.
+
+## Errors
+
+Errors use HTTP status codes and a JSON body:
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "Pool not found",
+    "request_id": "req_01JC6Q8V4X2N7R5T3K9M"
+  }
+}
+```
+
+| Status | `code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_request` | A parameter is missing or invalid. |
+| 401 | `unauthorized` | The API key is invalid. |
+| 402 | `payment_required` | No API key and no valid x402 payment. The `PAYMENT-REQUIRED` header (and the `x402` body field) say how to pay. See [Pay per request](/developers/pay-per-request). |
+| 403 | `forbidden` | Your key can't use this endpoint. |
+| 404 | `not_found` | Fabriq doesn't know this token, pool or position. |
+| 429 | `rate_limited` | Too many requests. See [Rate limits](/developers/rate-limits). |
+| 500 | `internal_error` | Something failed on Fabriq's side. Safe to retry. |
+| 503 | `unavailable` | The data is temporarily stale or the service is restarting. Retry with backoff. |
+
+Match on `code`, not `message`: messages may change. Include `request_id` when you contact support.
+
+## Versioning
+
+The version is in the path (`/v1`). Within a version, Fabriq only makes additive changes: new endpoints, new optional parameters, new fields and new enum values. Write clients that ignore unknown fields and handle unknown enum values. Breaking changes ship as a new version, announced in the [changelog](/developers/changelog) with a deprecation period for the old one.

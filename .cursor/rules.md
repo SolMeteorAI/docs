@@ -292,11 +292,11 @@ Complete user object with all associated data.
 Wrap all images in frames:
 
 <Frame>
-<img src="/images/portfolio-overview-hq.png" alt="Portfolio dashboard showing performance charts" />
+<img src="/images/current/portfolio-overview.jpg" alt="Portfolio dashboard showing performance charts" />
 </Frame>
 
-<Frame caption="Review daily and weekly performance in the realized P&L calendar">
-<img src="/images/portfolio-realized-pnl-calendar-hq.png" alt="Portfolio calendar showing realized P&L" />
+<Frame caption="View combined performance for a saved wallet group">
+<img src="/images/current/portfolio-combined.jpg" alt="Combined Portfolio overview and realized P&L calendar" />
 </Frame>
 
 #### Videos

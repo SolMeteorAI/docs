@@ -1,0 +1,180 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Fabriq",
+  "colors": {
+    "primary": "#FF4500",
+    "light": "#FF6B35",
+    "dark": "#E03E00"
+  },
+  "favicon": "/symbol_01.png",
+  "logo": {
+    "dark": "/images/Logo dark mode.png",
+    "light": "/images/Logo Light mode.png"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "App",
+      "href": "https://fabriq.trade/trending"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Product Guides",
+        "groups": [
+          {
+            "group": "Welcome to Fabriq",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "how-it-works",
+              "in-house-indexer"
+            ]
+          },
+          {
+            "group": "Discover pools",
+            "pages": [
+              "trending-pools",
+              "trending-pools/filters-metrics",
+              "notifications",
+              "analytics"
+            ]
+          },
+          {
+            "group": "Manage liquidity",
+            "pages": [
+              "portfolio",
+              "balances-cleanup",
+              "sol-reclaim",
+              "rewards"
+            ]
+          },
+          {
+            "group": "About",
+            "pages": [
+              "our-vision",
+              "official-links",
+              "brand-assets"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developers",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "developers/overview",
+              "developers/quickstart",
+              "developers/authentication",
+              "developers/pay-per-request",
+              "developers/mcp",
+              "developers/conventions",
+              "developers/rate-limits"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "developers/concepts/data-coverage",
+              "developers/concepts/supported-dexes",
+              "developers/concepts/prices-and-valuation",
+              "developers/concepts/pool-scores",
+              "developers/concepts/pnl-and-lp-score"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "developers/changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "General",
+            "openapi": "openapi.yaml",
+            "pages": [
+              "GET /status",
+              "GET /dexes"
+            ]
+          },
+          {
+            "group": "Tokens",
+            "openapi": "openapi.yaml",
+            "pages": [
+              "GET /tokens/search",
+              "GET /tokens/{mint}",
+              "GET /tokens",
+              "GET /tokens/{mint}/ohlcv"
+            ]
+          },
+          {
+            "group": "Pools",
+            "openapi": "openapi.yaml",
+            "pages": [
+              "GET /pools",
+              "GET /pools/{address}",
+              "GET /pools/{address}/swaps",
+              "GET /pools/{address}/liquidity-events"
+            ]
+          },
+          {
+            "group": "Trending",
+            "openapi": "openapi.yaml",
+            "pages": [
+              "GET /trending/pools",
+              "GET /trending/categories"
+            ]
+          },
+          {
+            "group": "Portfolio",
+            "openapi": "openapi.yaml",
+            "pages": [
+              "GET /portfolio/{wallet}",
+              "GET /portfolio/{wallet}/balances",
+              "GET /portfolio/{wallet}/positions",
+              "GET /positions/{id}",
+              "GET /portfolio/{wallet}/activity",
+              "GET /portfolio/{wallet}/pnl",
+              "GET /portfolio/{wallet}/pnl/daily",
+              "GET /portfolio/{wallet}/pnl/by-pool",
+              "GET /portfolio/{wallet}/lp-score"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/FabriqTrade",
+      "discord": "https://discord.com/invite/7UuZFaHaVt",
+      "telegram": "https://t.me/FabriqTrade"
+    }
+  },
+  "api": {
+    "playground": {
+      "display": "simple"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "javascript",
+        "python"
+      ]
+    }
+  }
+}
