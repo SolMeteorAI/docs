@@ -1,11 +1,11 @@
 {
   "name": "Fabriq",
   "logo": {
-    "dark": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Logo%20dark%20mode.png",
-    "light": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/Logo%20Light%20mode.png"
+    "dark": "/images/Logo dark mode.png",
+    "light": "/images/Logo Light mode.png"
   },
-  "favicon": "https://raw.githubusercontent.com/SolMeteorAI/docs/main/symbol_01.png",
-  "defaultPage": "introduction", 
+  "favicon": "/symbol_01.png",
+  "defaultPage": "introduction",
   "colors": {
     "primary": "#FF4500",
     "light": "#FF6B35",
@@ -18,24 +18,34 @@
   "topbarLinks": [],
   "topbarCtaButton": {
     "name": "App",
-    "url": "https://beta.fabriq.trade/trending"
+    "url": "https://fabriq.trade/trending"
   },
   "navigation": [
     {
       "group": "Welcome to Fabriq",
       "pages": [
         "introduction",
+        "quickstart",
+        "how-it-works",
         "in-house-indexer"
       ]
     },
     {
-      "group": "Features",
+      "group": "Discover pools",
       "pages": [
         "trending-pools",
-        "analytics",
+        "trending-pools/filters-metrics",
+        "notifications",
+        "analytics"
+      ]
+    },
+    {
+      "group": "Manage liquidity",
+      "pages": [
         "portfolio",
         "balances-cleanup",
-        "sol-reclaim"
+        "sol-reclaim",
+        "rewards"
       ]
     },
     {

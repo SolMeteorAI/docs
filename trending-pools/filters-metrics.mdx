@@ -1,106 +1,38 @@
 ---
 title: Filters & Metrics
+description: "Reference for Trending Pools filters and configurable columns"
 ---
 
-## Search
+Open **Settings → Filters** in [Trending](/trending-pools) to narrow the table. Use **Reset** to clear filters and restore the default sort.
 
-Pools can be searched using:
+## Pool and token filters
 
-- Pool name (e.g. SOL-USDC)
-- Token symbol
-- Token address
+| Control | What it filters |
+| --- | --- |
+| Dex | Meteora DLMM and DAMM V2. |
+| Pool Name | The pool pair. Enter both symbols, such as `SOL-USDC`. |
+| Launchpads | Tokens associated with the selected launchpads. |
+| Include Tokens | Pools containing the specified token mints. |
+| Exclude Tokens | Pools containing the specified token mints are filtered out. |
+| Fees paid in quote token | Pools configured to pay fees in the quote token, where supported. |
 
-Search works alongside all filters.
+Use token search to look up a token by name, symbol, or mint address and see its pools.
 
-## Quick Search
+## Numeric filters
 
-Quick Search displays all pools for a selected token in one view.
+You can enter a minimum, a maximum, or both.
 
-## Pool Structure
+| Category | Available metrics |
+| --- | --- |
+| Ranking and pool structure | Score, bin step, base fee, total fee |
+| Age | Token age and pool age in minutes |
+| Liquidity and valuation | Pool liquidity, token total liquidity, and fully diluted valuation (FDV) in USD |
+| Token signals | Holders, token organic score, and DexScreener boost |
+| Time-window metrics | Volume, transactions, makers, LP fees, APR, and price change over 5m, 1h, 6h, or 24h |
+| Per-minute averages | Transactions, volume, and fees per minute |
 
-**LP Type** — filter by pool structure
+## Column controls
 
-## Quote Fee Filters
+Open **Settings → Columns** to choose and reorder optional columns. Available columns include Score, Trend, Age, FDV, Liquidity, Holders, Yearly APR, time-window metrics, and per-minute averages.
 
-- **Quote-Only Pools** — filter supported Meteora DLMM pools that pay quote token fees
-- **Quote Token** — review supported quote fee pools in `SOL`, `USDC`, or `USD1`
-
-## Token Controls
-
-- **Include Tokens** — require specific token symbols or addresses
-- **Exclude Tokens** — remove pools containing selected tokens
-
-## Activity & Scoring Filters
-
-- Fabriq Score (Min / Max)
-- Trend
-- Token Age (minutes)
-- Pool Age (minutes)
-
-## Liquidity, Valuation & Participation
-
-- Pool Liquidity (Min / Max)
-- Token Total Liquidity (Min / Max)
-- FDV (Min / Max)
-- Holders (Min / Max)
-- Unique Wallets
-
-## Fee Filters
-
-- LP Fees 5m (Min / Max)
-- LP Fees 1h (Min / Max)
-- LP Fees 6h (Min / Max)
-- LP Fees 24h (Min / Max)
-
-## APR Filters
-
-- APR 5m (Min / Max)
-- APR 1h (Min / Max)
-- APR 6h (Min / Max)
-- APR 24h (Min / Max)
-
-## Volume Filters
-
-- Volume 5m (Min / Max)
-- Volume 1h (Min / Max)
-- Volume 6h (Min / Max)
-- Volume 24h (Min / Max)
-
-## Transaction Filters
-
-- Transactions 5m (Min / Max)
-- Transactions 1h (Min / Max)
-- Transactions 6h (Min / Max)
-- Transactions 24h (Min / Max)
-
-## Rate-Based Metrics
-
-- Average swaps per minute (Min / Max)
-- Average volume per minute (Min / Max)
-- Average fees per minute (Min / Max)
-
-## Column Controls
-
-Users can add or remove columns for:
-
-- Fabriq Score
-- Trend
-- Age
-- FDV
-- Liquidity
-- Holders
-- Open Positions
-- Unique Wallets
-- LP Fees (5m, 1h, 6h, 24h)
-- Price Change (5m, 1h, 6h, 24h)
-- Volume (5m, 1h, 6h, 24h)
-- Transactions (5m, 1h, 6h, 24h)
-- APR (5m, 1h, 6h, 24h)
-- Makers (5m, 1h, 6h, 24h)
-- Average swaps, volume, and fees per minute
-
-Layouts can be reset to default at any time.
-
-## View Controls
-
-- Hide pools from the current view
+**Yearly APR** annualizes the pool's 24-hour APR by multiplying it by 365.

@@ -1,41 +1,22 @@
 ---
-title: Sol Reclaim
-description: 'Recover SOL from empty token accounts in one flow'
+title: SOL Reclaim
+description: "Recover token-account rent and claim eligible Pump.fun cashback"
 ---
 
-This feature is available on both:
+Fabriq shows reclaimable amounts for the connected wallet in the app header when available. **Portfolio → Balances** also lists eligible empty accounts and Pump.fun cashback for the selected wallet.
 
-- Trending Pools
-- Portfolio
+| Claim | What you receive |
+| --- | --- |
+| Empty token accounts | SOL rent recovered by closing eligible accounts with a zero token balance. |
+| Excess token-account rent | SOL above the required rent-exempt balance, recovered while keeping the token account open. |
+| Pump.fun cashback | Available cashback in SOL, USDC, or both, depending on the wallet's activity. |
 
-## Requirements
+## How to claim
 
-- Wallet must be connected
-- Connected wallet must contain empty token accounts
-- Reclaim only applies to empty token accounts owned by that connected wallet
+1. Connect the wallet that owns the accounts or cashback.
+2. Open the claim summary in the header and review the amount for the claim you want to make. For empty accounts or cashback, you can also use the corresponding row in **Portfolio → Balances**.
+3. Select **Claim** and approve the transaction in your wallet. The proceeds return to that wallet after confirmation.
 
-## How To
+Fabriq's standard reclaim fee is **10%** of the recovered rent or cashback. The claim summary displays the amount after the Fabriq fee.
 
-1. Connect your wallet.
-2. Click the displayed empty token accounts reclaim button.
-3. Reclaim.
-4. Confirm the transaction in your wallet.
-
-After confirmation, reclaimed SOL is sent back to your wallet.
-
-### Step 2: Click Reclaim
-
-![Step 2 - Click reclaim from the top notification.](/images/sol-reclaim-step-1-click-reclaim.png)
-
-### Step 3: Select Claim
-
-![Step 3 - Select claim in the reclaim modal.](/images/sol-reclaim-step-2-select-claim.png)
-
-### Step 4: Confirm Transaction and Receive SOL
-
-![Step 4 - Success notification after reclaim completes.](/images/sol-reclaim-step-3-success.png)
-
-## Fee
-
-- Fabriq charges a `10%` fee on SOL reclaims.
-- Final reclaim amount is shown before confirmation.
+If an account still holds tokens, see [Balances Cleanup](/balances-cleanup) for sell and close options.

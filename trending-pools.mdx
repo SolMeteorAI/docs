@@ -1,168 +1,36 @@
 ---
 title: Trending Pools
-description: 'Real-time visibility into active liquidity on Solana'
+description: "Discover, filter, and monitor active Meteora liquidity pools on Solana"
 ---
 
-<video
-  controls
-  style={{ width: '100%', borderRadius: '0.5rem' }}
-  src="https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%286%29.mp4"
->
-  Your browser does not support the video tag.
-</video>
+[Trending](https://fabriq.trade/trending) streams activity for Meteora DLMM and DAMM V2 pools. Use the table to compare liquidity, volume, price changes, fees, transactions, and APR across time windows.
 
-Trending Pools displays liquidity pools with live on-chain activity across Meteora DLMM and DAMM pools.
+## Views and Fabriq Score
 
-All data is indexed directly from the blockchain and updates in real-time. Trending Pools provides a real-time view of liquidity usage, fee generation, and pool activity.
+- **Degen** ranks pools by short-term activity using Fabriq Score.
+- **Watchlist** shows pools for tokens you've added to favorites and uses the Degen score. Star a token in the table to add it. You can also select it from the watchlist bar.
+- **Category views** let you focus on token groups such as Bluechips, stablecoins, equities, commodities, or ETFs when available.
 
-## Overview
+The **Trend** sparkline shows the last 30 minutes in Degen and Watchlist and the last 24 hours in category views.
 
-Trending Pools presents a real-time updating table of active liquidity pools.
+## Search, filters, and views
 
-The table is accessible from the sidebar and is designed for fast inspection and comparison of pools using live market data. No manual refresh is required.
+Use the token search to find a token by name, symbol, or mint address and see its pools. To look for a specific pair, open **Settings → Filters** and enter both symbols in **Pool Name**, such as `SOL-USDC`.
 
-## Pool Data
+Use filters to narrow the table by DEX, launchpad, pool parameters, included or excluded token mints, and metric ranges. For supported quote-fee pools, select **Fees paid in quote token**. See [Filters & Metrics](/trending-pools/filters-metrics) for the full list.
 
-Each pool displays real-time metrics, including:
+If alerts are available on your account, select **Create alert from these filters** to use the current filters as the starting point for a [pool alert](/notifications).
 
-<CardGroup cols={2}>
-  <Card title="Core Metrics" icon="chart-line">
-    Trading volume  
-    Liquidity  
-    Pool age  
-    APR (when available)  
-    Open positions  
-    Unique wallets
-  </Card>
-  
-  <Card title="Activity Metrics" icon="signal">
-    Fees generated  
-    Trades per minute  
-    Liquidity participation  
-    Quote token fee type for supported Meteora DLMM pools
-  </Card>
-</CardGroup>
+## Column customization
 
-All metrics reflect current on-chain activity.
+Open **Settings → Columns** to show, hide, or reorder optional columns, or restore the default layout. Select a sortable column header to change how pools are ranked.
 
-## Fabriq Score
+## Interaction tools
 
-Each pool is evaluated using an activity-based scoring system that interprets pool behavior across different time horizons.
+- Hover over the table to hold the row order while values continue to update.
+- Pin a pool to keep it in the pinned section.
+- Use **Hide token** to remove a token's pools from the current view.
 
-![Fabriq Score — Activity-based scoring system](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%2815%29.png)
+## Pool, token, and project information
 
-Fabriq scores are available in four variants.
-
-<CardGroup cols={2}>
-  <Card title="Fabriq Degen Score" icon="bolt">
-    Highlights short-term, high-frequency activity.
-    
-    **Evaluates:**
-    - Recent trading activity
-    - Recent LP activity
-    - Fees paid to liquidity providers
-    - Liquidity balance
-    
-    Higher scores indicate stronger short-term activity and higher relative engagement.
-  </Card>
-  
-  <Card title="Fabriq Multiday Score" icon="chart-line">
-    Highlights sustained performance across multiple days.
-    
-    **Evaluates:**
-    - Multi-day yield
-    - Price performance
-    
-    Higher scores indicate consistent activity and performance over time.
-  </Card>
-  
-  <Card title="Fabriq Bluechip Score" icon="shield">
-    Identifies established pools with stable participation.
-    
-    **Evaluates:**
-    - Multi-day yield
-    - Price performance
-    
-    Higher scores indicate longer-running pools with more consistent liquidity behavior.
-  </Card>
-  
-  <Card title="Fabriq Stocks Score" icon="chart-bar">
-    Highlights pools backed by real-world assets and tokenized stocks.
-    
-    **Evaluates:**
-    - Multi-day yield
-    - Price performance
-    
-    Higher scores suggest strong multi-day performance with potential for sustained returns.
-  </Card>
-</CardGroup>
-
-Users can switch between Fabriq Score variants to view pools through different activity and stability lenses.
-
-## Search, Filters, and Views
-
-Trending Pools includes flexible controls to help users narrow results and focus on relevant pools.
-
-Users can:
-
-- Search pools by name, token symbol, or token address
-- Use Quick Search to view all pools for a token in one place
-- Filter pools based on liquidity, activity, valuation, and pool structure
-- Filter supported Meteora DLMM quote-only pools that pay quote token fees in `SOL`, `USDC`, or `USD1`
-- Sort pools by any visible metric
-
-<video
-  controls
-  style={{ width: '100%', borderRadius: '0.5rem' }}
-  src="https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%287%29.mp4"
->
-  Your browser does not support the video tag.
-</video>
-
-Filters and sorting apply instantly to live data.
-
-For a complete list of available filters and metrics, see [Trending Pools — Filters & Metrics](/trending-pools/filters-metrics).
-
-## Column Customization
-
-Users can customize which columns are visible in the table.
-
-- Columns can be added or removed based on strategy and preference, allowing users to focus only on the metrics that matter to them
-- Layouts can be reset to default at any time
-
-Available columns include open positions and unique wallets so activity can be reviewed alongside participation concentration.
-
-## Interaction Tools
-
-Trending Pools includes tools designed for fast-moving data:
-
-- Pause on hover to inspect pool metrics without stopping updates
-- Pin pools to keep selected pools fixed at the top of the table
-- Hide pools from the current view to focus on the pools that matter most
-
-These tools allow users to monitor specific pools while continuing to track overall market activity.
-
-## Pool, Token, and Project Information
-
-Alongside pool metrics, Trending Pools surfaces additional pool-level and token-level information to help users make more informed decisions before entering a position.
-
-![Pool, Token, and Project Information](https://raw.githubusercontent.com/SolMeteorAI/docs/main/images/PnL%20%2816%29.png)
-
-This information may include:
-
-- Token identifiers and metadata
-- Project links, socials, and launch origin (when available)
-- Fee structure details, including base fees, dynamic fees, and total effective fees
-- Liquidity composition, such as total pool liquidity, permanently locked liquidity, open positions, and unique wallets
-- Activity and participation signals, including volume, fees, transactions, makers, and activity quality indicators
-- Token configuration and risk signals, such as mint authority, freeze authority, holder concentration, and audit-related indicators
-
-Pools also display security badges to surface key token characteristics:
-
-- **Freezable Token** — token transfers can be frozen
-- **Mintable Token** — token supply can be expanded
-- **Jupiter Verified** — token verified by Jupiter
-
-All information is displayed directly within the pool view so users can evaluate liquidity behavior, token properties, and project context without relying on external tools.
-
-Trending Pools is designed to give users a clear, real-time view of liquidity activity so pools can be evaluated with context before entering a position.
+Inspect a pool to see its fee structure, token details, and available project links. Token indicators can include mint and freeze authorities, Jupiter verification, or Token-2022 transfer fees. Data and badges vary by pool and token.

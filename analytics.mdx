@@ -1,62 +1,36 @@
 ---
 title: Analytics
-description: 'Market-wide liquidity analytics across supported Solana liquidity programs'
+description: "Compare liquidity movement, fees, wallets, and position activity across Solana programs"
 ---
 
-Analytics provides a market-wide view of liquidity activity across supported Solana liquidity programs.
+[Analytics](https://fabriq.trade/analytics) shows market-wide LP activity. Select **All** or choose individual programs to see how activity is distributed.
 
 ## Overview
 
-Analytics includes summary metrics and a trend chart for the selected programs and time range.
+The four summary cards show the latest 24-hour window for the selected programs and the percentage change from the preceding window.
 
-At the top of the page, the summary cards show:
+| Metric | What it measures |
+| --- | --- |
+| Liquidity movement | The USD value of liquidity added plus liquidity removed. |
+| Fees | The USD value of fees claimed. |
+| Unique wallets | Wallets that initialized a position, added or removed liquidity, claimed fees, or closed a position. |
+| Opened positions | Position initializations. |
 
-- Liquidity movement (24h)
-- Fees (24h)
-- Unique wallets (24h)
-- Opened positions (24h)
+## Program filters
 
-These metrics update based on the selected program filters.
-
-## Program Filters
-
-Users can switch between:
-
-- All
-- DLMM
-- DAMM V2
-- CLMM
-- CPMM
-- AMM V4
-- AMM
+| DEX | Programs |
+| --- | --- |
+| Byreal | CLMM |
+| Meteora | DLMM, DLMM Pro, DAMM V2 |
+| Orca | CLMM |
+| PancakeSwap | CLMM |
+| Pump.fun | AMM |
+| Raydium | AMM V4, CLMM, CPMM |
 
 ## Analytics Trend
 
-The Analytics Trend chart shows aggregated activity across the selected markets in UTC.
+Choose a metric to chart **Liquidity movement**, **Fees**, **Unique wallets**, **Opened positions**, or **Closed positions**. The chart breaks activity down by program.
 
-Users can switch between:
-
-- 30D
-- 6M
-
-The chart is displayed as a stacked bar view so users can compare where activity is coming from across the selected programs.
-
-## Metric Views
-
-The trend chart can be switched between:
-
-- Liquidity movement
-- Fees
-- Unique wallets
-- Opened positions
-- Closed positions
-
-## What It Shows
-
-Analytics gives users a broader view of on-chain LP activity by surfacing:
-
-- Liquidity movement across supported programs
-- Fee generation across selected markets
-- Unique wallet participation
-- Position opening activity
-- Position closing activity
+- **Time range** offers 7D, 30D, 3M, 6M, 1Y, 2Y, and All.
+- **Grouping** offers Daily, Weekly, and Monthly. The chart uses UTC.
+- Hover over a period to inspect the breakdown. With the chart focused, use the arrow keys to move between periods or Home and End to jump to the first or last period.

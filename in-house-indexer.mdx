@@ -1,38 +1,25 @@
 ---
 title: In-house Indexer
-description: 'Direct on-chain infrastructure powering cross-DEX liquidity data on Solana'
+description: "How Fabriq indexes on-chain liquidity activity across Solana programs"
 ---
 
-Fabriq is powered by an in-house indexer built to source liquidity data directly from the Solana blockchain.
+Fabriq's in-house indexer reads Solana activity and organizes pool, position, and transaction data into a shared model. That lets you compare protocols and follow a wallet's LP activity across them.
 
-We do not rely on third-party APIs for core liquidity data. Instead, we index activity ourselves so the product is built on a direct on-chain source of truth.
+## What the indexer powers
 
-![Fabriq unifying liquidity provision across Solana DEXs into one interface.](/images/fabriq-dex-indexed.png)
+- [Trending Pools](/trending-pools) streams live metrics for Meteora DLMM and DAMM V2 pools.
+- [Portfolio](/portfolio#supported-protocols) tracks positions and wallet activity across a broader set of programs, including concentrated-liquidity and constant-product pools.
+- [Analytics](/analytics#program-filters) aggregates liquidity movement, claimed fees, participating wallets, and position activity across the programs offered in its filter.
 
-## What Makes Fabriq Different
+Program coverage depends on the view. Position management also depends on the pool type and the position's available actions.
 
-Fabriq is built around direct blockchain indexing rather than external data vendors.
+## Data freshness
 
-- Direct on-chain sourcing instead of third-party API dependence
-- One internal data model across multiple DEX environments
-- A foundation for both LP discovery and LP management in one interface
+The indexer status indicator in the app footer shows the age of the latest indexed data. Hover over it to see the delay.
 
-This allows Fabriq to unify fragmented liquidity into a single product experience instead of treating each DEX as a separate workflow.
-
-## What We Index
-
-The indexer processes liquidity data across the 6 main DEXes on Solana.
-
-It covers the underlying liquidity, activity, and position data needed to standardize fragmented DEX environments into one usable product layer.
-
-Because this data is indexed in-house, Fabriq can normalize it across DEXs and expose it through one interface instead of forcing you to compare fragmented tools and inconsistent datasets.
-
-## Why It Matters
-
-This indexing layer powers:
-
-- Cross-DEX liquidity discovery in one place
-- Unified portfolio tracking and PnL analysis
-- A shared foundation for future cross-DEX LP management
-
-It gives Fabriq control over data quality, coverage, and product direction, and it is what makes a more unified cross-DEX liquidity experience possible on Solana.
+| Status | Age of indexed data |
+| --- | --- |
+| Live | 15 seconds or less |
+| Slow | More than 15 seconds, up to 5 minutes |
+| Late | More than 5 minutes |
+| Connecting | Waiting for an indexed timestamp |

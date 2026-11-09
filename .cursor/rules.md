@@ -214,12 +214,12 @@ Complete walkthrough from installation to your first API call in under 10 minute
 </Card>
 
 <CardGroup cols={2}>
-<Card title="Authentication" icon="key" href="/auth">
-  Learn how to authenticate requests using API keys or JWT tokens.
+<Card title="Portfolio" icon="wallet" href="/portfolio">
+Track positions and switch between saved wallets.
 </Card>
 
-<Card title="Rate limiting" icon="clock" href="/rate-limits">
-  Understand rate limits and best practices for high-volume usage.
+<Card title="Analytics" icon="chart-bar" href="/analytics">
+Compare liquidity activity across Solana programs.
 </Card>
 </CardGroup>
 
@@ -292,11 +292,11 @@ Complete user object with all associated data.
 Wrap all images in frames:
 
 <Frame>
-<img src="/images/dashboard.png" alt="Main dashboard showing analytics overview" />
+<img src="/images/portfolio-overview-hq.png" alt="Portfolio dashboard showing performance charts" />
 </Frame>
 
-<Frame caption="The analytics dashboard provides real-time insights">
-<img src="/images/analytics.png" alt="Analytics dashboard with charts" />
+<Frame caption="Review daily and weekly performance in the realized P&L calendar">
+<img src="/images/portfolio-realized-pnl-calendar-hq.png" alt="Portfolio calendar showing realized P&L" />
 </Frame>
 
 #### Videos

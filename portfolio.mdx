@@ -1,327 +1,94 @@
 ---
 title: Portfolio
-description: 'Your complete view of liquidity positions and performance on Solana'
+description: "Track LP performance across wallets and manage positions on supported Solana protocols"
 ---
 
-Portfolio is Fabriq's command center for position tracking, performance analytics, wallet monitoring, and execution.
+Open [Portfolio](https://fabriq.trade/portfolio-beta) to track positions, P&L, transactions, and balances. Search a public Solana address to view its portfolio without connecting a wallet.
 
-It is designed to give users a complete view of liquidity positions and portfolio performance from one interface.
+## Wallet management
+
+Use the wallet switcher to move between your connected wallet and saved wallets. Use the address field to open a recent search or look up another wallet. Save an address with a label for repeat tracking. You can rename, remove, and reorder saved entries.
+
+### View several wallets together
+
+<Steps>
+  <Step title="Select wallets">
+    Open the wallet switcher and tick two to five wallets.
+  </Step>
+  <Step title="Open or save the combined view">
+    Select **View** with the wallet count to open a combined portfolio, or **Save as group** to give the selection a name. You can also start with **New group** in the **Groups** section.
+  </Step>
+  <Step title="Switch to one wallet to transact">
+    Combined views aggregate positions, performance, transactions, and balances and show a **View only** badge on desktop. To claim fees, close a position, or clean up balances, select a single wallet and connect that same wallet.
+  </Step>
+</Steps>
+
+Saved groups can be edited, reordered, and deleted from the switcher.
 
 ## Overview
 
-The Portfolio experience is built for high-signal monitoring and faster portfolio analysis.
+Overview shows net P&L, position and day win rates, profit factor, and average winning and losing position outcomes. It also includes the realized P&L calendar, performance metrics, P&L by pool, cumulative and period charts, and a summary of open exposure. The **LP Score** card is available for individual wallets.
 
-Users can search and analyze wallet data without connecting a wallet.
+- Choose a preset or custom date range and filter by protocol or position source.
+- Toggle between SOL and fiat where supported. Use the fiat currency selector to change the display currency.
+- Use **Total P&L** or **Only Fees** on supported charts to review position outcomes or claimed fees.
+- Select **Customize Layout** to show, hide, or reorder cards. Changes save automatically. Use **Reset layout** to restore the defaults.
 
-<CardGroup cols={2}>
-  <Card title="View Portfolio Data" icon="eye">
-    Connect a wallet, search a wallet, or select a saved wallet to view Portfolio data and analytics
-  </Card>
+### How position returns are calculated
 
-  <Card title="On-Chain Actions" icon="bolt">
-    A connected wallet is required only for on-chain actions such as claim, withdraw, and close
-  </Card>
-</CardGroup>
+For **Total P&L**, the return percentage is position P&L divided by the highest net funding reached during the position's lifetime. Deposits increase net funding. Withdrawals, claimed fees, and claimed rewards reduce it. Network costs are excluded from the return calculation.
 
-At the top of Overview, the summary cards provide a fast snapshot of portfolio health:
-
-<CardGroup cols={3}>
-  <Card title="Net P&L" icon="chart-line">
-    Current net portfolio profit or loss
-  </Card>
-
-  <Card title="Position Win %" icon="percent">
-    Percentage of positions currently in profit versus loss
-  </Card>
-
-  <Card title="Profit Factor" icon="chart-line">
-    Ratio of gross gains versus gross losses across tracked outcomes
-  </Card>
-
-  <Card title="Day Win %" icon="calendar">
-    Percentage of profitable days versus losing days
-  </Card>
-
-  <Card title="Avg Win/Loss Position" icon="chart-bar">
-    Average winning position size compared with average losing position size
-  </Card>
-</CardGroup>
-
-![Fabriq Portfolio overview with analytics cards, realized PnL calendar, and tabbed position data.](/images/portfolio-overview-hq.png)
-
-## Performance & PnL Analytics
-
-The Portfolio surfaces more performance context across both summary and chart views.
-
-Users can:
-
-→ View cumulative PnL and daily PnL side by side  
-→ Review realized PnL in calendar format  
-→ Compare wins/losses, win rate, profit factor, and average win/loss position  
-→ Track total deposits, withdrawals, net worth, average invested, and total fees  
-→ Switch chart time views (daily, weekly, monthly)  
-→ Apply range presets or custom date ranges
-
-This makes it easier to evaluate both short-term execution quality and long-term portfolio growth.
-
-![Cumulative and daily PnL analytics in the Portfolio overview.](/images/portfolio-overview-graphs-hq.png)
-
-![Realized PnL calendar view with day-level and week-level performance context.](/images/portfolio-realized-pnl-calendar-hq.png)
-
-![Custom date range selector for performance analysis windows.](/images/portfolio-calendar-custom-range-hq.png)
-
-## Active Positions Summary
-
-The Active Positions Summary card provides a high-level snapshot of your currently open liquidity exposure.
-
-It summarizes key portfolio totals such as:
-
-→ Active positions and pools  
-→ Deposits and withdrawals  
-→ Claimed fees and pending fees  
-→ Current position value and current value including pending fees  
-→ PnL in both percentage and token terms
-
-This view is designed for quick orientation before drilling into individual positions.
-
-![Active Positions Summary card with portfolio totals and PnL.](/images/portfolio-active-positions-summary-hq.png)
+A **Low confidence PnL** warning means the position uses an estimated token price from its pool. Low liquidity, high fees, or limited trading can make that estimate less reliable.
 
 ## Active Positions
 
-Active Positions displays all liquidity positions currently held by the connected or selected wallet.
+Open **Active Positions** to see positions grouped by pool. Switch between table and card views, or expand a pool row to inspect individual positions and activity. Depending on the pool type, you can see range status, deposits and withdrawals, pending fees and rewards, current value, and P&L.
 
-Each position row provides immediate insight into:
+Search by pool name or use the table filters to narrow by protocol, range status, position source, or available metrics. Use the **Active Positions Summary** in Overview to see totals across your open positions.
 
-→ Position performance  
-→ Liquidity distribution  
-→ Pool type (DLMM or DAMM)  
-→ Position age and activity  
-→ Deposits, withdrawals, and fees  
-→ Per-position status (for example, in range/out of range)
+## Supported protocols
 
-Rows can be expanded to inspect per-position event history and execution details.
+Portfolio tracks positions across these Solana programs. The action menu shows which transactions are available for a specific position.
 
-In the **Positions** column, the paired percentages (for example, `-0% / +2%`) indicate how the current position sits relative to its range bounds (lower side / upper side).
-
-Users can also filter and sort Active Positions by:
-
-→ Pool name search  
-→ Pool type  
-→ Position status (in range / out of range)  
-→ Minimum and maximum ranges across supported metrics  
-→ PnL, age, deposits, withdrawals, and fees  
-→ Ascending or descending sort order
-
-Claim-related actions in Active Positions apply an 8% fee on claimed fees.
-
-![Active Positions table with detailed metrics, expanded rows, and position status visibility.](/images/portfolio-active-positions-hq.png)
-
-## HawkFi Support
-
-Portfolio includes HawkFi attribution across Overview, Active Positions, Closed Positions, and Transactions.
-
-### Overview
-
-In Overview, you can:
-
-- Switch between combined wallet and HawkFi PnL
-- View HawkFi-only PnL
-
-### Active Positions
-
-In Active Positions, you can:
-
-- Track HawkFi-managed positions alongside the rest of your portfolio
-- See HawkFi status in the pool column
-- Filter by HawkFi in the pool column
-
-HawkFi logos in the pool column mean:
-
-- Grey HawkFi logo with tooltip: only some positions in that row are managed by HawkFi
-- Green HawkFi logo: all positions in that row are managed by HawkFi
-
-### Closed Positions
-
-In Closed Positions, you can:
-
-- Review HawkFi-managed closed positions in the same history view
-- Filter by HawkFi in the pool column
-
-HawkFi logos in the pool column mean:
-
-- Grey HawkFi logo with tooltip: only some closed positions in that row are managed by HawkFi
-- Green HawkFi logo: all closed positions in that row are managed by HawkFi
-
-### Transactions
-
-In Transactions, you can:
-
-- View HawkFi-related records in your Portfolio history
-- Identify HawkFi-related transactions by the HawkFi logo
-- Filter transaction history by HawkFi
+| Pool family | Tracked programs | Available actions |
+| --- | --- | --- |
+| Meteora liquidity pools | DLMM, DAMM V2 | Claim, close, or Zap Out where available. |
+| Meteora DLMM Pro | DLMM Pro | Claim and withdraw. |
+| Concentrated liquidity (CLMM) | Byreal, Orca, PancakeSwap, Raydium | Claim, withdraw, and Zap Out where supported by the position. Orca and Raydium CLMM withdrawals are full withdrawals. |
+| Constant product | Pump.fun AMM, Raydium CPMM and AMM V4, Heaven AMM | Withdraw supported positions. Trading fees accrue in pool reserves and are realized through withdrawals. |
 
 ## Position Actions
 
-Liquidity positions can be managed directly from Portfolio without switching tools.
+Select the connected wallet in **Active Positions** to use a position's **Claim** or **Close** menu. You can also select rows to claim or close eligible positions together. The bulk controls show **Claim selected** or **Close selected** when rows are selected and **Claim all** or **Close all** otherwise.
 
-Available actions include:
-
-<CardGroup cols={2}>
-  <Card title="Individual Position Actions" icon="gear">
-    → Claim fees for a specific position  
-    → Close an individual position  
-    → Withdraw position liquidity from a specific row
-  </Card>
-
-  <Card title="Bulk Actions" icon="bolt">
-    → Claim all eligible fees across positions  
-    → Withdraw all positions from the active positions view
-  </Card>
-
-  <Card title="Portfolio Outputs" icon="chart-line">
-    → Generate PnL cards for sharing and reporting
-  </Card>
-</CardGroup>
-
-These controls reduce execution friction when managing many active positions at once.
-
-<Note>
-Claiming fees from Active Positions (including claim-all flows) is subject to an 8% fee on the claimed fees.
-</Note>
+Review the action and sign in your wallet. Fabriq's standard LP fee is **8% of the fees collected**, including when an action collects fees as part of closing or zapping a position.
 
 ## Zap Out
 
-Fabriq supports zap-out actions for DLMM and DAMM V2 positions directly into `SOL` or `USDC`.
+Zap Out converts eligible position proceeds to SOL or USDC. Use the **Claim** menu to zap eligible fees while keeping the position open, or the **Close** menu to exit the position and convert the proceeds.
 
-For DLMM positions:
+1. Open the action menu for the positions you want to manage.
+2. Select SOL or USDC when a quote is available. Review the estimated output before signing.
+3. Follow the status until the transaction confirms. Larger exits may be split into multiple transactions.
 
-- Up to `750` bins into a pool token
-- Up to `500` bins into a non-pool token
-
-Zap-out settings include:
-
-- Transaction broadcasting
-- Slippage
-- Price impact
-- Wallet settings
-
-## PnL Cards
-
-PnL Cards let users generate shareable performance snapshots from historical position outcomes.
-
-Users can:
-
-→ Generate flex cards from previously closed positions  
-→ Export position-level outcome context for reporting or sharing  
-→ Create cards at any time from closed-position history
+Where applicable, reward tokens are collected separately in their original form.
 
 ## Closed Positions
 
-Closed Positions tracks completed positions with lifecycle data and final outcomes.
+Review closed positions by pool, with realized P&L, close timing, deposits, withdrawals, and fees. Expand a row to inspect individual positions, or filter the list to compare outcomes across programs.
 
-It helps users review:
+## PnL Cards
 
-→ Position-level close timing and duration  
-→ Final realized PnL outcomes  
-→ Total deposits, withdrawals, and fees per closed position
-
-Closed Positions can be sorted in ascending or descending order by:
-
-→ Positions  
-→ PnL  
-→ Last close  
-→ Total deposits  
-→ Total withdrawals  
-→ Fees
-
-![Closed Positions table with lifecycle and realized outcome metrics.](/images/portfolio-closed-positions-hq.png)
+Use the share controls on supported active or closed positions, charts, and calendar views to create downloadable P&L cards.
 
 ## Transactions
 
-The Transactions tab provides a dedicated feed of wallet-level LP events.
+See wallet-level LP events, including position creation and closure, liquidity additions and removals, and fee claims. Filter the feed by program or available event filters to find the activity you want to review.
 
-It includes records such as:
+## HawkFi support
 
-→ Position initialization and closure  
-→ Added and removed liquidity  
-→ Claimed fee events
-
-This gives users an auditable timeline without relying on external explorers.
-
-![Transactions tab with categorized LP events and token amount breakdowns.](/images/portfolio-transactions-current.png)
+Use the position source filters to include wallet-managed positions, HawkFi-managed positions, or both where available. HawkFi badges identify managed positions or transactions. A mixed pool row can contain positions from both sources.
 
 ## Balances
 
-The Balances tab displays token holdings tied to the connected or selected wallet.
-
-It includes:
-
-<CardGroup cols={2}>
-  <Card title="Token Information" icon="coins">
-    → Token amounts and value  
-    → Price and FDV context
-  </Card>
-  
-  <Card title="Portfolio Value" icon="wallet">
-    → Aggregate wallet value with sortable asset rows
-  </Card>
-</CardGroup>
-
-This provides a complete snapshot of wallet distribution alongside LP activity.
-
-Balances also supports wallet cleanup and exit workflows when a wallet is connected.
-
-Users can:
-
--> Filter token types before execution  
--> Sell dust, scam, or regular tokens into `SOL` or `USDC`  
--> Clean many balances in one flow  
--> Reclaim `SOL` from empty token accounts after balances are cleared
-
-## Pump.fun Cashback
-
-Pump.fun cashback can be checked and claimed directly from Portfolio.
-
-Users can:
-
-- Check for available cashback rewards in `SOL`
-- Claim eligible Pump.fun cashback directly through Fabriq
-
-The dedicated cleanup flow is covered in the Balances Cleanup page.
-
-![Balances tab with token-level holdings, value columns, and total wallet value.](/images/portfolio-balances-hq.png)
-
-## Wallet Management
-
-Portfolio allows users to:
-
-→ Search for wallets  
-→ Save wallets for faster repeat tracking  
-→ Modify saved wallet labels  
-→ Delete saved wallets you no longer track  
-→ Monitor another wallet without disconnecting  
-→ Quickly switch views for monitoring and analysis
-
-This makes tracking multiple wallets seamless across the platform.
-
-![Wallet management controls with arrows for searching, saving, modifying, and deleting saved wallets.](/images/portfolio-wallet-management-annotated.png)
-
-## Why Portfolio
-
-Portfolio brings liquidity management together by offering:
-
-<CardGroup cols={3}>
-  <Card title="Richer Analytics" icon="chart-line">
-    Multi-layer PnL analysis across summary cards, charts, and calendar views
-  </Card>
-  
-  <Card title="Execution Control" icon="gear">
-    Individual and bulk controls for claiming, closing, and withdrawing positions when connected
-  </Card>
-  
-  <Card title="Wallet Intelligence" icon="eye">
-    Unified visibility across active positions, closed positions, transactions, and balances
-  </Card>
-</CardGroup>
-
-By centralizing monitoring and management, Portfolio helps users stay informed, efficient, and in control of their liquidity on Solana.
+See token holdings and their estimated value. With the selected wallet connected, you can [sell individual tokens or clean up several balances](/balances-cleanup) and [recover eligible rent or Pump.fun cashback](/sol-reclaim).
