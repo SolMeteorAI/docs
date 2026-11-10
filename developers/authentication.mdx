@@ -1,21 +1,21 @@
 ---
-title: Authentication
-description: Use an API key, or pay for each request with x402.
+title: API keys
+description: Use an API key instead of paying per request, for invoiced billing or clients that can't pay with x402.
 ---
 
-There are two ways to call the API:
+You don't need a key to use the API: [pay per request with x402](/developers/pay-per-request) from any Solana or Base wallet. An API key is the alternative when you want an invoice instead of paying per request, or when your client can't sign x402 payments, such as the MCP connectors in Claude, ChatGPT, Cursor and VS Code.
 
-| | API key | Pay per request |
+| | Pay per request (x402) | API key |
 | --- | --- | --- |
-| How | `X-API-Key` header | x402 payment in the `PAYMENT-SIGNATURE` header |
-| Account | Issued by the Fabriq team | None: pay from any Solana or Base wallet |
-| Cost | Per plan | $0.005 or $0.01 per request, in USDC |
-| Limits | Per key ([Rate limits](/developers/rate-limits)) | Per paying wallet |
-| See | Below | [Pay per request (x402)](/developers/pay-per-request) |
+| How | x402 payment in the `PAYMENT-SIGNATURE` header | `X-API-Key` header |
+| Account | None: pay from any Solana or Base wallet | Issued by the Fabriq team |
+| Cost | $0.005 or $0.01 per request, in USDC | Per plan |
+| Limits | Per paying wallet ([Rate limits](/developers/rate-limits)) | Per key ([Rate limits](/developers/rate-limits)) |
+| See | [Pay per request (x402)](/developers/pay-per-request) | Below |
 
-`GET /status` and `GET /dexes` are open. REST requests that use a key send it in `X-API-Key`. MCP also accepts `Authorization: Bearer <key>` or a key in the path at `https://api.fabriq.trade/mcp/k/<key>`. Use the path option for clients that only accept a server URL. [MCP setup](/developers/mcp)
+`GET /status` and `GET /dexes` are free and need neither.
 
-## API key
+## Send your key
 
 Send your key in the `X-API-Key` header:
 
@@ -27,6 +27,8 @@ curl "https://api.fabriq.trade/v1/tokens/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNs
 - An invalid key gets `401 unauthorized`.
 - A request with no key and no payment gets `402 payment_required`, with the x402 challenge that says how to pay for it.
 - When a request carries both a key and a payment, the key is used and the payment is ignored.
+
+The [MCP server](/developers/mcp) also accepts `Authorization: Bearer <key>`, or the key in the path at `https://api.fabriq.trade/mcp/k/<key>` for clients that only accept a server URL.
 
 ## Keep your key secret
 

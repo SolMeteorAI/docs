@@ -1,6 +1,6 @@
 ---
 title: MCP server
-description: Give AI agents Fabriq data through the Model Context Protocol, with your API key or pay per call.
+description: Give AI agents Fabriq data through the Model Context Protocol, paying per call with x402 or with an API key.
 ---
 
 Fabriq runs an [MCP](https://modelcontextprotocol.io) server, so assistants and agents such as Claude Code, Cursor and VS Code can look up tokens, pools, LP opportunities and wallets on their own. It serves the same data as the REST API, as twelve read-only tools designed around the questions agents ask.
@@ -13,7 +13,9 @@ The server uses the Streamable HTTP transport, stateless: each call is a plain r
 
 ## Connect
 
-Send your API key as `Authorization: Bearer <key>` or `X-API-Key: <key>` to `/mcp`. For clients that only accept a URL, use `https://api.fabriq.trade/mcp/k/<key>`. Fabriq validates the key in the URL before connecting. If you also supply a header key, that key takes precedence for tool calls. You can also pay for tool calls with [x402](#pay-per-call-with-x402).
+Agents built on an x402-aware MCP client need no key: they [pay for each tool call with x402](#pay-per-call-with-x402), from their own wallet.
+
+The apps below connect with an [API key](/developers/authentication). Send it as `Authorization: Bearer <key>` or `X-API-Key: <key>` to `/mcp`. For clients that only accept a URL, use `https://api.fabriq.trade/mcp/k/<key>`. Fabriq validates the key in the URL before connecting. If you also supply a header key, that key takes precedence for tool calls.
 
 <Tabs>
   <Tab title="Claude Code">
@@ -121,11 +123,11 @@ The available prompts are `analyze_wallet` for reviewing wallet performance and 
 
 ## Limits
 
-With an API key, each tool call counts as one request against the key's [rate limits](/developers/rate-limits). Listing and reading resources don't count.
+Each tool call counts as one request against the paying wallet's or the API key's [rate limits](/developers/rate-limits). Listing and reading resources don't count.
 
 ## Pay per call with x402
 
-Without an API key, each tool call can be paid in USDC on Solana or Base with [x402](/developers/pay-per-request), following the x402 MCP transport. An x402-aware MCP client handles this for you.
+Each tool call can be paid in USDC on Solana or Base with [x402](/developers/pay-per-request), following the x402 MCP transport, at the price in the [tools table](#tools). An x402-aware MCP client handles this for you, the same way an x402 HTTP client does for the REST API.
 
 <Steps>
   <Step title="Call a tool">

@@ -5,6 +5,8 @@ info:
   description: >-
     Solana liquidity data from Fabriq's own indexer: pools, tokens, trending pools, wallet
     portfolios and LP performance across 11 DEXes. Every response is built from finalized blocks.
+    Pay for each request with x402 in USDC on Solana or Base, with no account or key, or use an API
+    key.
 servers:
   - url: https://api.fabriq.trade/v1
     description: Production
@@ -33,7 +35,7 @@ paths:
       summary: Get API status
       description: >-
         The newest indexed slot, how far it trails the chain, and when each dataset last refreshed.
-        No API key needed.
+        Free: no payment or API key needed.
       security: []
       responses:
         "200":
@@ -58,7 +60,7 @@ paths:
       summary: List supported DEXes
       description: >-
         Every DEX Fabriq indexes, with the `id` other endpoints accept in their `dex` parameter.
-        No API key needed.
+        Free: no payment or API key needed.
       security: []
       responses:
         "200":
@@ -1340,7 +1342,7 @@ components:
               request_id: req_01JC6Q8V4X2N7R5T3K9M
     PaymentRequired:
       description: >-
-        No API key and no valid payment. The PAYMENT-REQUIRED header (base64 JSON) and the `x402`
+        No valid x402 payment and no API key. The PAYMENT-REQUIRED header (base64 JSON) and the `x402`
         body field carry the same x402 v2 challenge: what to pay, in which asset, on which network,
         to whom. Pay with an x402 client and retry with the PAYMENT-SIGNATURE header.
       headers:

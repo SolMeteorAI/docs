@@ -1,54 +1,51 @@
 ---
 title: Quickstart
-description: Make your first request to the Fabriq API.
+description: Make your first request to the Fabriq API, paid per request with x402 from a Solana or Base wallet.
 ---
 
-You can check the connection before getting a key. The [status endpoint](/api-reference/general/get-api-status) returns the latest indexed slot and data freshness.
+import X402Examples from "/snippets/x402-examples.mdx";
+
+You don't need an account or an API key. Each request costs half a cent or a cent in USDC, paid from your own wallet with [x402](/developers/pay-per-request), and an x402 client library makes the payment for you.
+
+You can check the connection first. The [status endpoint](/api-reference/general/get-api-status) is free and returns the latest indexed slot and data freshness.
 
 ```bash
 curl --fail "https://api.fabriq.trade/v1/status"
 ```
 
 <Steps>
-  <Step title="Get an API key">
-    Request an API key from the Fabriq team and keep it secret. See [Getting a key](/developers/authentication#getting-a-key).
+  <Step title="Fund a wallet with USDC">
+    Use a Solana or Base wallet that holds a little USDC: $1 pays for 100 to 200 requests. You don't need SOL or ETH for fees. On Solana the facilitator pays the network fee, and on Base the payment is a gasless authorization.
+
+    Put the wallet's private key in an environment variable:
+
+    ```bash
+    # Solana: the base58 secret key, as Phantom and Solflare export it
+    export SOLANA_PRIVATE_KEY="<your base58 secret key>"
+    # Base: the 0x-prefixed hex private key
+    export EVM_PRIVATE_KEY="0x<your private key>"
+    ```
+
+    <Warning>
+      Anyone with this key can spend the wallet's funds. Use a dedicated wallet that holds only what you plan to spend on API requests, and keep the key out of source control.
+    </Warning>
   </Step>
-  <Step title="Fetch the top trending pools">
-    <CodeGroup>
+  <Step title="Install a client and fetch the top trending pools">
+    Pick your language, then the file for your wallet's network. Each example pays $0.005 for `GET /trending/pools?limit=5`.
 
-    ```bash cURL
-    curl "https://api.fabriq.trade/v1/trending/pools?limit=5" \
-      -H "X-API-Key: $FABRIQ_API_KEY"
-    ```
-
-    ```javascript JavaScript
-    const response = await fetch(
-      "https://api.fabriq.trade/v1/trending/pools?limit=5",
-      { headers: { "X-API-Key": process.env.FABRIQ_API_KEY } }
-    );
-    const { data, meta } = await response.json();
-    for (const pool of data) {
-      console.log(pool.rank, `${pool.base.symbol}/${pool.quote.symbol}`, pool.fab_score);
-    }
-    ```
-
-    ```python Python
-    import os
-    import requests
-
-    response = requests.get(
-        "https://api.fabriq.trade/v1/trending/pools",
-        params={"limit": 5},
-        headers={"X-API-Key": os.environ["FABRIQ_API_KEY"]},
-    )
-    for pool in response.json()["data"]:
-        print(pool["rank"], f'{pool["base"]["symbol"]}/{pool["quote"]["symbol"]}', pool["fab_score"])
-    ```
-
-    </CodeGroup>
+    <X402Examples />
   </Step>
-  <Step title="Read the response">
-    Every response has the same shape: the result in `data`, and freshness and paging details in `meta`.
+  <Step title="Read the output">
+    The program prints the top five pools, then the receipt of the payment:
+
+    ```text
+    1 SOL/USDC 18.42
+    2 JUP/SOL 12.07
+    3 ...
+    Paid on solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp, transaction <transaction signature>
+    ```
+
+    Every API response has the same shape: the result in `data`, and freshness and paging details in `meta`. Pools are shown as **base** and **quote** tokens.
 
     ```json
     {
@@ -68,9 +65,15 @@ curl --fail "https://api.fabriq.trade/v1/status"
     }
     ```
 
-    Pools are shown as **base** and **quote** tokens.
+    The receipt comes from the `PAYMENT-RESPONSE` header: base64 JSON with the settlement `transaction` and its `network`. You're only charged when a request succeeds.
   </Step>
 </Steps>
+
+<Tip>
+  If the program prints `402` with `Payment rejected: insufficient_funds` on Base, or `Payment rejected: invalid_exact_svm_payload_transaction_simulation_failed` on Solana, the wallet most likely doesn't hold enough USDC on that network. See [Errors](/developers/pay-per-request#errors) for the other cases.
+</Tip>
+
+Have an API key? Skip the wallet and send the key in the `X-API-Key` header instead. See [API keys](/developers/authentication).
 
 ## Next steps
 
@@ -78,7 +81,13 @@ curl --fail "https://api.fabriq.trade/v1/status"
   <Card title="Look up a wallet" icon="wallet" href="/api-reference/introduction#portfolio">
     `GET /portfolio/{wallet}` returns net worth, token balances, open positions, realized PnL and total return in one call.
   </Card>
+  <Card title="Pay per request" icon="dollar-sign" href="/developers/pay-per-request">
+    Prices, networks, what you're charged for, and payment errors.
+  </Card>
   <Card title="Conventions" icon="book" href="/developers/conventions">
     Pagination, number formats, timestamps and errors.
+  </Card>
+  <Card title="MCP server" icon="robot" href="/developers/mcp">
+    Give AI agents Fabriq data, paid per tool call.
   </Card>
 </CardGroup>
