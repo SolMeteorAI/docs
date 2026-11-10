@@ -7,16 +7,14 @@ Limits apply per API key, or per paying wallet for [pay-per-request](/developers
 
 | Access | Requests per minute | Requests per day |
 | --- | --- | --- |
-| API key (beta) | 60 | 50,000 |
+| API key | 60 | 50,000 |
 | x402, per paying wallet | 300 | 100,000 |
 
 Requests without a key or a valid payment are also limited per IP address.
 
 Batch endpoints count as one request: `GET /tokens?mints=...` with 100 mints costs the same as one token. On the [MCP server](/developers/mcp), each tool call counts as one request.
 
-<Note>
-  Plans and limits for general availability are not final. Contact the Fabriq team if you need more during the beta.
-</Note>
+Contact the Fabriq team if you need higher limits.
 
 ## Headers
 

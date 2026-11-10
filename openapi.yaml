@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Fabriq API
-  version: 1.0.0-draft
+  version: 1.0.0
   description: >-
     Solana liquidity data from Fabriq's own indexer: pools, tokens, trending pools, wallet
     portfolios and LP performance across 11 DEXes. Every response is built from finalized blocks.
