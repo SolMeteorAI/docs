@@ -81,8 +81,6 @@
             "pages": [
               "developers/concepts/data-coverage",
               "developers/concepts/supported-dexes",
-              "developers/concepts/prices-and-valuation",
-              "developers/concepts/pool-scores",
               "developers/concepts/pnl-and-lp-score"
             ]
           },
@@ -167,7 +165,7 @@
   },
   "api": {
     "playground": {
-      "display": "simple"
+      "display": "interactive"
     },
     "examples": {
       "languages": [
@@ -176,5 +174,23 @@
         "python"
       ]
     }
-  }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
+  "redirects": [
+    {
+      "source": "/developers/concepts/prices-and-valuation",
+      "destination": "/developers/concepts/data-coverage"
+    },
+    {
+      "source": "/developers/concepts/pool-scores",
+      "destination": "/api-reference/trending/list-trending-pools"
+    }
+  ]
 }

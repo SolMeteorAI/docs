@@ -6,7 +6,7 @@ description: Solana liquidity data for pools, tokens, trending pools, portfolios
 The Fabriq API gives you programmatic access to pool, swap, token, and LP position data across 11 Solana programs. Fabriq indexes finalized blocks and values positions in USD and SOL.
 
 <Note>
-  The API and MCP server are pending deployment. These preview docs use the planned production URL. Endpoints and fields may change before launch. See the [changelog](/developers/changelog).
+  This is the first version of the API, in private beta. Endpoints and fields may change before general availability. See the [changelog](/developers/changelog).
 </Note>
 
 ## What you can build
@@ -28,13 +28,13 @@ The Fabriq API gives you programmatic access to pool, swap, token, and LP positi
     No account needed: pay for each request in USDC on Solana or Base with x402.
   </Card>
   <Card title="MCP server" icon="robot" href="/developers/mcp">
-    Let Claude, Cursor and other AI agents query Fabriq data with twelve ready-made tools.
+    Query Fabriq data from ChatGPT, Claude, Cursor, and other MCP clients with 12 read-only tools.
   </Card>
   <Card title="Quickstart" icon="rocket" href="/developers/quickstart">
     Make your first request in under a minute.
   </Card>
   <Card title="How the data works" icon="book-open" href="/developers/concepts/data-coverage">
-    Sources, freshness, prices and how every score is computed.
+    Data sources, freshness, historical coverage, and supported programs.
   </Card>
 </CardGroup>
 
@@ -48,7 +48,7 @@ The Fabriq API gives you programmatic access to pool, swap, token, and LP positi
 ## Base URL
 
 ```text
-https://public-api.fabriq.trade/v1
+https://api.fabriq.trade/v1
 ```
 
 Send an API key in the `X-API-Key` header, or [pay for each request with x402](/developers/pay-per-request). See [Authentication](/developers/authentication).

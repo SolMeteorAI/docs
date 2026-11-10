@@ -30,10 +30,10 @@ Every successful response is a JSON object with two keys:
 Lists that can grow without bound (swaps, liquidity events, positions, activity, PnL by pool) use cursors:
 
 ```bash
-curl "https://public-api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100" \
+curl "https://api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100" \
   -H "X-API-Key: $FABRIQ_API_KEY"
 # then
-curl "https://public-api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100&cursor=eyJzIjo0NzgyMTM5OTAsImkiOiIzZjFhIn0" \
+curl "https://api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100&cursor=eyJzIjo0NzgyMTM5OTAsImkiOiIzZjFhIn0" \
   -H "X-API-Key: $FABRIQ_API_KEY"
 ```
 

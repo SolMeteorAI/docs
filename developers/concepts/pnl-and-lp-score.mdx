@@ -1,6 +1,6 @@
 ---
 title: PnL and LP score
-description: How Fabriq tracks positions, computes PnL and return on capital, and scores LPs.
+description: How Fabriq tracks positions, computes PnL and scores LPs.
 ---
 
 ## Positions and lifecycles
@@ -25,18 +25,6 @@ pnl = withdrawals + fees claimed + rewards claimed + value now + unclaimed fees 
 
 Period endpoints (`/pnl`, `/pnl/daily`, `/pnl/by-pool`) count the positions **closed** in the period, with their whole history, including deposits made before it.
 
-## Return on capital
-
-`return_on_capital_pct` relates PnL to the most money the position (or group of positions) ever had in it:
-
-```text
-net funding   = deposits − withdrawals − fees claimed − rewards claimed     (running total, in event order)
-capital base  = the highest net funding ever reached
-return %      = pnl ÷ capital base × 100
-```
-
-Re-depositing the same capital doesn't inflate the base the way summing deposits would. It is not annualized, and it is neither a time-weighted return nor an IRR.
-
 ## Wins and losses
 
 A result is **neutral** when its PnL is within 0.01% of its deposits. Win rates count wins as 1, neutrals as ½ and losses as 0:
@@ -51,31 +39,20 @@ A result is **neutral** when its PnL is within 0.01% of its deposits. Win rates 
 
 | Dimension | Weight | Measures |
 | --- | ---: | --- |
-| `profit_earned` | 30% | Positive PnL against an anchor of $1,000 (or 10 SOL) per 30 days: `100 · P ÷ (P + anchor)` |
-| `capital_efficiency` | 20% | Profit per unit of capital at work: `100 · r ÷ (r + 0.1)` with `r = P ÷ capital` |
+| `profit_earned` | 30% | Positive PnL earned in the period |
+| `capital_efficiency` | 20% | Profit per unit of capital at work |
 | `fee_efficiency` | 20% | How much of the profit comes from fees the wallet kept after liquidity losses |
-| `consistency` | 15% | The average of the position win rate and how evenly profit spreads across pools and days |
-| `loss_control` | 15% | How deep the worst fifth of pool-day results go, relative to capital |
-
-### Evidence
-
-A high score needs a track record. Results are grouped by pool and closing day (at most 3 groups per day count), and the part of the score above 50 is scaled by:
-
-```text
-factor = min(effective groups ÷ 40, active weeks ÷ required weeks, 1)
-```
-
-`required weeks` is the period's length in weeks, from 1 to 3. `evidence.level` is `full` at factor 1, `developing` from 0.5, `limited` below. A losing wallet's score is capped at 49, a break-even one at 50.
+| `consistency` | 15% | The position win rate, and how evenly profit spreads across pools and days |
+| `loss_control` | 15% | How deep the worst results go, relative to capital |
 
 ### What is scored
 
 - Closed positions only, with at least $10 of known deposits, complete history and prices, and a clear owner.
 - Positions in pools whose tokens fail the LP quality policy are left out: one token must be verified by Jupiter and the other must have an organic score above 30.
-- Fewer than 10 pool-day groups or 3 closing days makes the score `provisional`.
 
 ### Rank
 
-`ranking` in the LP score response places the wallet among all LPs by its score over a rolling 30 days ending at the top of the hour, recomputed hourly. Only `ready` scores with 20 effective pool-day groups across 3 active weeks and at least $100 (or 1 SOL) of profit are ranked; otherwise `ranking` is `null`.
+`ranking` in the LP score response places the wallet among all LPs by its score over a rolling 30 days ending at the top of the hour, recomputed hourly. Only `ready` scores with enough history and profit are ranked; otherwise `ranking` is `null`.
 
 <Note>
   LP scores describe past results. They are not a prediction of future returns.

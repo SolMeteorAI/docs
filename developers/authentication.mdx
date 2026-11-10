@@ -13,14 +13,14 @@ There are two ways to call the API:
 | Limits | Per key ([Rate limits](/developers/rate-limits)) | Per paying wallet |
 | See | Below | [Pay per request (x402)](/developers/pay-per-request) |
 
-`GET /status` and `GET /dexes` need neither. The [MCP server](/developers/mcp) takes the same key, as `Authorization: Bearer <key>` or `X-API-Key`.
+`GET /status` and `GET /dexes` are open. REST requests that use a key send it in `X-API-Key`. MCP also accepts `Authorization: Bearer <key>` or a key in the path at `https://api.fabriq.trade/mcp/k/<key>`. Use the path option for clients that only accept a server URL. [MCP setup](/developers/mcp)
 
 ## API key
 
 Send your key in the `X-API-Key` header:
 
 ```bash
-curl "https://public-api.fabriq.trade/v1/tokens/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN" \
+curl "https://api.fabriq.trade/v1/tokens/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN" \
   -H "X-API-Key: $FABRIQ_API_KEY"
 ```
 
@@ -32,6 +32,7 @@ curl "https://public-api.fabriq.trade/v1/tokens/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSY
 
 - Call the API from your server, not from a browser or mobile app, where anyone can read the key.
 - Store the key in an environment variable or a secret manager, not in source control.
+- If you put a key in an MCP URL, treat the URL as the secret, and use a separate key for it.
 - If a key leaks, ask the Fabriq team to revoke it and issue a new one.
 
 ## Getting a key

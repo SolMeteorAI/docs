@@ -6,7 +6,7 @@ info:
     Solana liquidity data from Fabriq's own indexer: pools, tokens, trending pools, wallet
     portfolios and LP performance across 11 DEXes. Every response is built from finalized blocks.
 servers:
-  - url: https://public-api.fabriq.trade/v1
+  - url: https://api.fabriq.trade/v1
     description: Production
 security:
   - ApiKeyAuth: []
@@ -326,8 +326,8 @@ paths:
         - name: eligible_only
           in: query
           description: >-
-            Only pools that pass the trending quality filter (see
-            [Pool scores](/concepts/pool-scores)). Recommended when ranking by liquidity: a pool whose
+            Only pools that pass the trending quality filter (`quality.eligible`). Recommended when
+            ranking by liquidity: a pool whose
             token price is unreliable can show an inflated `liquidity_usd`.
           schema:
             type: boolean
@@ -517,7 +517,7 @@ paths:
         Pools ranked by Fabriq's score (or any other sort), with the filters of Fabriq's trending
         page. Scores, 5-minute and 1-hour figures move every second; 6-hour and 24-hour figures,
         makers and price changes every 10 seconds. By default only pools that pass the quality
-        filter are listed (see Pool scores).
+        filter are listed (`quality.eligible`).
         Costs $0.005 per request with x402.
       parameters:
         - name: category
@@ -1121,7 +1121,7 @@ paths:
       summary: Get LP score
       description: >-
         The wallet's LP score (0 to 100) over the positions it closed in the period: five weighted
-        dimensions, the evidence behind them, and its 30-day rank. Without `from` and `to`, the
+        dimensions and its 30-day rank. Without `from` and `to`, the
         whole indexed history.
         Costs $0.01 per request with x402.
       parameters:
@@ -1366,7 +1366,7 @@ components:
               x402Version: 2
               error: "Payment required: send an X-API-Key header, or pay for this request with x402"
               resource:
-                url: https://public-api.fabriq.trade/v1/trending/pools
+                url: https://api.fabriq.trade/v1/trending/pools
                 description: "Fabriq API: GET /v1/trending/pools"
                 mimeType: application/json
               accepts:
@@ -1796,7 +1796,7 @@ components:
           example: 3298031408.7
         total_liquidity_usd:
           type: [number, "null"]
-          description: Liquidity of every pool holding the token, both sides (see Prices and valuation).
+          description: Liquidity of every pool holding the token, both sides.
           example: 48211933.2
         holders:
           type: [integer, "null"]
@@ -1992,22 +1992,22 @@ components:
     MultidayScore:
       type: object
       description: >-
-        What 1,000 USD put into the pool as a full-range LP position 3 days ago is worth now, fees
+        Fabriq's 3-day LP score: how providing liquidity to the pool paid over the last 3 days, fees
         included. Null for pools younger than 3 days.
       properties:
         value_usd:
           type: [number, "null"]
-          description: The score. 1,000 means break-even.
+          description: The score. Higher is better; 1,000 means break-even.
           example: 1043.8
         return_pct:
           type: [number, "null"]
           example: 4.38
         position_value_usd:
           type: [number, "null"]
-          description: The position's value now, fees excluded.
+          description: The score without fees.
         position_fees_usd:
           type: [number, "null"]
-          description: The fees the position earned.
+          description: The fees part of the score.
         pool_fees_3d_usd:
           type: [number, "null"]
           description: All LP fees the pool paid over the 3 days.
@@ -2084,7 +2084,7 @@ components:
           example: 62.05
         fab_score:
           type: [number, "null"]
-          description: Fabriq's activity score from the last 5 minutes and hour (see Pool scores).
+          description: Fabriq's score for the pool's current LP opportunity. Higher is better; it moves every second.
           example: 18.42
         multiday:
           oneOf:
@@ -2100,7 +2100,7 @@ components:
           example: 204
         quality:
           type: [object, "null"]
-          description: The trending quality filter (see Pool scores).
+          description: The trending quality filter, which removes the most common kinds of noise from rankings.
           properties:
             eligible:
               type: boolean
@@ -2285,8 +2285,8 @@ components:
         status:
           type: string
           description: >-
-            `ready`: enough complete evidence. `provisional`: fewer than 10 pool-day groups or 3
-            closing days, or some data still being checked. `insufficient_data`: nothing to score.
+            `ready`: a complete score. `provisional`: not enough history yet, or some data still
+            being checked. `insufficient_data`: nothing to score.
           enum: [ready, provisional, insufficient_data]
         score:
           type: [number, "null"]
@@ -2310,14 +2310,13 @@ components:
           properties:
             effective_groups:
               type: integer
-              description: Pool-day groups with a meaningful result, at most 3 per day.
             active_weeks:
               type: integer
             required_weeks:
               type: integer
             factor:
               type: number
-              description: 0 to 1. Scales the part of the score above 50.
+              description: 0 to 1. How established the wallet's track record is.
             level:
               type: string
               enum: [limited, developing, full]
@@ -2476,7 +2475,7 @@ components:
           $ref: "#/components/schemas/Money"
         return_on_capital_pct:
           type: [number, "null"]
-          description: PnL ÷ the most capital the position ever had in it, in percent (see PnL and LP score).
+          description: PnL ÷ the most capital the position ever had in it, in percent.
         history_complete:
           type: boolean
           description: >-

@@ -3,11 +3,7 @@ title: API reference
 description: Every endpoint of the Fabriq API v1.
 ---
 
-<Note>
-  The API and MCP server are pending deployment. See the [developer overview](/developers/overview) for availability.
-</Note>
-
-The planned base URL is `https://public-api.fabriq.trade/v1`. See [Authentication](/developers/authentication) and [response conventions](/developers/conventions), or [download the OpenAPI specification](https://raw.githubusercontent.com/SolMeteorAI/docs/main/openapi.yaml).
+The API base URL is `https://api.fabriq.trade/v1`. Use an API key or pay per request with x402. [Authentication](/developers/authentication) · [Response conventions](/developers/conventions) · [OpenAPI specification](/openapi.yaml)
 
 ## General
 
@@ -20,7 +16,7 @@ The planned base URL is `https://public-api.fabriq.trade/v1`. See [Authenticatio
 
 | Endpoint | Returns |
 | --- | --- |
-| [`GET /tokens/search`](/api-reference/tokens/search-tokens) | Find tokens by symbol or name. |
+| [`GET /tokens/search`](/api-reference/tokens/search-tokens) | Find tokens by symbol, name, or mint. |
 | [`GET /tokens/{mint}`](/api-reference/tokens/get-a-token) | Identity, price, supply, FDV, total liquidity, holders, audit flags, transfer fee |
 | [`GET /tokens?mints=`](/api-reference/tokens/get-several-tokens) | Up to 100 tokens in one request |
 | [`GET /tokens/{mint}/ohlcv`](/api-reference/tokens/get-token-candles) | USD candles from 1 second to 1 month |
@@ -55,7 +51,7 @@ Everything about one wallet.
 | [`GET /portfolio/{wallet}/pnl`](/api-reference/portfolio/get-pnl-summary) | Net PnL, fees, win rates, profit factor, return on capital |
 | [`GET /portfolio/{wallet}/pnl/daily`](/api-reference/portfolio/get-daily-pnl) | Realized PnL per day |
 | [`GET /portfolio/{wallet}/pnl/by-pool`](/api-reference/portfolio/get-pnl-by-pool) | Realized PnL per pool |
-| [`GET /portfolio/{wallet}/lp-score`](/api-reference/portfolio/get-lp-score) | LP score, its five dimensions, evidence and 30-day rank |
+| [`GET /portfolio/{wallet}/lp-score`](/api-reference/portfolio/get-lp-score) | LP score, its five dimensions and 30-day rank |
 
 ## Not in v1 yet
 

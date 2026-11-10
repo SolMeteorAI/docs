@@ -15,4 +15,4 @@ bunx mint@4.2.1125 dev
 
 The docs navigation is defined in `docs.json`. Run `bunx mint@4.2.1125 validate` and `bunx mint@4.2.1125 broken-links` before publishing changes.
 
-The developer guides and OpenAPI specification come from `apps/docs` in the Fabriq monorepo. This import uses revision `1881f28`. Keep developer guide links under `/developers` when syncing updates.
+The developer guides and OpenAPI specification come from `apps/docs` in the Fabriq monorepo. This import uses revision `32e2541`. Keep developer guide links under `/developers` when syncing updates.

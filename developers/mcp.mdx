@@ -3,26 +3,22 @@ title: MCP server
 description: Give AI agents Fabriq data through the Model Context Protocol, with your API key or pay per call.
 ---
 
-<Note>
-  The API and MCP server are pending deployment. See the [developer overview](/developers/overview) for availability.
-</Note>
-
 Fabriq runs an [MCP](https://modelcontextprotocol.io) server, so assistants and agents such as Claude Code, Cursor and VS Code can look up tokens, pools, LP opportunities and wallets on their own. It serves the same data as the REST API, as twelve read-only tools designed around the questions agents ask.
 
 ```text
-https://public-api.fabriq.trade/mcp
+https://api.fabriq.trade/mcp
 ```
 
 The server uses the Streamable HTTP transport, stateless: each call is a plain request and response.
 
 ## Connect
 
-Use an API key, sent as `Authorization: Bearer <key>` (or `X-API-Key: <key>`). Without a key, each tool call can be [paid with x402](#pay-per-call-with-x402).
+Send your API key as `Authorization: Bearer <key>` or `X-API-Key: <key>` to `/mcp`. For clients that only accept a URL, use `https://api.fabriq.trade/mcp/k/<key>`. Fabriq validates the key in the URL before connecting. If you also supply a header key, that key takes precedence for tool calls. You can also pay for tool calls with [x402](#pay-per-call-with-x402).
 
 <Tabs>
   <Tab title="Claude Code">
     ```bash
-    claude mcp add --transport http fabriq https://public-api.fabriq.trade/mcp \
+    claude mcp add --transport http fabriq https://api.fabriq.trade/mcp \
       --header "Authorization: Bearer $FABRIQ_API_KEY"
     ```
   </Tab>
@@ -33,7 +29,7 @@ Use an API key, sent as `Authorization: Bearer <key>` (or `X-API-Key: <key>`). W
     {
       "mcpServers": {
         "fabriq": {
-          "url": "https://public-api.fabriq.trade/mcp",
+          "url": "https://api.fabriq.trade/mcp",
           "headers": { "Authorization": "Bearer YOUR_FABRIQ_API_KEY" }
         }
       }
@@ -51,21 +47,39 @@ Use an API key, sent as `Authorization: Bearer <key>` (or `X-API-Key: <key>`). W
       "servers": {
         "fabriq": {
           "type": "http",
-          "url": "https://public-api.fabriq.trade/mcp",
+          "url": "https://api.fabriq.trade/mcp",
           "headers": { "Authorization": "Bearer ${input:fabriq-key}" }
         }
       }
     }
     ```
   </Tab>
+  <Tab title="Claude app">
+    In Claude, open **Customize → Connectors** and add a custom web connector named Fabriq. If your connector form offers **Request headers**, enter `https://api.fabriq.trade/mcp`, select **No sign in**, and add `X-API-Key` with your key. If your form only accepts a URL, use the following URL with your key and select **No sign in**.
+
+    ```text
+    https://api.fabriq.trade/mcp/k/YOUR_FABRIQ_API_KEY
+    ```
+
+    Connector availability depends on your plan and workspace settings. [Claude connector setup](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp)
+  </Tab>
+  <Tab title="ChatGPT">
+    If prompted, enable **Developer mode** under **Settings → Security and login**. Open [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button, and choose **Add custom MCP server**. Enter Fabriq as the name and the following URL as the connection. Choose **No authentication** in ChatGPT because Fabriq checks the key in the URL.
+
+    ```text
+    https://api.fabriq.trade/mcp/k/YOUR_FABRIQ_API_KEY
+    ```
+
+    Create the plugin and check that ChatGPT discovers the Fabriq tools. Custom MCP access depends on your account and workspace settings. [OpenAI setup guide](https://developers.openai.com/plugins/deploy/connect-chatgpt#add-the-mcp-server)
+  </Tab>
   <Tab title="Other clients">
-    Any MCP client that supports Streamable HTTP and custom headers works: point it at `https://public-api.fabriq.trade/mcp` with an `Authorization: Bearer <key>` header.
+    Any MCP client that supports Streamable HTTP works. Point it at `https://api.fabriq.trade/mcp` with an `Authorization: Bearer <key>` header or, if it can't send headers, at `https://api.fabriq.trade/mcp/k/<key>`.
   </Tab>
 </Tabs>
 
-<Note>
-  Connectors that can't send custom headers, such as those in claude.ai and ChatGPT, aren't supported yet: they need an OAuth sign-in, which is planned.
-</Note>
+<Warning>
+  A URL with your key in it works like a password: anyone who has it can spend your key's limits. Use a separate key for each app you connect, keep the URL out of screenshots and shared chats, and ask the Fabriq team to revoke the key if the URL leaks. A URL with an unknown key fails to connect.
+</Warning>
 
 Then ask in plain language: "What's the price of JUP?", "Find the best equity pools to LP", "How did this wallet do this month?".
 
@@ -94,12 +108,16 @@ Agents usually know a symbol, not a mint, so start from `find_token`. Many token
 
 ## Resources and prompts
 
-The server also offers, at no cost:
+The MCP server publishes these resources.
 
-- **Resources:** the [concept guides](/developers/concepts/data-coverage) as Markdown (`fabriq://docs/pool-scores`, `fabriq://docs/pnl-and-lp-score` and the others), so an agent can explain a number, and the DEX list (`fabriq://dexes`).
-- **Prompts:** `analyze_wallet` (a wallet's LP performance review) and `find_lp_opportunities` (find and compare pools to LP, optionally in a category or for a token).
+| Resource URI | Contents |
+| --- | --- |
+| `fabriq://docs/data-coverage` | Data sources, freshness, and history |
+| `fabriq://docs/supported-dexes` | Guide to supported programs |
+| `fabriq://docs/pnl-and-lp-score` | Position lifecycles, PnL, and LP score |
+| `fabriq://dexes` | Supported programs as JSON |
 
-Listing tools, resources and prompts needs no key or payment.
+The available prompts are `analyze_wallet` for reviewing wallet performance and `find_lp_opportunities` for comparing pools. The standard `/mcp` endpoint lists tools, resources, and prompts without a key or payment.
 
 ## Limits
 
