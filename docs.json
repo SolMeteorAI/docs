@@ -79,7 +79,6 @@
           {
             "group": "Concepts",
             "pages": [
-              "developers/concepts/data-coverage",
               "developers/concepts/supported-dexes",
               "developers/concepts/pnl-and-lp-score"
             ]
@@ -186,7 +185,7 @@
   "redirects": [
     {
       "source": "/developers/concepts/prices-and-valuation",
-      "destination": "/developers/concepts/data-coverage"
+      "destination": "/in-house-indexer"
     },
     {
       "source": "/developers/concepts/pool-scores",

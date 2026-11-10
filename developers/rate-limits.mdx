@@ -49,5 +49,5 @@ async function fabriq(path) {
 ## Using fewer requests
 
 - Batch token lookups with `GET /tokens?mints=...` (up to 100 mints).
-- Don't poll faster than the data changes. Trending scores move every second, 24-hour stats every 10 seconds, LP score ranks every hour. See [Data coverage](/developers/concepts/data-coverage#freshness).
+- Match your polling interval to the data refresh rate. Trending scores update every second, 24-hour stats every 10 seconds, and LP score ranks every hour. See [API status](/api-reference/general/get-api-status).
 - Use `GET /portfolio/{wallet}` for a wallet's summary (net worth, top balances, open positions, PnL) instead of combining several calls.
