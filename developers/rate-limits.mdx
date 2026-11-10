@@ -1,16 +1,16 @@
 ---
 title: Rate limits
-description: How many requests your key can make, and what to do when you hit the limit.
+description: How many requests a paying wallet or API key can make, and what to do when you hit the limit.
 ---
 
-Limits apply per API key, or per paying wallet for [pay-per-request](/developers/pay-per-request) callers.
+[Pay-per-request](/developers/pay-per-request) callers are limited per paying wallet, and [API keys](/developers/authentication) per key.
 
 | Access | Requests per minute | Requests per day |
 | --- | --- | --- |
-| API key | 60 | 50,000 |
 | x402, per paying wallet | 300 | 100,000 |
+| API key | 60 | 50,000 |
 
-Requests without a key or a valid payment are also limited per IP address.
+Requests without a valid payment or a key are also limited per IP address.
 
 Batch endpoints count as one request: `GET /tokens?mints=...` with 100 mints costs the same as one token. On the [MCP server](/developers/mcp), each tool call counts as one request.
 
@@ -28,14 +28,13 @@ Every response carries your current budget:
 
 ## When you hit the limit
 
-The API answers `429 rate_limited` with a `Retry-After` header in seconds. Wait that long before retrying.
+The API answers `429 rate_limited` with a `Retry-After` header in seconds. Wait that long before retrying. A rate-limited request isn't charged: payments settle only on success.
 
 ```javascript
+// fetchWithPayment is the x402-wrapped fetch from the Quickstart
 async function fabriq(path) {
   for (let attempt = 0; attempt < 5; attempt++) {
-    const response = await fetch(`https://api.fabriq.trade/v1${path}`, {
-      headers: { "X-API-Key": process.env.FABRIQ_API_KEY },
-    });
+    const response = await fetchWithPayment(`https://api.fabriq.trade/v1${path}`);
     if (response.status !== 429) {
       return response.json();
     }

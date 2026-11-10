@@ -1,9 +1,11 @@
 ---
 title: Pay per request (x402)
-description: Call the API without an account, paying for each request in USDC on Solana or Base.
+description: Call the API without an account or key, paying for each request in USDC on Solana or Base.
 ---
 
-[x402](https://www.x402.org) is an open protocol for paying for HTTP requests. Instead of an API key, you pay half a cent or a cent in USDC for each request, from your own wallet. No signup, no key: well suited to scripts and AI agents.
+import X402Examples from "/snippets/x402-examples.mdx";
+
+Paying per request is the standard way to call the Fabriq API. [x402](https://www.x402.org) is an open protocol for paying for HTTP requests: you pay half a cent or a cent in USDC for each request, from your own wallet. There's no signup and no key, which suits scripts and AI agents.
 
 Fabriq accepts x402 version 2 payments in **USDC on Solana and on Base**, verified and settled through Coinbase's facilitator.
 
@@ -24,7 +26,18 @@ Fabriq accepts x402 version 2 payments in **USDC on Solana and on Base**, verifi
   </Step>
 </Steps>
 
-AI agents can pay the same way for each [MCP](/developers/mcp#pay-per-call-with-x402) tool call. Any x402 v2 client does all four steps for you: the official x402 libraries for TypeScript, Python and Go, or [x402-rs](https://github.com/x402-rs/x402-rs) for Rust. Point one at a Fabriq URL with your wallet as the signer.
+You don't write these steps yourself: an x402 client library does all four. AI agents can pay the same way for each [MCP](/developers/mcp#pay-per-call-with-x402) tool call.
+
+## Code examples
+
+Each example pays $0.005 for `GET /trending/pools?limit=5`, prints the pools, then prints the settlement transaction from the receipt. Set `SOLANA_PRIVATE_KEY` (the base58 secret key, as Phantom and Solflare export it) or `EVM_PRIVATE_KEY` (0x-prefixed hex) first, as in the [Quickstart](/developers/quickstart).
+
+<X402Examples />
+
+- **One network per client.** Each example registers only its own network, so the client pays the matching offer from the challenge.
+- **Solana RPC.** To build a Solana payment, the client reads the USDC mint and a recent blockhash from the public endpoint `https://api.mainnet-beta.solana.com`, which is rate-limited. For steady traffic, use your own RPC: `new ExactSvmScheme(signer, { rpcUrl })` in TypeScript, `ExactSvmScheme(signer, rpc_url=...)` in Python, or `RpcClient::new(url)` in Rust. Base payments need no RPC.
+- **A refused payment is a response, not an exception.** The client returns the final `402`, so check the status as the examples do. Its `error.message` says why, such as `Payment rejected: insufficient_funds`.
+- **Other languages.** Any x402 version 2 client works, such as the official [Go library](https://github.com/x402-foundation/x402).
 
 ## Prices
 
@@ -106,4 +119,4 @@ The header decodes to:
 
 ## Limits
 
-x402 callers are limited per paying wallet: 300 requests per minute and 100,000 per day. Unpaid requests are limited per IP address. Need more, or prefer an invoice? Use an [API key](/developers/authentication).
+x402 callers are limited per paying wallet: 300 requests per minute and 100,000 per day. Unpaid requests are limited per IP address. Need higher limits? Contact the Fabriq team. Prefer an invoice to paying per request? Use an [API key](/developers/authentication).

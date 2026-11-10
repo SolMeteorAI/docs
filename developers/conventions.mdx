@@ -29,15 +29,14 @@ Every successful response is a JSON object with two keys:
 
 Lists that can grow without bound (swaps, liquidity events, positions, activity, PnL by pool) use cursors:
 
-```bash
-curl "https://api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100" \
-  -H "X-API-Key: $FABRIQ_API_KEY"
-# then
-curl "https://api.fabriq.trade/v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100&cursor=eyJzIjo0NzgyMTM5OTAsImkiOiIzZjFhIn0" \
-  -H "X-API-Key: $FABRIQ_API_KEY"
+```text
+GET /v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100
+# then, with meta.next_cursor from the first page
+GET /v1/pools/5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6/swaps?limit=100&cursor=eyJzIjo0NzgyMTM5OTAsImkiOiIzZjFhIn0
 ```
 
 - `limit` is 1 to 100, 50 by default.
+- Each page is a separate request, and with x402 a separate payment. Use `limit=100` to page through long lists in fewer requests.
 - Cursors are opaque. Don't build or edit them.
 - A cursor keeps its place when new data arrives: newest-first lists never repeat or skip a row.
 - **Keep paging until `next_cursor` is `null`.** Swaps and liquidity events search back through time a bounded slice per request, so a quiet pool can answer a page with fewer rows than `limit`, or none, while `next_cursor` is still set.
@@ -99,7 +98,7 @@ Errors use HTTP status codes and a JSON body:
 | --- | --- | --- |
 | 400 | `invalid_request` | A parameter is missing or invalid. |
 | 401 | `unauthorized` | The API key is invalid. |
-| 402 | `payment_required` | No API key and no valid x402 payment. The `PAYMENT-REQUIRED` header (and the `x402` body field) say how to pay. See [Pay per request](/developers/pay-per-request). |
+| 402 | `payment_required` | No valid x402 payment (and no API key). The `PAYMENT-REQUIRED` header (and the `x402` body field) say how to pay. An x402 client handles this for you. See [Pay per request](/developers/pay-per-request). |
 | 403 | `forbidden` | Your key can't use this endpoint. |
 | 404 | `not_found` | Fabriq doesn't know this token, pool or position. |
 | 429 | `rate_limited` | Too many requests. See [Rate limits](/developers/rate-limits). |

@@ -1,0 +1,297 @@
+<Tabs>
+  <Tab title="TypeScript">
+    Uses `@x402/fetch` from the official [x402 SDK](https://github.com/x402-foundation/x402). Node.js 22.18 or later runs the `.ts` files directly. Your `package.json` needs `"type": "module"`.
+
+    ```bash
+    # Solana
+    npm install @x402/fetch@2.30.0 @x402/svm@2.30.0 @solana/kit@8.6.0
+    # Base
+    npm install @x402/fetch@2.30.0 @x402/evm@2.30.0 viem@2.57.17
+    ```
+
+    <CodeGroup>
+
+    ```ts solana.ts
+    import { wrapFetchWithPayment, x402Client, decodePaymentResponseHeader } from "@x402/fetch";
+    import { ExactSvmScheme } from "@x402/svm";
+    import { createKeyPairSignerFromBytes, getBase58Encoder } from "@solana/kit";
+
+    // Base58 64-byte secret key, as exported by Phantom or Solflare
+    const signer = await createKeyPairSignerFromBytes(getBase58Encoder().encode(process.env.SOLANA_PRIVATE_KEY!));
+
+    // Register only Solana mainnet, so the client pays the Solana offer
+    const client = new x402Client().register("solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", new ExactSvmScheme(signer));
+    const fetchWithPayment = wrapFetchWithPayment(fetch, client);
+
+    const res = await fetchWithPayment("https://api.fabriq.trade/v1/trending/pools?limit=5");
+    if (!res.ok) {
+      console.error(res.status, await res.text());
+      process.exit(1);
+    }
+
+    const { data } = await res.json();
+    for (const pool of data) {
+      console.log(pool.rank, `${pool.base.symbol}/${pool.quote.symbol}`, pool.fab_score);
+    }
+
+    // The settlement receipt: { success, transaction, network, payer }
+    const receipt = decodePaymentResponseHeader(res.headers.get("PAYMENT-RESPONSE")!);
+    console.log(`Paid on ${receipt.network}, transaction ${receipt.transaction}`);
+    ```
+
+    ```ts base.ts
+    import { wrapFetchWithPayment, x402Client, decodePaymentResponseHeader } from "@x402/fetch";
+    import { ExactEvmScheme } from "@x402/evm";
+    import { privateKeyToAccount } from "viem/accounts";
+
+    // 0x-prefixed hex private key
+    const signer = privateKeyToAccount(process.env.EVM_PRIVATE_KEY as `0x${string}`);
+
+    // Register only Base mainnet, so the client pays the Base offer
+    const client = new x402Client().register("eip155:8453", new ExactEvmScheme(signer));
+    const fetchWithPayment = wrapFetchWithPayment(fetch, client);
+
+    const res = await fetchWithPayment("https://api.fabriq.trade/v1/trending/pools?limit=5");
+    if (!res.ok) {
+      console.error(res.status, await res.text());
+      process.exit(1);
+    }
+
+    const { data } = await res.json();
+    for (const pool of data) {
+      console.log(pool.rank, `${pool.base.symbol}/${pool.quote.symbol}`, pool.fab_score);
+    }
+
+    // The settlement receipt: { success, transaction, network, payer }
+    const receipt = decodePaymentResponseHeader(res.headers.get("PAYMENT-RESPONSE")!);
+    console.log(`Paid on ${receipt.network}, transaction ${receipt.transaction}`);
+    ```
+
+    </CodeGroup>
+
+    ```bash
+    node solana.ts   # or: node base.ts
+    ```
+  </Tab>
+  <Tab title="Python">
+    Uses the official [x402 SDK](https://github.com/x402-foundation/x402) with its httpx client. Needs Python 3.10 or later.
+
+    ```bash
+    # Solana
+    pip install "x402[httpx,svm]==2.27.0"
+    # Base
+    pip install "x402[httpx,evm]==2.27.0"
+    ```
+
+    <CodeGroup>
+
+    ```python solana.py
+    import asyncio
+    import os
+
+    from x402 import x402Client
+    from x402.http import decode_payment_response_header
+    from x402.http.clients.httpx import x402HttpxClient
+    from x402.mechanisms.svm import KeypairSigner
+    from x402.mechanisms.svm.exact import ExactSvmScheme
+
+    URL = "https://api.fabriq.trade/v1/trending/pools?limit=5"
+
+
+    async def main() -> None:
+        # Base58 secret key, as exported by Phantom or Solflare
+        signer = KeypairSigner.from_base58(os.environ["SOLANA_PRIVATE_KEY"])
+        client = x402Client().register("solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", ExactSvmScheme(signer))
+
+        # Pays the 402 and retries; settlement happens before the response, so allow time
+        async with x402HttpxClient(client, timeout=30) as http:
+            res = await http.get(URL)
+
+        if not res.is_success:
+            print(res.status_code, res.text)
+            return
+
+        for pool in res.json()["data"]:
+            print(pool["rank"], f"{pool['base']['symbol']}/{pool['quote']['symbol']}", pool["fab_score"])
+
+        # The settlement receipt: success, transaction, network, payer
+        receipt = decode_payment_response_header(res.headers["PAYMENT-RESPONSE"])
+        print(f"Paid on {receipt.network}, transaction {receipt.transaction}")
+
+
+    asyncio.run(main())
+    ```
+
+    ```python base.py
+    import asyncio
+    import os
+
+    from eth_account import Account
+    from x402 import x402Client
+    from x402.http import decode_payment_response_header
+    from x402.http.clients.httpx import x402HttpxClient
+    from x402.mechanisms.evm import EthAccountSigner
+    from x402.mechanisms.evm.exact import ExactEvmScheme
+
+    URL = "https://api.fabriq.trade/v1/trending/pools?limit=5"
+
+
+    async def main() -> None:
+        # 0x-prefixed hex private key
+        signer = EthAccountSigner(Account.from_key(os.environ["EVM_PRIVATE_KEY"]))
+        client = x402Client().register("eip155:8453", ExactEvmScheme(signer))
+
+        # Pays the 402 and retries; settlement happens before the response, so allow time
+        async with x402HttpxClient(client, timeout=30) as http:
+            res = await http.get(URL)
+
+        if not res.is_success:
+            print(res.status_code, res.text)
+            return
+
+        for pool in res.json()["data"]:
+            print(pool["rank"], f"{pool['base']['symbol']}/{pool['quote']['symbol']}", pool["fab_score"])
+
+        # The settlement receipt: success, transaction, network, payer
+        receipt = decode_payment_response_header(res.headers["PAYMENT-RESPONSE"])
+        print(f"Paid on {receipt.network}, transaction {receipt.transaction}")
+
+
+    asyncio.run(main())
+    ```
+
+    </CodeGroup>
+
+    ```bash
+    python solana.py   # or: python base.py
+    ```
+  </Tab>
+  <Tab title="Rust">
+    Uses [`x402-reqwest`](https://github.com/x402-rs/x402-rs) from x402-rs. Needs Rust 1.94.1 or later, or 1.93 if you only pay on Solana. To pay on one network only, delete the other network's dependencies and file.
+
+    ```toml Cargo.toml
+    [package]
+    name = "fabriq-x402-example"
+    version = "0.1.0"
+    edition = "2024"
+
+    [dependencies]
+    anyhow = "1"
+    reqwest = { version = "0.13", features = ["json"] }
+    serde_json = "1"
+    tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+    x402-reqwest = "=2.0.2"
+    x402-types = "=2.0.2"
+    # Solana: keep the solana-* crates on 3.x
+    x402-chain-solana = { version = "=2.0.2", features = ["client"] }
+    solana-client = "=3.1.14"
+    solana-keypair = "=3.1.2"
+    # Base: x402-chain-eip155 2.0.2 needs the telemetry feature to compile
+    x402-chain-eip155 = { version = "=2.0.2", features = ["client", "telemetry"] }
+    alloy-signer-local = "=2.5.0"
+    ```
+
+    <CodeGroup>
+
+    ```rust src/bin/solana.rs
+    use std::{env, sync::Arc};
+
+    use serde_json::Value;
+    use solana_client::nonblocking::rpc_client::RpcClient;
+    use solana_keypair::Keypair;
+    use x402_chain_solana::V2SolanaExactClient;
+    use x402_reqwest::{ReqwestWithPayments, ReqwestWithPaymentsBuild, X402Client};
+    use x402_types::util::Base64Bytes;
+
+    const URL: &str = "https://api.fabriq.trade/v1/trending/pools?limit=5";
+
+    #[tokio::main]
+    async fn main() -> anyhow::Result<()> {
+        // Base58 secret key (64 bytes), as exported by Phantom or Solflare.
+        let key = env::var("SOLANA_PRIVATE_KEY")?;
+        let signer = Arc::new(Keypair::try_from_base58_string(&key)?);
+        // Read over RPC to build the transfer: USDC mint, recent blockhash, priority fees.
+        let rpc = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".into()));
+        let x402 = X402Client::new().register(V2SolanaExactClient::new(signer, rpc));
+        let client = reqwest::Client::new().with_payments(x402).build();
+
+        let res = client.get(URL).send().await?;
+        if !res.status().is_success() {
+            println!("{}: {}", res.status(), res.text().await?);
+            return Ok(());
+        }
+        let receipt = res.headers().get("payment-response").cloned();
+        let body: Value = res.json().await?;
+        for pool in body["data"].as_array().into_iter().flatten() {
+            let symbol = |side: &str| pool[side]["symbol"].as_str().unwrap_or("?").to_owned();
+            let (rank, score) = (&pool["rank"], &pool["fab_score"]);
+            println!("{rank} {}/{} {score}", symbol("base"), symbol("quote"));
+        }
+        // The settlement receipt, base64 JSON: { success, transaction, network, payer }
+        if let Some(header) = receipt {
+            let receipt: Value =
+                serde_json::from_slice(&Base64Bytes::from(header.as_bytes()).decode()?)?;
+            let (network, tx) = (&receipt["network"], &receipt["transaction"]);
+            println!(
+                "Paid on {}, transaction {}",
+                network.as_str().unwrap_or("?"),
+                tx.as_str().unwrap_or("?")
+            );
+        }
+        Ok(())
+    }
+    ```
+
+    ```rust src/bin/base.rs
+    use std::env;
+
+    use alloy_signer_local::PrivateKeySigner;
+    use serde_json::Value;
+    use x402_chain_eip155::V2Eip155ExactClient;
+    use x402_reqwest::{ReqwestWithPayments, ReqwestWithPaymentsBuild, X402Client};
+    use x402_types::util::Base64Bytes;
+
+    const URL: &str = "https://api.fabriq.trade/v1/trending/pools?limit=5";
+
+    #[tokio::main]
+    async fn main() -> anyhow::Result<()> {
+        // Hex private key, 0x-prefixed.
+        let key = env::var("EVM_PRIVATE_KEY")?;
+        let signer: PrivateKeySigner = key.parse()?;
+        let x402 = X402Client::new().register(V2Eip155ExactClient::new(signer));
+        let client = reqwest::Client::new().with_payments(x402).build();
+
+        let res = client.get(URL).send().await?;
+        if !res.status().is_success() {
+            println!("{}: {}", res.status(), res.text().await?);
+            return Ok(());
+        }
+        let receipt = res.headers().get("payment-response").cloned();
+        let body: Value = res.json().await?;
+        for pool in body["data"].as_array().into_iter().flatten() {
+            let symbol = |side: &str| pool[side]["symbol"].as_str().unwrap_or("?").to_owned();
+            let (rank, score) = (&pool["rank"], &pool["fab_score"]);
+            println!("{rank} {}/{} {score}", symbol("base"), symbol("quote"));
+        }
+        // The settlement receipt, base64 JSON: { success, transaction, network, payer }
+        if let Some(header) = receipt {
+            let receipt: Value =
+                serde_json::from_slice(&Base64Bytes::from(header.as_bytes()).decode()?)?;
+            let (network, tx) = (&receipt["network"], &receipt["transaction"]);
+            println!(
+                "Paid on {}, transaction {}",
+                network.as_str().unwrap_or("?"),
+                tx.as_str().unwrap_or("?")
+            );
+        }
+        Ok(())
+    }
+    ```
+
+    </CodeGroup>
+
+    ```bash
+    cargo run --bin solana   # or: cargo run --bin base
+    ```
+  </Tab>
+</Tabs>

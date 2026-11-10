@@ -21,7 +21,7 @@ The Fabriq API gives you programmatic access to pool, swap, token, and LP positi
     Any wallet's net worth, token balances, open and closed LP positions, activity, PnL and LP score.
   </Card>
   <Card title="Pay per request" icon="dollar-sign" href="/developers/pay-per-request">
-    No account needed: pay for each request in USDC on Solana or Base with x402.
+    No account or API key: pay for each request in USDC on Solana or Base with x402.
   </Card>
   <Card title="MCP server" icon="robot" href="/developers/mcp">
     Query Fabriq data from ChatGPT, Claude, Cursor, and other MCP clients with 12 read-only tools.
@@ -47,4 +47,8 @@ The Fabriq API gives you programmatic access to pool, swap, token, and LP positi
 https://api.fabriq.trade/v1
 ```
 
-Send an API key in the `X-API-Key` header, or [pay for each request with x402](/developers/pay-per-request). See [Authentication](/developers/authentication).
+## Access
+
+Pay for each request with [x402](/developers/pay-per-request): half a cent or a cent in USDC, from any Solana or Base wallet. There's no account to create and no key to manage, and an x402 client library makes the payment for you. The [Quickstart](/developers/quickstart) has working code for TypeScript, Python and Rust.
+
+If you want an invoice instead, or your client can't pay with x402, use an [API key](/developers/authentication).
